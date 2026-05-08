@@ -1,0 +1,29 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "e:\\zonefall\\plugins\\uiworld\\source\\uiworld\\private\\save\\uiworldsavemanager.cpp",
+        "ProvidedModule": "",
+        "PCH": "e:\\zonefall\\intermediate\\build\\win64\\x64\\zonefalleditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.inclorderunreal5_4.h.pch",
+        "Includes": [
+            "e:\\zonefall\\plugins\\uiworld\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\uiworld\\definitions.uiworld.h",
+            "e:\\zonefall\\plugins\\uiworld\\source\\uiworld\\public\\save\\uiworldsavemanager.h",
+            "e:\\zonefall\\plugins\\uiworld\\intermediate\\build\\win64\\unrealeditor\\inc\\uiworld\\uht\\uiworldsavemanager.generated.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\engine\\classes\\kismet\\gameplaystatics.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\engine\\classes\\kismet\\kismetsystemlibrary.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\coreuobject\\public\\uobject\\propertyaccessutil.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\coreuobject\\uht\\propertyaccessutil.generated.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\kismetsystemlibrary.generated.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\engine\\classes\\sound\\dialoguetypes.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\dialoguetypes.generated.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\engine\\classes\\kismet\\gameplaystaticstypes.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\gameplaystaticstypes.generated.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\gameplaystatics.generated.h",
+            "e:\\zonefall\\plugins\\uiworld\\source\\uiworld\\public\\save\\uiworldsavegame.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\engine\\classes\\gameframework\\savegame.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\savegame.generated.h",
+            "e:\\zonefall\\plugins\\uiworld\\intermediate\\build\\win64\\unrealeditor\\inc\\uiworld\\uht\\uiworldsavegame.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

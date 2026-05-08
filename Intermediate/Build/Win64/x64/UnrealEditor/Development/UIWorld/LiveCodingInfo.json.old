@@ -1,0 +1,38 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.UIWorld.1.cpp.obj": [
+			"UIWorld.init.gen.cpp.obj",
+			"UIWorldMainMenuWidget.gen.cpp.obj",
+			"UIWorldMenuGameInstance.gen.cpp.obj",
+			"ZonefallFancyMenuWidget.gen.cpp.obj",
+			"ZonefallLoadingScreenWidget.gen.cpp.obj",
+			"ZonefallModernButtonWidget.gen.cpp.obj"
+		],
+		"Module.UIWorld.2.cpp.obj": [
+			"ZonefallModernComboBoxWidget.gen.cpp.obj",
+			"ZonefallModernProgressBarWidget.gen.cpp.obj",
+			"ZonefallPauseMenuWidget.gen.cpp.obj",
+			"ZonefallSettingsDataObject.gen.cpp.obj",
+			"ZonefallSettingsMenuWidget.gen.cpp.obj",
+			"ZonefallShaderLoadingWidget.gen.cpp.obj"
+		],
+		"Module.UIWorld.3.cpp.obj": [
+			"ZonefallStartupIntroWidget.gen.cpp.obj",
+			"PerModuleInline.gen.cpp.obj",
+			"UIWorldMenuGameInstance.cpp.obj",
+			"UIWorldModule.cpp.obj",
+			"UIWorldMainMenuWidget.cpp.obj",
+			"ZonefallFancyMenuWidget.cpp.obj",
+			"ZonefallLoadingScreenWidget.cpp.obj",
+			"ZonefallModernButtonWidget.cpp.obj",
+			"ZonefallModernComboBoxWidget.cpp.obj",
+			"ZonefallModernProgressBarWidget.cpp.obj",
+			"ZonefallPauseMenuWidget.cpp.obj",
+			"ZonefallSettingsDataObject.cpp.obj",
+			"ZonefallSettingsMenuWidget.cpp.obj",
+			"ZonefallShaderLoadingWidget.cpp.obj",
+			"ZonefallStartupIntroWidget.cpp.obj"
+		]
+	}
+}

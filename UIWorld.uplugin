@@ -1,0 +1,111 @@
+{
+	"FileVersion": 3,
+	"Version": 2,
+	"VersionName": "1.1.0",
+	"FriendlyName": "UIWorld",
+	"Description": "Reusable menu game instance with loading and session flow.",
+	"Category": "Gameplay",
+	"CreatedBy": "Кузьменко Василий",
+	"CreatedByURL": "https://zonefall.dev",
+	"DocsURL": "https://zonefall.dev/docs/uiworld",
+	"SupportURL": "https://zonefall.dev/support",
+	"EngineVersion": "5.7.0",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"EnabledByDefault": true,
+	"Plugins": [
+		{
+			"Name": "ClimbingNavigation",
+			"Enabled": true
+		},
+		{
+			"Name": "CombatCore",
+			"Enabled": true
+		},
+		{
+			"Name": "OnlineSubsystem",
+			"Enabled": true
+		},
+		{
+			"Name": "OnlineSubsystemUtils",
+			"Enabled": true
+		},
+		{
+			"Name": "DLSS",
+			"Enabled": true
+		},
+		{
+			"Name": "DLSSMoviePipelineSupport",
+			"Enabled": true
+		},
+		{
+			"Name": "NIS",
+			"Enabled": true
+		},
+		{
+			"Name": "Streamline",
+			"Enabled": true
+		},
+		{
+			"Name": "StreamlineCore",
+			"Enabled": true
+		},
+		{
+			"Name": "StreamlineNGXCommon",
+			"Enabled": true
+		},
+		{
+			"Name": "StreamlineDLSSG",
+			"Enabled": true
+		},
+		{
+			"Name": "StreamlineReflex",
+			"Enabled": true
+		},
+		{
+			"Name": "StreamlineDeepDVC",
+			"Enabled": true
+		},
+		{
+			"Name": "FSR",
+			"Enabled": true
+		},
+		{
+			"Name": "FSRMovieRenderPipeline",
+			"Enabled": true
+		},
+		{
+			"Name": "GraphDebbuger",
+			"Enabled": true
+		},
+		{
+			"Name": "HelpfulFunctions",
+			"Enabled": true
+		},
+		{
+			"Name": "IWALS_AbilitySystem",
+			"Enabled": true
+		},
+		{
+			"Name": "JakubAnimNodes",
+			"Enabled": true
+		},
+		{
+			"Name": "JakubCableComponent",
+			"Enabled": true
+		},
+		{
+			"Name": "SkyCreatorPlugin",
+			"Enabled": true
+		}
+	],
+	"Modules": [
+		{
+			"Name": "UIWorld",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
