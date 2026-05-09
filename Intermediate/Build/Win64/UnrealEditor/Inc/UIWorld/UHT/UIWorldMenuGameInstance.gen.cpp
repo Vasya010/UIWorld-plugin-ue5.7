@@ -444,6 +444,219 @@ void FOnUIWorldMenuScreenChanged_DelegateWrapper(const FMulticastScriptDelegate&
 }
 // ********** End Delegate FOnUIWorldMenuScreenChanged *********************************************
 
+// ********** Begin Class UUIWorldMenuGameInstance Function BackFromSettingsMainMenu ***************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMainMenu_Statics
+{
+	struct UIWorldMenuGameInstance_eventBackFromSettingsMainMenu_Parms
+	{
+		bool bForceRebuild;
+		UUserWidget* ReturnValue;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Flow" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Explicit back route from settings to main menu.\n" },
+#endif
+		{ "CPP_Default_bForceRebuild", "false" },
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Explicit back route from settings to main menu." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_ReturnValue_MetaData[] = {
+		{ "EditInline", "true" },
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function BackFromSettingsMainMenu constinit property declarations **************
+	static void NewProp_bForceRebuild_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bForceRebuild;
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_ReturnValue;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function BackFromSettingsMainMenu constinit property declarations ****************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function BackFromSettingsMainMenu Property Definitions *************************
+void Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMainMenu_Statics::NewProp_bForceRebuild_SetBit(void* Obj)
+{
+	((UIWorldMenuGameInstance_eventBackFromSettingsMainMenu_Parms*)Obj)->bForceRebuild = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMainMenu_Statics::NewProp_bForceRebuild = { "bForceRebuild", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UIWorldMenuGameInstance_eventBackFromSettingsMainMenu_Parms), &Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMainMenu_Statics::NewProp_bForceRebuild_SetBit, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMainMenu_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000080588, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UIWorldMenuGameInstance_eventBackFromSettingsMainMenu_Parms, ReturnValue), Z_Construct_UClass_UUserWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ReturnValue_MetaData), NewProp_ReturnValue_MetaData) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMainMenu_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMainMenu_Statics::NewProp_bForceRebuild,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMainMenu_Statics::NewProp_ReturnValue,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMainMenu_Statics::PropPointers) < 2048);
+// ********** End Function BackFromSettingsMainMenu Property Definitions ***************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMainMenu_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "BackFromSettingsMainMenu", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMainMenu_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMainMenu_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMainMenu_Statics::UIWorldMenuGameInstance_eventBackFromSettingsMainMenu_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMainMenu_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMainMenu_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMainMenu_Statics::UIWorldMenuGameInstance_eventBackFromSettingsMainMenu_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMainMenu()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMainMenu_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execBackFromSettingsMainMenu)
+{
+	P_GET_UBOOL(Z_Param_bForceRebuild);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(UUserWidget**)Z_Param__Result=P_THIS->BackFromSettingsMainMenu(Z_Param_bForceRebuild);
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function BackFromSettingsMainMenu *****************
+
+// ********** Begin Class UUIWorldMenuGameInstance Function BackFromSettingsMenuSmart **************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMenuSmart_Statics
+{
+	struct UIWorldMenuGameInstance_eventBackFromSettingsMenuSmart_Parms
+	{
+		bool bForceRebuild;
+		UUserWidget* ReturnValue;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Flow" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Smart return from settings: routes to the previous menu context (main or pause).\n" },
+#endif
+		{ "CPP_Default_bForceRebuild", "false" },
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Smart return from settings: routes to the previous menu context (main or pause)." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_ReturnValue_MetaData[] = {
+		{ "EditInline", "true" },
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function BackFromSettingsMenuSmart constinit property declarations *************
+	static void NewProp_bForceRebuild_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bForceRebuild;
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_ReturnValue;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function BackFromSettingsMenuSmart constinit property declarations ***************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function BackFromSettingsMenuSmart Property Definitions ************************
+void Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMenuSmart_Statics::NewProp_bForceRebuild_SetBit(void* Obj)
+{
+	((UIWorldMenuGameInstance_eventBackFromSettingsMenuSmart_Parms*)Obj)->bForceRebuild = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMenuSmart_Statics::NewProp_bForceRebuild = { "bForceRebuild", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UIWorldMenuGameInstance_eventBackFromSettingsMenuSmart_Parms), &Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMenuSmart_Statics::NewProp_bForceRebuild_SetBit, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMenuSmart_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000080588, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UIWorldMenuGameInstance_eventBackFromSettingsMenuSmart_Parms, ReturnValue), Z_Construct_UClass_UUserWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ReturnValue_MetaData), NewProp_ReturnValue_MetaData) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMenuSmart_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMenuSmart_Statics::NewProp_bForceRebuild,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMenuSmart_Statics::NewProp_ReturnValue,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMenuSmart_Statics::PropPointers) < 2048);
+// ********** End Function BackFromSettingsMenuSmart Property Definitions **************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMenuSmart_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "BackFromSettingsMenuSmart", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMenuSmart_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMenuSmart_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMenuSmart_Statics::UIWorldMenuGameInstance_eventBackFromSettingsMenuSmart_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMenuSmart_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMenuSmart_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMenuSmart_Statics::UIWorldMenuGameInstance_eventBackFromSettingsMenuSmart_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMenuSmart()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMenuSmart_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execBackFromSettingsMenuSmart)
+{
+	P_GET_UBOOL(Z_Param_bForceRebuild);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(UUserWidget**)Z_Param__Result=P_THIS->BackFromSettingsMenuSmart(Z_Param_bForceRebuild);
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function BackFromSettingsMenuSmart ****************
+
+// ********** Begin Class UUIWorldMenuGameInstance Function BackFromSettingsPauseMenu **************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsPauseMenu_Statics
+{
+	struct UIWorldMenuGameInstance_eventBackFromSettingsPauseMenu_Parms
+	{
+		bool bForceRebuild;
+		UUserWidget* ReturnValue;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Flow" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Explicit alias for settings -> pause back navigation.\n" },
+#endif
+		{ "CPP_Default_bForceRebuild", "false" },
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Explicit alias for settings -> pause back navigation." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_ReturnValue_MetaData[] = {
+		{ "EditInline", "true" },
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function BackFromSettingsPauseMenu constinit property declarations *************
+	static void NewProp_bForceRebuild_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bForceRebuild;
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_ReturnValue;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function BackFromSettingsPauseMenu constinit property declarations ***************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function BackFromSettingsPauseMenu Property Definitions ************************
+void Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsPauseMenu_Statics::NewProp_bForceRebuild_SetBit(void* Obj)
+{
+	((UIWorldMenuGameInstance_eventBackFromSettingsPauseMenu_Parms*)Obj)->bForceRebuild = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsPauseMenu_Statics::NewProp_bForceRebuild = { "bForceRebuild", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UIWorldMenuGameInstance_eventBackFromSettingsPauseMenu_Parms), &Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsPauseMenu_Statics::NewProp_bForceRebuild_SetBit, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsPauseMenu_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000080588, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UIWorldMenuGameInstance_eventBackFromSettingsPauseMenu_Parms, ReturnValue), Z_Construct_UClass_UUserWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ReturnValue_MetaData), NewProp_ReturnValue_MetaData) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsPauseMenu_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsPauseMenu_Statics::NewProp_bForceRebuild,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsPauseMenu_Statics::NewProp_ReturnValue,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsPauseMenu_Statics::PropPointers) < 2048);
+// ********** End Function BackFromSettingsPauseMenu Property Definitions **************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsPauseMenu_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "BackFromSettingsPauseMenu", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsPauseMenu_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsPauseMenu_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsPauseMenu_Statics::UIWorldMenuGameInstance_eventBackFromSettingsPauseMenu_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsPauseMenu_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsPauseMenu_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsPauseMenu_Statics::UIWorldMenuGameInstance_eventBackFromSettingsPauseMenu_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsPauseMenu()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsPauseMenu_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execBackFromSettingsPauseMenu)
+{
+	P_GET_UBOOL(Z_Param_bForceRebuild);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(UUserWidget**)Z_Param__Result=P_THIS->BackFromSettingsPauseMenu(Z_Param_bForceRebuild);
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function BackFromSettingsPauseMenu ****************
+
 // ********** Begin Class UUIWorldMenuGameInstance Function BackMenuPause **************************
 struct Z_Construct_UFunction_UUIWorldMenuGameInstance_BackMenuPause_Statics
 {
@@ -1233,6 +1446,148 @@ DEFINE_FUNCTION(UUIWorldMenuGameInstance::execOpenPauseSettingsMenu)
 }
 // ********** End Class UUIWorldMenuGameInstance Function OpenPauseSettingsMenu ********************
 
+// ********** Begin Class UUIWorldMenuGameInstance Function OpenSettingsMainMenu *******************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu_Statics
+{
+	struct UIWorldMenuGameInstance_eventOpenSettingsMainMenu_Parms
+	{
+		bool bForceRebuild;
+		UUserWidget* ReturnValue;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Flow" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Explicit open settings from main-menu flow.\n" },
+#endif
+		{ "CPP_Default_bForceRebuild", "false" },
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Explicit open settings from main-menu flow." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_ReturnValue_MetaData[] = {
+		{ "EditInline", "true" },
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function OpenSettingsMainMenu constinit property declarations ******************
+	static void NewProp_bForceRebuild_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bForceRebuild;
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_ReturnValue;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function OpenSettingsMainMenu constinit property declarations ********************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function OpenSettingsMainMenu Property Definitions *****************************
+void Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu_Statics::NewProp_bForceRebuild_SetBit(void* Obj)
+{
+	((UIWorldMenuGameInstance_eventOpenSettingsMainMenu_Parms*)Obj)->bForceRebuild = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu_Statics::NewProp_bForceRebuild = { "bForceRebuild", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UIWorldMenuGameInstance_eventOpenSettingsMainMenu_Parms), &Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu_Statics::NewProp_bForceRebuild_SetBit, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000080588, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UIWorldMenuGameInstance_eventOpenSettingsMainMenu_Parms, ReturnValue), Z_Construct_UClass_UUserWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ReturnValue_MetaData), NewProp_ReturnValue_MetaData) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu_Statics::NewProp_bForceRebuild,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu_Statics::NewProp_ReturnValue,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu_Statics::PropPointers) < 2048);
+// ********** End Function OpenSettingsMainMenu Property Definitions *******************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "OpenSettingsMainMenu", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu_Statics::UIWorldMenuGameInstance_eventOpenSettingsMainMenu_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu_Statics::UIWorldMenuGameInstance_eventOpenSettingsMainMenu_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execOpenSettingsMainMenu)
+{
+	P_GET_UBOOL(Z_Param_bForceRebuild);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(UUserWidget**)Z_Param__Result=P_THIS->OpenSettingsMainMenu(Z_Param_bForceRebuild);
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function OpenSettingsMainMenu *********************
+
+// ********** Begin Class UUIWorldMenuGameInstance Function OpenSettingsPauseMenu ******************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu_Statics
+{
+	struct UIWorldMenuGameInstance_eventOpenSettingsPauseMenu_Parms
+	{
+		bool bForceRebuild;
+		UUserWidget* ReturnValue;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Flow" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Explicit alias for pause -> settings navigation (kept for clearer Blueprint naming).\n" },
+#endif
+		{ "CPP_Default_bForceRebuild", "false" },
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Explicit alias for pause -> settings navigation (kept for clearer Blueprint naming)." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_ReturnValue_MetaData[] = {
+		{ "EditInline", "true" },
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function OpenSettingsPauseMenu constinit property declarations *****************
+	static void NewProp_bForceRebuild_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bForceRebuild;
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_ReturnValue;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function OpenSettingsPauseMenu constinit property declarations *******************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function OpenSettingsPauseMenu Property Definitions ****************************
+void Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu_Statics::NewProp_bForceRebuild_SetBit(void* Obj)
+{
+	((UIWorldMenuGameInstance_eventOpenSettingsPauseMenu_Parms*)Obj)->bForceRebuild = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu_Statics::NewProp_bForceRebuild = { "bForceRebuild", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UIWorldMenuGameInstance_eventOpenSettingsPauseMenu_Parms), &Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu_Statics::NewProp_bForceRebuild_SetBit, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000080588, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UIWorldMenuGameInstance_eventOpenSettingsPauseMenu_Parms, ReturnValue), Z_Construct_UClass_UUserWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ReturnValue_MetaData), NewProp_ReturnValue_MetaData) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu_Statics::NewProp_bForceRebuild,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu_Statics::NewProp_ReturnValue,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu_Statics::PropPointers) < 2048);
+// ********** End Function OpenSettingsPauseMenu Property Definitions ******************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "OpenSettingsPauseMenu", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu_Statics::UIWorldMenuGameInstance_eventOpenSettingsPauseMenu_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu_Statics::UIWorldMenuGameInstance_eventOpenSettingsPauseMenu_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execOpenSettingsPauseMenu)
+{
+	P_GET_UBOOL(Z_Param_bForceRebuild);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(UUserWidget**)Z_Param__Result=P_THIS->OpenSettingsPauseMenu(Z_Param_bForceRebuild);
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function OpenSettingsPauseMenu ********************
+
 // ********** Begin Class UUIWorldMenuGameInstance Function QuitGameNow ****************************
 struct Z_Construct_UFunction_UUIWorldMenuGameInstance_QuitGameNow_Statics
 {
@@ -1443,6 +1798,16 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 		{ "Category", "UIWorld|UI" },
 		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
 	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_PauseSettingsMenuWidgetClass_MetaData[] = {
+		{ "Category", "UIWorld|UI" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Optional dedicated settings widget for pause flow.\n// If set, OpenSettingsPauseMenu will use this class instead of SettingsMenuWidgetClass.\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Optional dedicated settings widget for pause flow.\nIf set, OpenSettingsPauseMenu will use this class instead of SettingsMenuWidgetClass." },
+#endif
+	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_LoadingScreenWidgetClass_MetaData[] = {
 		{ "Category", "UIWorld|Flow" },
 		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
@@ -1594,6 +1959,9 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_CurrentMenuScreen_MetaData[] = {
 		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
 	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_LastNonSettingsMenuScreen_MetaData[] = {
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_MenuWidgetCache_MetaData[] = {
 		{ "EditInline", "true" },
 		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
@@ -1641,6 +2009,7 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 	static const UECodeGen_Private::FClassPropertyParams NewProp_OnlineMenuWidgetClass;
 	static const UECodeGen_Private::FClassPropertyParams NewProp_PauseMenuWidgetClass;
 	static const UECodeGen_Private::FClassPropertyParams NewProp_SettingsMenuWidgetClass;
+	static const UECodeGen_Private::FClassPropertyParams NewProp_PauseSettingsMenuWidgetClass;
 	static const UECodeGen_Private::FClassPropertyParams NewProp_LoadingScreenWidgetClass;
 	static const UECodeGen_Private::FClassPropertyParams NewProp_ShaderLoadingWidgetClass;
 	static void NewProp_bAutoShowMenuOnStart_SetBit(void* Obj);
@@ -1670,6 +2039,8 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 	static const UECodeGen_Private::FBoolPropertyParams NewProp_bUseMoviePlayerLoadingScreen;
 	static const UECodeGen_Private::FBytePropertyParams NewProp_CurrentMenuScreen_Underlying;
 	static const UECodeGen_Private::FEnumPropertyParams NewProp_CurrentMenuScreen;
+	static const UECodeGen_Private::FBytePropertyParams NewProp_LastNonSettingsMenuScreen_Underlying;
+	static const UECodeGen_Private::FEnumPropertyParams NewProp_LastNonSettingsMenuScreen;
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_MenuWidgetCache_ValueProp;
 	static const UECodeGen_Private::FBytePropertyParams NewProp_MenuWidgetCache_Key_KeyProp_Underlying;
 	static const UECodeGen_Private::FEnumPropertyParams NewProp_MenuWidgetCache_Key_KeyProp;
@@ -1691,6 +2062,9 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 // ********** End Class UUIWorldMenuGameInstance constinit property declarations *******************
 	static constexpr UE::CodeGen::FClassNativeFunction Funcs[] = {
+		{ .NameUTF8 = UTF8TEXT("BackFromSettingsMainMenu"), .Pointer = &UUIWorldMenuGameInstance::execBackFromSettingsMainMenu },
+		{ .NameUTF8 = UTF8TEXT("BackFromSettingsMenuSmart"), .Pointer = &UUIWorldMenuGameInstance::execBackFromSettingsMenuSmart },
+		{ .NameUTF8 = UTF8TEXT("BackFromSettingsPauseMenu"), .Pointer = &UUIWorldMenuGameInstance::execBackFromSettingsPauseMenu },
 		{ .NameUTF8 = UTF8TEXT("BackMenuPause"), .Pointer = &UUIWorldMenuGameInstance::execBackMenuPause },
 		{ .NameUTF8 = UTF8TEXT("CloseMenuUI"), .Pointer = &UUIWorldMenuGameInstance::execCloseMenuUI },
 		{ .NameUTF8 = UTF8TEXT("ContinueGame"), .Pointer = &UUIWorldMenuGameInstance::execContinueGame },
@@ -1703,11 +2077,16 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 		{ .NameUTF8 = UTF8TEXT("LoadLevelWithLoadingScreen"), .Pointer = &UUIWorldMenuGameInstance::execLoadLevelWithLoadingScreen },
 		{ .NameUTF8 = UTF8TEXT("LoadMainMenuLevel"), .Pointer = &UUIWorldMenuGameInstance::execLoadMainMenuLevel },
 		{ .NameUTF8 = UTF8TEXT("OpenPauseSettingsMenu"), .Pointer = &UUIWorldMenuGameInstance::execOpenPauseSettingsMenu },
+		{ .NameUTF8 = UTF8TEXT("OpenSettingsMainMenu"), .Pointer = &UUIWorldMenuGameInstance::execOpenSettingsMainMenu },
+		{ .NameUTF8 = UTF8TEXT("OpenSettingsPauseMenu"), .Pointer = &UUIWorldMenuGameInstance::execOpenSettingsPauseMenu },
 		{ .NameUTF8 = UTF8TEXT("QuitGameNow"), .Pointer = &UUIWorldMenuGameInstance::execQuitGameNow },
 		{ .NameUTF8 = UTF8TEXT("ShowMenuFromList"), .Pointer = &UUIWorldMenuGameInstance::execShowMenuFromList },
 	};
 	static UObject* (*const DependentSingletons[])();
 	static constexpr FClassFunctionLinkInfo FuncInfo[] = {
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMainMenu, "BackFromSettingsMainMenu" }, // 630237206
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsMenuSmart, "BackFromSettingsMenuSmart" }, // 2820813374
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_BackFromSettingsPauseMenu, "BackFromSettingsPauseMenu" }, // 1375598917
 		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_BackMenuPause, "BackMenuPause" }, // 496697375
 		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_CloseMenuUI, "CloseMenuUI" }, // 4140361374
 		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_ContinueGame, "ContinueGame" }, // 2986398575
@@ -1720,6 +2099,8 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_LoadLevelWithLoadingScreen, "LoadLevelWithLoadingScreen" }, // 177349268
 		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_LoadMainMenuLevel, "LoadMainMenuLevel" }, // 1691813011
 		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenPauseSettingsMenu, "OpenPauseSettingsMenu" }, // 3066366101
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu, "OpenSettingsMainMenu" }, // 1002294087
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu, "OpenSettingsPauseMenu" }, // 3106837854
 		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_QuitGameNow, "QuitGameNow" }, // 1203969031
 		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_ShowMenuFromList, "ShowMenuFromList" }, // 1796533634
 	};
@@ -1741,6 +2122,7 @@ const UECodeGen_Private::FClassPropertyParams Z_Construct_UClass_UUIWorldMenuGam
 const UECodeGen_Private::FClassPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnlineMenuWidgetClass = { "OnlineMenuWidgetClass", nullptr, (EPropertyFlags)0x0014000000010015, UECodeGen_Private::EPropertyGenFlags::Class, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, OnlineMenuWidgetClass), Z_Construct_UClass_UClass_NoRegister, Z_Construct_UClass_UUserWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_OnlineMenuWidgetClass_MetaData), NewProp_OnlineMenuWidgetClass_MetaData) };
 const UECodeGen_Private::FClassPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PauseMenuWidgetClass = { "PauseMenuWidgetClass", nullptr, (EPropertyFlags)0x0014000000010015, UECodeGen_Private::EPropertyGenFlags::Class, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, PauseMenuWidgetClass), Z_Construct_UClass_UClass_NoRegister, Z_Construct_UClass_UUserWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_PauseMenuWidgetClass_MetaData), NewProp_PauseMenuWidgetClass_MetaData) };
 const UECodeGen_Private::FClassPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_SettingsMenuWidgetClass = { "SettingsMenuWidgetClass", nullptr, (EPropertyFlags)0x0014000000010015, UECodeGen_Private::EPropertyGenFlags::Class, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, SettingsMenuWidgetClass), Z_Construct_UClass_UClass_NoRegister, Z_Construct_UClass_UUserWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_SettingsMenuWidgetClass_MetaData), NewProp_SettingsMenuWidgetClass_MetaData) };
+const UECodeGen_Private::FClassPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PauseSettingsMenuWidgetClass = { "PauseSettingsMenuWidgetClass", nullptr, (EPropertyFlags)0x0014000000010015, UECodeGen_Private::EPropertyGenFlags::Class, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, PauseSettingsMenuWidgetClass), Z_Construct_UClass_UClass_NoRegister, Z_Construct_UClass_UUserWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_PauseSettingsMenuWidgetClass_MetaData), NewProp_PauseSettingsMenuWidgetClass_MetaData) };
 const UECodeGen_Private::FClassPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_LoadingScreenWidgetClass = { "LoadingScreenWidgetClass", nullptr, (EPropertyFlags)0x0014000000010015, UECodeGen_Private::EPropertyGenFlags::Class, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, LoadingScreenWidgetClass), Z_Construct_UClass_UClass_NoRegister, Z_Construct_UClass_UUserWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_LoadingScreenWidgetClass_MetaData), NewProp_LoadingScreenWidgetClass_MetaData) };
 const UECodeGen_Private::FClassPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_ShaderLoadingWidgetClass = { "ShaderLoadingWidgetClass", nullptr, (EPropertyFlags)0x0014000000010015, UECodeGen_Private::EPropertyGenFlags::Class, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, ShaderLoadingWidgetClass), Z_Construct_UClass_UClass_NoRegister, Z_Construct_UClass_UZonefallShaderLoadingWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ShaderLoadingWidgetClass_MetaData), NewProp_ShaderLoadingWidgetClass_MetaData) };
 void Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bAutoShowMenuOnStart_SetBit(void* Obj)
@@ -1791,6 +2173,8 @@ void Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bUseMoviePlaye
 const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bUseMoviePlayerLoadingScreen = { "bUseMoviePlayerLoadingScreen", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UUIWorldMenuGameInstance), &Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bUseMoviePlayerLoadingScreen_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bUseMoviePlayerLoadingScreen_MetaData), NewProp_bUseMoviePlayerLoadingScreen_MetaData) };
 const UECodeGen_Private::FBytePropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_CurrentMenuScreen_Underlying = { "UnderlyingType", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Byte, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, nullptr, METADATA_PARAMS(0, nullptr) };
 const UECodeGen_Private::FEnumPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_CurrentMenuScreen = { "CurrentMenuScreen", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, CurrentMenuScreen), Z_Construct_UEnum_UIWorld_EUIWorldMenuScreen, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_CurrentMenuScreen_MetaData), NewProp_CurrentMenuScreen_MetaData) }; // 48686507
+const UECodeGen_Private::FBytePropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_LastNonSettingsMenuScreen_Underlying = { "UnderlyingType", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Byte, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, nullptr, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FEnumPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_LastNonSettingsMenuScreen = { "LastNonSettingsMenuScreen", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, LastNonSettingsMenuScreen), Z_Construct_UEnum_UIWorld_EUIWorldMenuScreen, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_LastNonSettingsMenuScreen_MetaData), NewProp_LastNonSettingsMenuScreen_MetaData) }; // 48686507
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_MenuWidgetCache_ValueProp = { "MenuWidgetCache", nullptr, (EPropertyFlags)0x0104000000080008, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 1, Z_Construct_UClass_UUserWidget_NoRegister, METADATA_PARAMS(0, nullptr) };
 const UECodeGen_Private::FBytePropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_MenuWidgetCache_Key_KeyProp_Underlying = { "UnderlyingType", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Byte, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, nullptr, METADATA_PARAMS(0, nullptr) };
 const UECodeGen_Private::FEnumPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_MenuWidgetCache_Key_KeyProp = { "MenuWidgetCache_Key", nullptr, (EPropertyFlags)0x0100000000080008, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UEnum_UIWorld_EUIWorldMenuScreen, METADATA_PARAMS(0, nullptr) }; // 48686507
@@ -1832,6 +2216,7 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UUIWorldM
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnlineMenuWidgetClass,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PauseMenuWidgetClass,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_SettingsMenuWidgetClass,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PauseSettingsMenuWidgetClass,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_LoadingScreenWidgetClass,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_ShaderLoadingWidgetClass,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bAutoShowMenuOnStart,
@@ -1854,6 +2239,8 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UUIWorldM
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bUseMoviePlayerLoadingScreen,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_CurrentMenuScreen_Underlying,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_CurrentMenuScreen,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_LastNonSettingsMenuScreen_Underlying,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_LastNonSettingsMenuScreen,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_MenuWidgetCache_ValueProp,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_MenuWidgetCache_Key_KeyProp_Underlying,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_MenuWidgetCache_Key_KeyProp,
@@ -1918,10 +2305,10 @@ struct Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_
 		{ FUIWorldOnlineSessionResult::StaticStruct, Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewStructOps, TEXT("UIWorldOnlineSessionResult"),&Z_Registration_Info_UScriptStruct_FUIWorldOnlineSessionResult, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FUIWorldOnlineSessionResult), 3771526265U) },
 	};
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_UUIWorldMenuGameInstance, UUIWorldMenuGameInstance::StaticClass, TEXT("UUIWorldMenuGameInstance"), &Z_Registration_Info_UClass_UUIWorldMenuGameInstance, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UUIWorldMenuGameInstance), 1360765755U) },
+		{ Z_Construct_UClass_UUIWorldMenuGameInstance, UUIWorldMenuGameInstance::StaticClass, TEXT("UUIWorldMenuGameInstance"), &Z_Registration_Info_UClass_UUIWorldMenuGameInstance, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UUIWorldMenuGameInstance), 964902625U) },
 	};
 }; // Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_3723535436{
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_2337636416{
 	TEXT("/Script/UIWorld"),
 	Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics::ClassInfo),
 	Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics::ScriptStructInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics::ScriptStructInfo),

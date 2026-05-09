@@ -66,6 +66,11 @@ UIWORLD_API void FOnUIWorldMenuScreenChanged_DelegateWrapper(const FMulticastScr
 	DECLARE_FUNCTION(execHostOnlineSession); \
 	DECLARE_FUNCTION(execQuitGameNow); \
 	DECLARE_FUNCTION(execLoadMainMenuLevel); \
+	DECLARE_FUNCTION(execBackFromSettingsMenuSmart); \
+	DECLARE_FUNCTION(execBackFromSettingsMainMenu); \
+	DECLARE_FUNCTION(execBackFromSettingsPauseMenu); \
+	DECLARE_FUNCTION(execOpenSettingsMainMenu); \
+	DECLARE_FUNCTION(execOpenSettingsPauseMenu); \
 	DECLARE_FUNCTION(execBackMenuPause); \
 	DECLARE_FUNCTION(execOpenPauseSettingsMenu); \
 	DECLARE_FUNCTION(execContinueGame); \

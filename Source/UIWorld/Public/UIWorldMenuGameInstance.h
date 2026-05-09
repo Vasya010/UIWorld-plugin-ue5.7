@@ -86,6 +86,26 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UIWorld|Flow")
 	UUserWidget* BackMenuPause(bool bForceRebuild = false);
 
+	// Explicit alias for pause -> settings navigation (kept for clearer Blueprint naming).
+	UFUNCTION(BlueprintCallable, Category = "UIWorld|Flow")
+	UUserWidget* OpenSettingsPauseMenu(bool bForceRebuild = false);
+
+	// Explicit open settings from main-menu flow.
+	UFUNCTION(BlueprintCallable, Category = "UIWorld|Flow")
+	UUserWidget* OpenSettingsMainMenu(bool bForceRebuild = false);
+
+	// Explicit alias for settings -> pause back navigation.
+	UFUNCTION(BlueprintCallable, Category = "UIWorld|Flow")
+	UUserWidget* BackFromSettingsPauseMenu(bool bForceRebuild = false);
+
+	// Explicit back route from settings to main menu.
+	UFUNCTION(BlueprintCallable, Category = "UIWorld|Flow")
+	UUserWidget* BackFromSettingsMainMenu(bool bForceRebuild = false);
+
+	// Smart return from settings: routes to the previous menu context (main or pause).
+	UFUNCTION(BlueprintCallable, Category = "UIWorld|Flow")
+	UUserWidget* BackFromSettingsMenuSmart(bool bForceRebuild = false);
+
 	UFUNCTION(BlueprintCallable, Category = "UIWorld|Flow")
 	bool LoadMainMenuLevel(bool bAbsolute = true);
 
@@ -136,6 +156,11 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UIWorld|UI")
 	TSubclassOf<UUserWidget> SettingsMenuWidgetClass;
+
+	// Optional dedicated settings widget for pause flow.
+	// If set, OpenSettingsPauseMenu will use this class instead of SettingsMenuWidgetClass.
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UIWorld|UI")
+	TSubclassOf<UUserWidget> PauseSettingsMenuWidgetClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UIWorld|Flow")
 	TSubclassOf<UUserWidget> LoadingScreenWidgetClass;
@@ -229,6 +254,9 @@ private:
 
 	UPROPERTY(Transient)
 	EUIWorldMenuScreen CurrentMenuScreen;
+
+	UPROPERTY(Transient)
+	EUIWorldMenuScreen LastNonSettingsMenuScreen;
 
 	UPROPERTY(Transient)
 	TMap<EUIWorldMenuScreen, TObjectPtr<UUserWidget>> MenuWidgetCache;

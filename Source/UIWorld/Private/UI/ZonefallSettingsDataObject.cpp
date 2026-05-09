@@ -181,6 +181,33 @@ namespace ZonefallSettingsParse
 		}
 	}
 
+	static void SetIntCVar(const TCHAR* Name, int32 Value)
+	{
+		if (IConsoleVariable* CVar = IConsoleManager::Get().FindConsoleVariable(Name))
+		{
+			CVar->Set(Value, ECVF_SetByGameSetting);
+		}
+	}
+
+	static int32 GetIntCVar(const TCHAR* Name, int32 DefaultValue = 0)
+	{
+		if (const IConsoleVariable* CVar = IConsoleManager::Get().FindConsoleVariable(Name))
+		{
+			return CVar->GetInt();
+		}
+		return DefaultValue;
+	}
+
+	static int32 ResolveFSRQualityModeValue(const FString& InFSRMode)
+	{
+		if (InFSRMode == TEXT("Native AA")) { return 0; }
+		if (InFSRMode == TEXT("Quality")) { return 1; }
+		if (InFSRMode == TEXT("Balanced")) { return 2; }
+		if (InFSRMode == TEXT("Performance")) { return 3; }
+		if (InFSRMode == TEXT("Ultra Performance")) { return 4; }
+		return 1;
+	}
+
 	static bool TryParseResolution(const FString& InValue, FIntPoint& OutResolution)
 	{
 		FString Left;
@@ -204,6 +231,12 @@ namespace ZonefallSettingsParse
 
 void UZonefallSettingsDataObject::SetDefaults()
 {
+	// Detect hardware support first so defaults are normalized correctly.
+	bDLSSSupported = ZonefallSettingsParse::IsDLSSSupported();
+	bFrameGenerationSupported = ZonefallSettingsParse::IsFrameGenerationSupported();
+	bFSRSupported = ZonefallSettingsParse::IsFSRSupported();
+	bFSRFrameGenerationSupported = ZonefallSettingsParse::IsFSRFrameGenerationSupported();
+
 	DisplayMode = TEXT("Windowed Fullscreen");
 	OverallQuality = TEXT("High");
 	ResolutionScale = TEXT("100%");
@@ -214,10 +247,6 @@ void UZonefallSettingsDataObject::SetDefaults()
 	FrameGeneration = TEXT("Off");
 	FSRMode = TEXT("Off");
 	FSRFrameGeneration = TEXT("Off");
-	bDLSSSupported = false;
-	bFrameGenerationSupported = false;
-	bFSRSupported = false;
-	bFSRFrameGenerationSupported = false;
 	ScreenResolution = TEXT("1920x1080");
 	SanitizeSettings();
 }
@@ -407,19 +436,19 @@ void UZonefallSettingsDataObject::ApplyToSystem(UObject* WorldContextObject)
 		ZonefallSettingsParse::ApplyLumenState(WorldContextObject, bEnableLumen);
 	}
 
-	if (WorldContextObject && bDLSSSupported)
+	const bool bRequestDLSS = (DLSSMode != TEXT("Off") && DLSSMode != TEXT("Unavailable")) && bDLSSSupported;
+	const bool bRequestFSR = (FSRMode != TEXT("Off") && FSRMode != TEXT("Unavailable")) && bFSRSupported && !bRequestDLSS;
+	if (WorldContextObject)
 	{
-		const bool bTargetDLSSEnabled = (DLSSMode != TEXT("Off"));
-		const bool bCurrentDLSSEnabled = UDLSSLibrary::IsDLSSEnabled();
-
-		if (!bTargetDLSSEnabled)
+		// Reset to known neutral state first for stable plugin behavior.
+		if (bDLSSSupported && UDLSSLibrary::IsDLSSEnabled())
 		{
-			if (bCurrentDLSSEnabled)
-			{
-				UDLSSLibrary::EnableDLSS(false);
-			}
+			UDLSSLibrary::EnableDLSS(false);
 		}
-		else
+		ZonefallSettingsParse::SetIntCVar(TEXT("r.FidelityFX.FSR.Enabled"), 0);
+		UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, TEXT("r.FidelityFX.FSR.Enabled 0"));
+
+		if (bRequestDLSS)
 		{
 			UDLSSMode Mode = UDLSSMode::Quality;
 			if (DLSSMode == TEXT("Balanced")) { Mode = UDLSSMode::Balanced; }
@@ -427,39 +456,22 @@ void UZonefallSettingsDataObject::ApplyToSystem(UObject* WorldContextObject)
 			else if (DLSSMode == TEXT("Ultra Performance")) { Mode = UDLSSMode::UltraPerformance; }
 			else if (DLSSMode == TEXT("DLAA")) { Mode = UDLSSMode::DLAA; }
 
-			const UDLSSMode CurrentMode = UDLSSLibrary::GetDLSSMode();
-			if (!bCurrentDLSSEnabled || CurrentMode != Mode)
+			if (bDLSSSupported)
 			{
 				UDLSSLibrary::SetDLSSMode(WorldContextObject, Mode);
-			}
-			if (!bCurrentDLSSEnabled)
-			{
 				UDLSSLibrary::EnableDLSS(true);
 			}
 		}
-	}
-
-	// FSR upscaler. Mutually exclusive with DLSS.
-	if (WorldContextObject && bFSRSupported)
-	{
-		const bool bEnableFSR = (FSRMode != TEXT("Off") && FSRMode != TEXT("Unavailable") && DLSSMode == TEXT("Off"));
-		if (bEnableFSR)
+		else if (bRequestFSR)
 		{
-			// Hard-disable DLSS runtime path to avoid driver-side conflicts with FSR.
-			if (bDLSSSupported && UDLSSLibrary::IsDLSSEnabled())
-			{
-				UDLSSLibrary::EnableDLSS(false);
-			}
+			const int32 FSRQualityModeValue = ZonefallSettingsParse::ResolveFSRQualityModeValue(FSRMode);
+			ZonefallSettingsParse::SetIntCVar(TEXT("r.FidelityFX.FSR.QualityMode"), FSRQualityModeValue);
+			ZonefallSettingsParse::SetIntCVar(TEXT("r.FidelityFX.FSR.Enabled"), 1);
 			UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, TEXT("r.FidelityFX.FSR.Enabled 1"));
-			if (FSRMode == TEXT("Native AA")) { UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, TEXT("r.FidelityFX.FSR.QualityMode 0")); }
-			else if (FSRMode == TEXT("Quality")) { UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, TEXT("r.FidelityFX.FSR.QualityMode 1")); }
-			else if (FSRMode == TEXT("Balanced")) { UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, TEXT("r.FidelityFX.FSR.QualityMode 2")); }
-			else if (FSRMode == TEXT("Performance")) { UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, TEXT("r.FidelityFX.FSR.QualityMode 3")); }
-			else if (FSRMode == TEXT("Ultra Performance")) { UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, TEXT("r.FidelityFX.FSR.QualityMode 4")); }
-		}
-		else
-		{
-			UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, TEXT("r.FidelityFX.FSR.Enabled 0"));
+			UKismetSystemLibrary::ExecuteConsoleCommand(
+				WorldContextObject,
+				FString::Printf(TEXT("r.FidelityFX.FSR.QualityMode %d"), FSRQualityModeValue)
+			);
 		}
 	}
 
@@ -501,6 +513,18 @@ void UZonefallSettingsDataObject::ApplyToSystem(UObject* WorldContextObject)
 	FSRMode = ZonefallSettingsParse::DetectFSRModeString(bFSRSupported);
 	FSRFrameGeneration = ZonefallSettingsParse::DetectFSRFrameGenerationString(bFSRFrameGenerationSupported);
 
+	const int32 RuntimeFSREnabled = ZonefallSettingsParse::GetIntCVar(TEXT("r.FidelityFX.FSR.Enabled"), -1);
+	const int32 RuntimeFSRQuality = ZonefallSettingsParse::GetIntCVar(TEXT("r.FidelityFX.FSR.QualityMode"), -1);
+	UE_LOG(
+		LogTemp,
+		Log,
+		TEXT("[SettingsDebug][Upscaler] RequestDLSS=%d RequestFSR=%d RuntimeDLSS=%s RuntimeFSREnabled=%d RuntimeFSRQuality=%d"),
+		bRequestDLSS ? 1 : 0,
+		bRequestFSR ? 1 : 0,
+		*DLSSMode,
+		RuntimeFSREnabled,
+		RuntimeFSRQuality
+	);
 	UE_LOG(LogTemp, Log, TEXT("[SettingsDebug][Lumen] Requested=%s Actual=%s"), *RequestedLumenState, *ZonefallSettingsParse::DetectLumenStateString());
 }
 
@@ -758,7 +782,9 @@ FString UZonefallSettingsDataObject::NormalizeResolutionScaleValue(const FString
 	FString Raw = InValue.TrimStartAndEnd();
 	Raw = Raw.Replace(TEXT("%"), TEXT(""));
 	const float Value = FMath::Clamp(FCString::Atof(*Raw), 50.0f, 100.0f);
-	return FString::Printf(TEXT("%.0f%%"), Value);
+	// Keep UI and runtime values aligned to menu-supported steps (50, 60, ... 100).
+	const int32 QuantizedValue = FMath::Clamp(FMath::RoundToInt(Value / 10.0f) * 10, 50, 100);
+	return FString::Printf(TEXT("%d%%"), QuantizedValue);
 }
 
 FString UZonefallSettingsDataObject::NormalizeVSyncValue(const FString& InValue)

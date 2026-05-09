@@ -210,7 +210,10 @@ private:
 	void PopulateComboOptionsIfNeeded();
 	void PopulateScreenResolutionsIfNeeded();
 	void BindEvents();
+	void ApplyModernVisualTheme();
 	void ApplyButtonStyle(UButton* Button) const;
+	void ApplyComboBoxStyle(UComboBoxString* ComboBox) const;
+	void ApplyLabelStyle(UTextBlock* LabelTextBlock, int32 FontSize = 21) const;
 	UComboBoxString* CreateOptionCombo(const FName Name, TObjectPtr<UTextBlock>& OutTextBlock);
 	void EnsureComboHasOption(UComboBoxString* ComboBox, const FString& Option) const;
 	void UpdateFeatureAvailabilityUI();

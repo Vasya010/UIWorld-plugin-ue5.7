@@ -11,6 +11,51 @@
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "Components/VerticalBoxSlot.h"
+#include "Styling/SlateTypes.h"
+
+namespace
+{
+UButton* FindFirstButtonInUserWidget(UUserWidget* InUserWidget)
+{
+	if (!InUserWidget || !InUserWidget->WidgetTree)
+	{
+		return nullptr;
+	}
+
+	UButton* FoundButton = nullptr;
+	InUserWidget->WidgetTree->ForEachWidget([&FoundButton](UWidget* ChildWidget)
+	{
+		if (!FoundButton)
+		{
+			FoundButton = Cast<UButton>(ChildWidget);
+		}
+	});
+
+	return FoundButton;
+}
+
+UButton* ResolveButtonFromWidgetName(UWidgetTree* InWidgetTree, const FName& WidgetName)
+{
+	if (!InWidgetTree || WidgetName.IsNone())
+	{
+		return nullptr;
+	}
+
+	if (UWidget* FoundWidget = InWidgetTree->FindWidget(WidgetName))
+	{
+		if (UButton* AsButton = Cast<UButton>(FoundWidget))
+		{
+			return AsButton;
+		}
+		if (UUserWidget* AsUserWidget = Cast<UUserWidget>(FoundWidget))
+		{
+			return FindFirstButtonInUserWidget(AsUserWidget);
+		}
+	}
+
+	return nullptr;
+}
+}
 
 UZonefallSettingsMenuWidget::UZonefallSettingsMenuWidget(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -45,6 +90,7 @@ void UZonefallSettingsMenuWidget::NativePreConstruct()
 	ResolveNamedWidgets();
 	BuildLayoutIfNeeded();
 	ResolveNamedWidgets();
+	ApplyModernVisualTheme();
 	PopulateComboOptionsIfNeeded();
 }
 
@@ -61,6 +107,7 @@ void UZonefallSettingsMenuWidget::NativeConstruct()
 	ResolveNamedWidgets();
 	BuildLayoutIfNeeded();
 	ResolveNamedWidgets();
+	ApplyModernVisualTheme();
 	PopulateComboOptionsIfNeeded();
 	PopulateScreenResolutionsIfNeeded();
 	BindEvents();
@@ -76,12 +123,22 @@ void UZonefallSettingsMenuWidget::RefreshFromSettings()
 
 	bIsRefreshingFromSettings = true;
 	SettingsObject->LoadFromSystem();
+	SettingsObject->SanitizeSettings();
 
 	if (DisplayModeComboBox) { DisplayModeComboBox->SetSelectedOption(SettingsObject->DisplayMode); }
 	if (GraphicsPresetComboBox) { GraphicsPresetComboBox->SetSelectedOption(TEXT("Custom")); }
 	if (OverallQualityComboBox) { OverallQualityComboBox->SetSelectedOption(SettingsObject->OverallQuality); }
-	if (ResolutionScaleComboBox) { ResolutionScaleComboBox->SetSelectedOption(SettingsObject->ResolutionScale); }
-	if (ScreenResolutionComboBox) { ScreenResolutionComboBox->SetSelectedOption(SettingsObject->GetCurrentScreenResolutionString()); }
+	if (ResolutionScaleComboBox)
+	{
+		EnsureComboHasOption(ResolutionScaleComboBox, SettingsObject->ResolutionScale);
+		ResolutionScaleComboBox->SetSelectedOption(SettingsObject->ResolutionScale);
+	}
+	if (ScreenResolutionComboBox)
+	{
+		const FString CurrentScreenResolution = SettingsObject->GetCurrentScreenResolutionString();
+		EnsureComboHasOption(ScreenResolutionComboBox, CurrentScreenResolution);
+		ScreenResolutionComboBox->SetSelectedOption(CurrentScreenResolution);
+	}
 	if (VSyncComboBox) { VSyncComboBox->SetSelectedOption(SettingsObject->VSync); }
 	if (FPSLimitComboBox)
 	{
@@ -384,15 +441,15 @@ void UZonefallSettingsMenuWidget::ResolveNamedWidgets()
 
 	if (!ApplyButton && !ApplyButtonName.IsNone())
 	{
-		ApplyButton = Cast<UButton>(WidgetTree->FindWidget(ApplyButtonName));
+		ApplyButton = ResolveButtonFromWidgetName(WidgetTree, ApplyButtonName);
 	}
 	if (!ResetButton && !ResetButtonName.IsNone())
 	{
-		ResetButton = Cast<UButton>(WidgetTree->FindWidget(ResetButtonName));
+		ResetButton = ResolveButtonFromWidgetName(WidgetTree, ResetButtonName);
 	}
 	if (!BackButton && !BackButtonName.IsNone())
 	{
-		BackButton = Cast<UButton>(WidgetTree->FindWidget(BackButtonName));
+		BackButton = ResolveButtonFromWidgetName(WidgetTree, BackButtonName);
 	}
 
 	if (!MemoryUsageProgressBar && !MemoryUsageProgressBarName.IsNone())
@@ -504,17 +561,16 @@ void UZonefallSettingsMenuWidget::PopulateScreenResolutionsIfNeeded()
 		return;
 	}
 
-	if (ScreenResolutionComboBox->GetOptionCount() > 0)
-	{
-		return;
-	}
-
 	TArray<FString> AvailableResolutions;
 	SettingsObject->GetAvailableScreenResolutions(AvailableResolutions, false);
 	for (const FString& Resolution : AvailableResolutions)
 	{
-		ScreenResolutionComboBox->AddOption(Resolution);
+		EnsureComboHasOption(ScreenResolutionComboBox, Resolution);
 	}
+
+	// Always keep current runtime resolution selectable even if it is not in detected fullscreen list.
+	const FString CurrentScreenResolution = SettingsObject->GetCurrentScreenResolutionString();
+	EnsureComboHasOption(ScreenResolutionComboBox, CurrentScreenResolution);
 }
 
 void UZonefallSettingsMenuWidget::ApplyButtonStyle(UButton* Button) const
@@ -525,27 +581,152 @@ void UZonefallSettingsMenuWidget::ApplyButtonStyle(UButton* Button) const
 	}
 
 	FButtonStyle Style = Button->GetStyle();
-	Style.SetNormal(FSlateRoundedBoxBrush(FLinearColor(0.05f, 0.08f, 0.05f, 0.90f), 8.0f));
-	Style.SetHovered(FSlateRoundedBoxBrush(FLinearColor(0.10f, 0.15f, 0.10f, 1.00f), 8.0f));
-	Style.SetPressed(FSlateRoundedBoxBrush(FLinearColor(0.03f, 0.05f, 0.03f, 1.00f), 8.0f));
-	Style.NormalPadding = FMargin(12.0f, 8.0f);
-	Style.PressedPadding = FMargin(12.0f, 10.0f, 12.0f, 6.0f);
+	Style.SetNormal(FSlateRoundedBoxBrush(FLinearColor(0.07f, 0.12f, 0.20f, 0.97f), 10.0f));
+	Style.SetHovered(FSlateRoundedBoxBrush(FLinearColor(0.12f, 0.24f, 0.40f, 1.0f), 10.0f));
+	Style.SetPressed(FSlateRoundedBoxBrush(FLinearColor(0.05f, 0.09f, 0.16f, 1.0f), 10.0f));
+	Style.SetDisabled(FSlateRoundedBoxBrush(FLinearColor(0.05f, 0.06f, 0.08f, 0.75f), 10.0f));
+	Style.NormalPadding = FMargin(14.0f, 10.0f);
+	Style.PressedPadding = FMargin(14.0f, 12.0f, 14.0f, 8.0f);
 	Button->SetStyle(Style);
+}
+
+void UZonefallSettingsMenuWidget::ApplyComboBoxStyle(UComboBoxString* ComboBox) const
+{
+	if (!ComboBox)
+	{
+		return;
+	}
+
+	FComboBoxStyle ComboStyle = ComboBox->GetWidgetStyle();
+	FButtonStyle ComboButtonStyle = ComboStyle.ComboButtonStyle.ButtonStyle;
+	ComboButtonStyle.SetNormal(FSlateRoundedBoxBrush(FLinearColor(0.05f, 0.10f, 0.18f, 0.98f), 9.0f));
+	ComboButtonStyle.SetHovered(FSlateRoundedBoxBrush(FLinearColor(0.10f, 0.20f, 0.33f, 1.0f), 9.0f));
+	ComboButtonStyle.SetPressed(FSlateRoundedBoxBrush(FLinearColor(0.04f, 0.08f, 0.14f, 1.0f), 9.0f));
+	ComboButtonStyle.SetDisabled(FSlateRoundedBoxBrush(FLinearColor(0.04f, 0.05f, 0.08f, 0.72f), 9.0f));
+	ComboButtonStyle.NormalPadding = FMargin(14.0f, 8.0f);
+	ComboButtonStyle.PressedPadding = FMargin(14.0f, 9.0f, 14.0f, 7.0f);
+	ComboStyle.ComboButtonStyle.SetButtonStyle(ComboButtonStyle);
+	ComboStyle.ComboButtonStyle.SetContentPadding(FMargin(10.0f, 6.0f));
+	ComboStyle.ComboButtonStyle.SetMenuBorderBrush(FSlateRoundedBoxBrush(FLinearColor(0.03f, 0.06f, 0.10f, 0.98f), 8.0f));
+	ComboStyle.ComboButtonStyle.SetMenuBorderPadding(FMargin(6.0f));
+	ComboBox->SetWidgetStyle(ComboStyle);
+
+	FTableRowStyle RowStyle = ComboBox->GetItemStyle();
+	RowStyle.SetActiveBrush(FSlateRoundedBoxBrush(FLinearColor(0.12f, 0.24f, 0.40f, 1.0f), 6.0f));
+	RowStyle.SetActiveHoveredBrush(FSlateRoundedBoxBrush(FLinearColor(0.16f, 0.30f, 0.48f, 1.0f), 6.0f));
+	RowStyle.SetInactiveBrush(FSlateRoundedBoxBrush(FLinearColor(0.05f, 0.09f, 0.14f, 1.0f), 6.0f));
+	RowStyle.SetInactiveHoveredBrush(FSlateRoundedBoxBrush(FLinearColor(0.10f, 0.18f, 0.28f, 1.0f), 6.0f));
+	RowStyle.SetEvenRowBackgroundBrush(FSlateRoundedBoxBrush(FLinearColor(0.03f, 0.06f, 0.10f, 0.98f), 4.0f));
+	RowStyle.SetEvenRowBackgroundHoveredBrush(FSlateRoundedBoxBrush(FLinearColor(0.09f, 0.17f, 0.26f, 1.0f), 4.0f));
+	RowStyle.SetOddRowBackgroundBrush(FSlateRoundedBoxBrush(FLinearColor(0.04f, 0.07f, 0.11f, 0.98f), 4.0f));
+	RowStyle.SetOddRowBackgroundHoveredBrush(FSlateRoundedBoxBrush(FLinearColor(0.10f, 0.19f, 0.29f, 1.0f), 4.0f));
+	ComboBox->SetItemStyle(RowStyle);
+
+}
+
+void UZonefallSettingsMenuWidget::ApplyLabelStyle(UTextBlock* LabelTextBlock, int32 FontSize) const
+{
+	if (!LabelTextBlock)
+	{
+		return;
+	}
+
+	FSlateFontInfo Font = LabelTextBlock->GetFont();
+	Font.Size = FontSize;
+	LabelTextBlock->SetFont(Font);
+	LabelTextBlock->SetColorAndOpacity(FSlateColor(FLinearColor(0.88f, 0.94f, 1.0f, 1.0f)));
+	LabelTextBlock->SetShadowOffset(FVector2D(0.0f, 1.0f));
+	LabelTextBlock->SetShadowColorAndOpacity(FLinearColor(0.0f, 0.0f, 0.0f, 0.75f));
+}
+
+void UZonefallSettingsMenuWidget::ApplyModernVisualTheme()
+{
+	if (RootBorder)
+	{
+		RootBorder->SetBrush(FSlateRoundedBoxBrush(FLinearColor(0.01f, 0.02f, 0.04f, 0.95f), 14.0f));
+		RootBorder->SetPadding(FMargin(20.0f));
+	}
+
+	if (TitleText)
+	{
+		FSlateFontInfo TitleFont = TitleText->GetFont();
+		TitleFont.Size = 44;
+		TitleText->SetFont(TitleFont);
+		TitleText->SetColorAndOpacity(FSlateColor(FLinearColor(0.95f, 0.98f, 1.0f, 1.0f)));
+		TitleText->SetShadowOffset(FVector2D(0.0f, 1.0f));
+		TitleText->SetShadowColorAndOpacity(FLinearColor(0.0f, 0.0f, 0.0f, 0.82f));
+	}
+
+	const TArray<UComboBoxString*> AllCombos = {
+		DisplayModeComboBox,
+		GraphicsPresetComboBox,
+		OverallQualityComboBox,
+		ResolutionScaleComboBox,
+		ScreenResolutionComboBox,
+		VSyncComboBox,
+		FPSLimitComboBox,
+		LumenComboBox,
+		DLSSComboBox,
+		FrameGenerationComboBox,
+		FSRComboBox,
+		FSRFrameGenerationComboBox
+	};
+	for (UComboBoxString* ComboBox : AllCombos)
+	{
+		ApplyComboBoxStyle(ComboBox);
+	}
+
+	const TArray<UTextBlock*> AllLabels = {
+		DisplayModeText,
+		GraphicsPresetText,
+		OverallQualityText,
+		ResolutionScaleText,
+		ScreenResolutionText,
+		VSyncText,
+		FPSLimitText,
+		LumenText,
+		DLSSText,
+		FrameGenerationText,
+		FSRText,
+		FSRFrameGenerationText
+	};
+	for (UTextBlock* LabelTextBlock : AllLabels)
+	{
+		ApplyLabelStyle(LabelTextBlock, 20);
+	}
+
+	ApplyLabelStyle(MemoryUsageText, 20);
+	ApplyLabelStyle(ApplyStatusText, 18);
+	if (ApplyStatusText)
+	{
+		ApplyStatusText->SetColorAndOpacity(FSlateColor(FLinearColor(0.72f, 0.84f, 0.98f, 1.0f)));
+	}
+
+	if (MemoryUsageProgressBar)
+	{
+		FProgressBarStyle ProgressStyle = MemoryUsageProgressBar->GetWidgetStyle();
+		ProgressStyle.SetBackgroundImage(FSlateRoundedBoxBrush(FLinearColor(0.03f, 0.06f, 0.09f, 0.96f), 7.0f));
+		ProgressStyle.SetFillImage(FSlateRoundedBoxBrush(FLinearColor(0.11f, 0.76f, 0.98f, 1.0f), 7.0f));
+		ProgressStyle.SetMarqueeImage(FSlateRoundedBoxBrush(FLinearColor(0.86f, 0.95f, 1.0f, 1.0f), 7.0f));
+		MemoryUsageProgressBar->SetWidgetStyle(ProgressStyle);
+	}
+
+	ApplyButtonStyle(ApplyButton);
+	ApplyButtonStyle(ResetButton);
+	ApplyButtonStyle(BackButton);
 }
 
 UComboBoxString* UZonefallSettingsMenuWidget::CreateOptionCombo(const FName Name, TObjectPtr<UTextBlock>& OutTextBlock)
 {
 	OutTextBlock = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
-	FSlateFontInfo LabelFont;
-	LabelFont.Size = 24;
-	OutTextBlock->SetFont(LabelFont);
-	OutTextBlock->SetColorAndOpacity(FSlateColor(FLinearColor(0.80f, 0.88f, 0.78f, 1.0f)));
+	ApplyLabelStyle(OutTextBlock, 20);
 	if (UVerticalBoxSlot* LabelSlot = RootBox->AddChildToVerticalBox(OutTextBlock))
 	{
 		LabelSlot->SetPadding(FMargin(0, 6, 0, 2));
 	}
 
 	UComboBoxString* Combo = WidgetTree->ConstructWidget<UComboBoxString>(UComboBoxString::StaticClass(), Name);
+	ApplyComboBoxStyle(Combo);
 	if (UVerticalBoxSlot* ComboSlot = RootBox->AddChildToVerticalBox(Combo))
 	{
 		ComboSlot->SetPadding(FMargin(0, 2, 0, 8));
@@ -864,6 +1045,12 @@ void UZonefallSettingsMenuWidget::HandleDLSSSelectionChanged(FString SelectedIte
 	if (SettingsObject)
 	{
 		SettingsObject->DLSSMode = SelectedItem;
+		const bool bEnableDLSS = (SelectedItem != TEXT("Off") && SelectedItem != TEXT("Unavailable"));
+		if (bEnableDLSS)
+		{
+			// Selecting DLSS should immediately disable FSR upscaler mode.
+			SettingsObject->FSRMode = TEXT("Off");
+		}
 		SettingsObject->SanitizeSettings();
 		if (DLSSComboBox) { DLSSComboBox->SetSelectedOption(SettingsObject->DLSSMode); }
 		if (FSRComboBox) { FSRComboBox->SetSelectedOption(SettingsObject->FSRMode); }
@@ -903,6 +1090,12 @@ void UZonefallSettingsMenuWidget::HandleFSRSelectionChanged(FString SelectedItem
 	if (SettingsObject)
 	{
 		SettingsObject->FSRMode = SelectedItem;
+		const bool bEnableFSR = (SelectedItem != TEXT("Off") && SelectedItem != TEXT("Unavailable"));
+		if (bEnableFSR)
+		{
+			// Selecting FSR should immediately disable DLSS upscaler mode.
+			SettingsObject->DLSSMode = TEXT("Off");
+		}
 		SettingsObject->SanitizeSettings();
 		if (DLSSComboBox) { DLSSComboBox->SetSelectedOption(SettingsObject->DLSSMode); }
 		if (FSRComboBox) { FSRComboBox->SetSelectedOption(SettingsObject->FSRMode); }
@@ -949,7 +1142,9 @@ void UZonefallSettingsMenuWidget::HandleBackClicked()
 
 	if (bHasPendingChanges)
 	{
-		ApplySettingsNow();
+		// Back should return without forcing apply: restore last saved runtime settings.
+		RefreshFromSettings();
+		SetApplyStatusMessage(FText::FromString(TEXT("Changes discarded")), FLinearColor(0.78f, 0.84f, 0.92f, 1.0f));
 	}
 
 	OnBackRequested.Broadcast();
@@ -961,8 +1156,8 @@ void UZonefallSettingsMenuWidget::HandleBackClicked()
 		{
 			if (UUIWorldMenuGameInstance* MenuGameInstance = Cast<UUIWorldMenuGameInstance>(CurrentWorld->GetGameInstance()))
 			{
-				UE_LOG(LogTemp, Log, TEXT("[PauseFlow] Settings Back fallback -> BackMenuPause"));
-				MenuGameInstance->BackMenuPause(false);
+				UE_LOG(LogTemp, Log, TEXT("[MenuFlow] Settings Back fallback -> BackFromSettingsMenuSmart"));
+				MenuGameInstance->BackFromSettingsMenuSmart(false);
 			}
 		}
 	}

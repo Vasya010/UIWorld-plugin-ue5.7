@@ -43,6 +43,7 @@ UUIWorldMenuGameInstance::UUIWorldMenuGameInstance()
 	, MapDelayMaxSeconds(8.0f)
 	, bUseMoviePlayerLoadingScreen(true)
 	, CurrentMenuScreen(EUIWorldMenuScreen::MainMenu)
+	, LastNonSettingsMenuScreen(EUIWorldMenuScreen::MainMenu)
 	, PinnedMenuWidget(nullptr)
 	, ActiveLoadingScreenWidget(nullptr)
 	, ActiveStartupShaderWidget(nullptr)
@@ -186,6 +187,11 @@ TSubclassOf<UUserWidget> UUIWorldMenuGameInstance::ResolveMenuClass(EUIWorldMenu
 		UE_LOG(LogUIWorldStartupFlow, Warning, TEXT("ResolveMenuClass(PauseMenu): PauseMenuWidgetClass is null, using UZonefallPauseMenuWidget fallback."));
 		return UZonefallPauseMenuWidget::StaticClass();
 	case EUIWorldMenuScreen::SettingsMenu:
+		if (LastNonSettingsMenuScreen == EUIWorldMenuScreen::PauseMenu && PauseSettingsMenuWidgetClass)
+		{
+			UE_LOG(LogUIWorldStartupFlow, Verbose, TEXT("[MenuFlow] ResolveMenuClass -> PauseSettingsMenu (%s)"), *GetNameSafe(PauseSettingsMenuWidgetClass.Get()));
+			return PauseSettingsMenuWidgetClass;
+		}
 		UE_LOG(LogUIWorldStartupFlow, Verbose, TEXT("[MenuFlow] ResolveMenuClass -> SettingsMenu (%s)"), *GetNameSafe((SettingsMenuWidgetClass ? SettingsMenuWidgetClass : MainMenuWidgetClass).Get()));
 		return SettingsMenuWidgetClass ? SettingsMenuWidgetClass : MainMenuWidgetClass;
 	default:
@@ -313,6 +319,19 @@ UUserWidget* UUIWorldMenuGameInstance::ShowMenuFromList(EUIWorldMenuScreen MenuS
 	{
 		UE_LOG(LogUIWorldStartupFlow, Warning, TEXT("[MenuFlow] ShowMenuFromList failed: PlayerController is null."));
 		return nullptr;
+	}
+
+	if (MenuScreen == EUIWorldMenuScreen::SettingsMenu)
+	{
+		// Keep track of where settings were opened from for reliable Back behavior.
+		if (CurrentMenuScreen != EUIWorldMenuScreen::SettingsMenu)
+		{
+			LastNonSettingsMenuScreen = CurrentMenuScreen;
+		}
+	}
+	else
+	{
+		LastNonSettingsMenuScreen = MenuScreen;
 	}
 
 	CurrentMenuScreen = MenuScreen;
@@ -571,7 +590,25 @@ UUserWidget* UUIWorldMenuGameInstance::OpenPauseSettingsMenu(bool bForceRebuild)
 	{
 		UGameplayStatics::SetGamePaused(World, true);
 	}
+	LastNonSettingsMenuScreen = EUIWorldMenuScreen::PauseMenu;
 	UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[PauseFlow] OpenPauseSettingsMenu called. Force=%d"), bForceRebuild ? 1 : 0);
+	return ShowMenuFromList(EUIWorldMenuScreen::SettingsMenu, bForceRebuild);
+}
+
+UUserWidget* UUIWorldMenuGameInstance::OpenSettingsPauseMenu(bool bForceRebuild)
+{
+	UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[PauseFlow] OpenSettingsPauseMenu alias called. Force=%d"), bForceRebuild ? 1 : 0);
+	return OpenPauseSettingsMenu(bForceRebuild);
+}
+
+UUserWidget* UUIWorldMenuGameInstance::OpenSettingsMainMenu(bool bForceRebuild)
+{
+	if (UWorld* World = GetWorld())
+	{
+		UGameplayStatics::SetGamePaused(World, false);
+	}
+	LastNonSettingsMenuScreen = EUIWorldMenuScreen::MainMenu;
+	UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[MenuFlow] OpenSettingsMainMenu called. Force=%d"), bForceRebuild ? 1 : 0);
 	return ShowMenuFromList(EUIWorldMenuScreen::SettingsMenu, bForceRebuild);
 }
 
@@ -583,6 +620,49 @@ UUserWidget* UUIWorldMenuGameInstance::BackMenuPause(bool bForceRebuild)
 	}
 	UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[PauseFlow] BackMenuPause called. Force=%d"), bForceRebuild ? 1 : 0);
 	return ShowMenuFromList(EUIWorldMenuScreen::PauseMenu, bForceRebuild);
+}
+
+UUserWidget* UUIWorldMenuGameInstance::BackFromSettingsPauseMenu(bool bForceRebuild)
+{
+	UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[PauseFlow] BackFromSettingsPauseMenu alias called. Force=%d"), bForceRebuild ? 1 : 0);
+	return BackMenuPause(bForceRebuild);
+}
+
+UUserWidget* UUIWorldMenuGameInstance::BackFromSettingsMainMenu(bool bForceRebuild)
+{
+	if (UWorld* World = GetWorld())
+	{
+		UGameplayStatics::SetGamePaused(World, false);
+	}
+	LastNonSettingsMenuScreen = EUIWorldMenuScreen::MainMenu;
+	UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[MenuFlow] BackFromSettingsMainMenu called. Force=%d"), bForceRebuild ? 1 : 0);
+	return ShowMenuFromList(EUIWorldMenuScreen::MainMenu, bForceRebuild);
+}
+
+UUserWidget* UUIWorldMenuGameInstance::BackFromSettingsMenuSmart(bool bForceRebuild)
+{
+	EUIWorldMenuScreen ReturnScreen = LastNonSettingsMenuScreen;
+	if (ReturnScreen == EUIWorldMenuScreen::SettingsMenu)
+	{
+		ReturnScreen = EUIWorldMenuScreen::MainMenu;
+	}
+
+	if (ReturnScreen == EUIWorldMenuScreen::PauseMenu)
+	{
+		UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[PauseFlow] BackFromSettingsMenuSmart -> PauseMenu. Force=%d"), bForceRebuild ? 1 : 0);
+		if (UWorld* World = GetWorld())
+		{
+			UGameplayStatics::SetGamePaused(World, true);
+		}
+		return ShowMenuFromList(EUIWorldMenuScreen::PauseMenu, bForceRebuild);
+	}
+
+	UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[MenuFlow] BackFromSettingsMenuSmart -> MainMenu. Force=%d"), bForceRebuild ? 1 : 0);
+	if (UWorld* World = GetWorld())
+	{
+		UGameplayStatics::SetGamePaused(World, false);
+	}
+	return ShowMenuFromList(EUIWorldMenuScreen::MainMenu, bForceRebuild);
 }
 
 bool UUIWorldMenuGameInstance::LoadMainMenuLevel(bool bAbsolute)
