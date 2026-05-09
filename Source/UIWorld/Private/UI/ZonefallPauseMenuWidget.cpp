@@ -22,6 +22,76 @@
 
 DEFINE_LOG_CATEGORY_STATIC(LogZonefallPauseMenu, Log, All);
 
+namespace
+{
+UButton* FindFirstButtonInUserWidget(UUserWidget* InUserWidget)
+{
+	if (!InUserWidget || !InUserWidget->WidgetTree)
+	{
+		return nullptr;
+	}
+
+	UButton* FoundButton = nullptr;
+	InUserWidget->WidgetTree->ForEachWidget([&FoundButton](UWidget* ChildWidget)
+	{
+		if (!FoundButton)
+		{
+			FoundButton = Cast<UButton>(ChildWidget);
+		}
+	});
+
+	return FoundButton;
+}
+
+UButton* ResolveButtonFromWidgetName(UWidgetTree* InWidgetTree, const FName& PreferredName, const TCHAR* FallbackName)
+{
+	if (!InWidgetTree)
+	{
+		return nullptr;
+	}
+
+	auto ResolveByName = [InWidgetTree](const FName& WidgetName) -> UButton*
+	{
+		if (WidgetName.IsNone())
+		{
+			return nullptr;
+		}
+
+		if (UWidget* FoundWidget = InWidgetTree->FindWidget(WidgetName))
+		{
+			if (UButton* AsButton = Cast<UButton>(FoundWidget))
+			{
+				return AsButton;
+			}
+
+			if (UUserWidget* AsUserWidget = Cast<UUserWidget>(FoundWidget))
+			{
+				if (UButton* NestedButton = FindFirstButtonInUserWidget(AsUserWidget))
+				{
+					UE_LOG(
+						LogZonefallPauseMenu,
+						Verbose,
+						TEXT("[PauseMenu] Resolved nested button from user widget '%s' -> '%s'."),
+						*GetNameSafe(AsUserWidget),
+						*GetNameSafe(NestedButton)
+					);
+					return NestedButton;
+				}
+			}
+		}
+
+		return nullptr;
+	};
+
+	if (UButton* PreferredButton = ResolveByName(PreferredName))
+	{
+		return PreferredButton;
+	}
+
+	return ResolveByName(FName(FallbackName));
+}
+}
+
 UZonefallPauseMenuWidget::UZonefallPauseMenuWidget(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 	, TitleText(NSLOCTEXT("ZonefallUI", "PauseTitle", "PAUSED"))
@@ -30,6 +100,10 @@ UZonefallPauseMenuWidget::UZonefallPauseMenuWidget(const FObjectInitializer& Obj
 	, MainMenuText(NSLOCTEXT("ZonefallUI", "PauseMainMenu", "MAIN MENU"))
 	, QuitText(NSLOCTEXT("ZonefallUI", "PauseQuit", "QUIT GAME"))
 	, SessionInfoPrefixText(NSLOCTEXT("ZonefallUI", "PauseSessionInfoPrefix", "SESSION"))
+	, ResumeButtonName(TEXT("PauseResumeButton"))
+	, SettingsButtonName(TEXT("PauseSettingsButton"))
+	, MainMenuButtonName(TEXT("PauseMainMenuButton"))
+	, QuitButtonName(TEXT("PauseQuitButton"))
 	, TextNormalColor(FLinearColor(0.86f, 0.90f, 0.84f, 1.0f))
 	, TextHoverColor(FLinearColor(0.98f, 1.00f, 0.90f, 1.0f))
 	, PanelTint(FLinearColor(0.02f, 0.05f, 0.03f, 0.86f))
@@ -111,6 +185,42 @@ void UZonefallPauseMenuWidget::NativeConstruct()
 	);
 }
 
+void UZonefallPauseMenuWidget::NativeDestruct()
+{
+	if (ResumeButton)
+	{
+		ResumeButton->OnClicked.RemoveDynamic(this, &UZonefallPauseMenuWidget::HandleResumeClicked);
+		ResumeButton->OnHovered.RemoveDynamic(this, &UZonefallPauseMenuWidget::HandleResumeHovered);
+		ResumeButton->OnUnhovered.RemoveDynamic(this, &UZonefallPauseMenuWidget::HandleAnyUnhovered);
+	}
+	if (SettingsButton)
+	{
+		SettingsButton->OnClicked.RemoveDynamic(this, &UZonefallPauseMenuWidget::HandleSettingsClicked);
+		SettingsButton->OnHovered.RemoveDynamic(this, &UZonefallPauseMenuWidget::HandleSettingsHovered);
+		SettingsButton->OnUnhovered.RemoveDynamic(this, &UZonefallPauseMenuWidget::HandleAnyUnhovered);
+	}
+	if (MainMenuButton)
+	{
+		MainMenuButton->OnClicked.RemoveDynamic(this, &UZonefallPauseMenuWidget::HandleMainMenuClicked);
+		MainMenuButton->OnHovered.RemoveDynamic(this, &UZonefallPauseMenuWidget::HandleMainMenuHovered);
+		MainMenuButton->OnUnhovered.RemoveDynamic(this, &UZonefallPauseMenuWidget::HandleAnyUnhovered);
+	}
+	if (QuitButton)
+	{
+		QuitButton->OnClicked.RemoveDynamic(this, &UZonefallPauseMenuWidget::HandleQuitClicked);
+		QuitButton->OnHovered.RemoveDynamic(this, &UZonefallPauseMenuWidget::HandleQuitHovered);
+		QuitButton->OnUnhovered.RemoveDynamic(this, &UZonefallPauseMenuWidget::HandleAnyUnhovered);
+	}
+
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearAllTimersForObject(this);
+	}
+
+	HoveredButton = nullptr;
+	Super::NativeDestruct();
+}
+
 void UZonefallPauseMenuWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
@@ -178,12 +288,57 @@ void UZonefallPauseMenuWidget::BuildLayoutIfNeeded()
 
 	if (WidgetTree->RootWidget)
 	{
-		UE_LOG(LogZonefallPauseMenu, Verbose, TEXT("[PauseMenu] Root widget already exists. Skipping runtime layout build."));
-		return;
+		auto FindButtonByConfiguredName = [this](const FName& ConfiguredName, const TCHAR* DefaultName) -> UWidget*
+		{
+			if (WidgetTree && !ConfiguredName.IsNone())
+			{
+				if (UWidget* ByConfiguredName = WidgetTree->FindWidget(ConfiguredName))
+				{
+					return ByConfiguredName;
+				}
+			}
+			return WidgetTree ? WidgetTree->FindWidget(FName(DefaultName)) : nullptr;
+		};
+
+		// Some runtime/native instances may have a placeholder root widget but no actual pause controls.
+		// In that case we rebuild the hierarchy so the widget is fully self-rendering.
+		const bool bHasPausePanel = WidgetTree->FindWidget(TEXT("PauseMainPanelBorder")) != nullptr;
+		const bool bHasResumeWidget = FindButtonByConfiguredName(ResumeButtonName, TEXT("PauseResumeButton")) != nullptr;
+		const bool bHasSettingsWidget = FindButtonByConfiguredName(SettingsButtonName, TEXT("PauseSettingsButton")) != nullptr;
+		const bool bHasMainMenuWidget = FindButtonByConfiguredName(MainMenuButtonName, TEXT("PauseMainMenuButton")) != nullptr;
+		const bool bHasQuitWidget = FindButtonByConfiguredName(QuitButtonName, TEXT("PauseQuitButton")) != nullptr;
+		const bool bHasAllDesignerButtons = bHasResumeWidget && bHasSettingsWidget && bHasMainMenuWidget && bHasQuitWidget;
+
+		// If a designer-authored UMG layout already provides all menu controls, never rebuild runtime layout.
+		// This avoids class/name collisions (e.g. custom user widgets with button-like behavior).
+		if (bHasAllDesignerButtons)
+		{
+			UE_LOG(LogZonefallPauseMenu, Verbose, TEXT("[PauseMenu] Designer layout with configured buttons detected. Skipping runtime layout build."));
+			return;
+		}
+
+		// Native/runtime pause layout path: still allow the old panel+core-buttons heuristic.
+		if (bHasPausePanel && bHasResumeWidget && bHasQuitWidget)
+		{
+			UE_LOG(LogZonefallPauseMenu, Verbose, TEXT("[PauseMenu] Root widget already contains pause layout. Skipping runtime layout build."));
+			return;
+		}
+
+		UE_LOG(
+			LogZonefallPauseMenu,
+			Warning,
+			TEXT("[PauseMenu] Root widget exists but pause layout is incomplete. Rebuilding runtime layout (Panel=%d Resume=%d Settings=%d MainMenu=%d Quit=%d)."),
+			bHasPausePanel ? 1 : 0,
+			bHasResumeWidget ? 1 : 0,
+			bHasSettingsWidget ? 1 : 0,
+			bHasMainMenuWidget ? 1 : 0,
+			bHasQuitWidget ? 1 : 0
+		);
+		WidgetTree->RootWidget = nullptr;
 	}
 
 	UE_LOG(LogZonefallPauseMenu, Log, TEXT("[PauseMenu] Building runtime pause layout."));
-	RootBorder = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(), TEXT("PauseRootBorder"));
+	RootBorder = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(), TEXT("RuntimePauseRootBorder"));
 	if (!RootBorder)
 	{
 		UE_LOG(LogZonefallPauseMenu, Error, TEXT("[PauseMenu] Failed to create RootBorder."));
@@ -193,16 +348,16 @@ void UZonefallPauseMenuWidget::BuildLayoutIfNeeded()
 	RootBorder->SetPadding(FMargin(0.0f));
 	RootBorder->SetBrushColor(FLinearColor::Transparent);
 
-	BackdropBorder = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(), TEXT("PauseBackdropBorder"));
+	BackdropBorder = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(), TEXT("RuntimePauseBackdropBorder"));
 	BackdropBorder->SetBrush(FSlateRoundedBoxBrush(BackdropTint, 0.0f));
 	RootBorder->SetContent(BackdropBorder);
 
-	UOverlay* RootOverlay = WidgetTree->ConstructWidget<UOverlay>(UOverlay::StaticClass(), TEXT("PauseRootOverlay"));
+	UOverlay* RootOverlay = WidgetTree->ConstructWidget<UOverlay>(UOverlay::StaticClass(), TEXT("RuntimePauseRootOverlay"));
 	BackdropBorder->SetContent(RootOverlay);
 
 	if (bEnableBackdropFilmGrain)
 	{
-		UImage* VignetteOverlay = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass(), TEXT("PauseVignetteOverlay"));
+		UImage* VignetteOverlay = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass(), TEXT("RuntimePauseVignetteOverlay"));
 		VignetteOverlay->SetColorAndOpacity(FLinearColor(0.02f, 0.03f, 0.02f, FilmGrainOpacity * 1.15f));
 		if (UOverlaySlot* VignetteSlot = RootOverlay->AddChildToOverlay(VignetteOverlay))
 		{
@@ -210,7 +365,7 @@ void UZonefallPauseMenuWidget::BuildLayoutIfNeeded()
 			VignetteSlot->SetVerticalAlignment(VAlign_Fill);
 		}
 
-		UImage* GrainOverlay = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass(), TEXT("PauseGrainOverlay"));
+		UImage* GrainOverlay = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass(), TEXT("RuntimePauseGrainOverlay"));
 		GrainOverlay->SetColorAndOpacity(FLinearColor(0.10f, 0.14f, 0.11f, FilmGrainOpacity));
 		if (UOverlaySlot* GrainSlot = RootOverlay->AddChildToOverlay(GrainOverlay))
 		{
@@ -219,7 +374,7 @@ void UZonefallPauseMenuWidget::BuildLayoutIfNeeded()
 		}
 	}
 
-	AccentGlowImage = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass(), TEXT("PauseAccentGlow"));
+	AccentGlowImage = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass(), TEXT("RuntimePauseAccentGlow"));
 	AccentGlowImage->SetColorAndOpacity(FLinearColor(AccentColor.R, AccentColor.G, AccentColor.B, 0.18f));
 	if (UOverlaySlot* GlowSlot = RootOverlay->AddChildToOverlay(AccentGlowImage))
 	{
@@ -228,7 +383,7 @@ void UZonefallPauseMenuWidget::BuildLayoutIfNeeded()
 		GlowSlot->SetPadding(FMargin(0.0f, 40.0f, 0.0f, 40.0f));
 	}
 
-	MainPanelBorder = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(), TEXT("PauseMainPanelBorder"));
+	MainPanelBorder = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(), TEXT("RuntimePauseMainPanelBorder"));
 	MainPanelBorder->SetBrush(FSlateRoundedBoxBrush(PanelTint, 16.0f));
 	MainPanelBorder->SetPadding(FMargin(24.0f, 20.0f));
 	if (UOverlaySlot* PanelOverlaySlot = RootOverlay->AddChildToOverlay(MainPanelBorder))
@@ -237,14 +392,14 @@ void UZonefallPauseMenuWidget::BuildLayoutIfNeeded()
 		PanelOverlaySlot->SetVerticalAlignment(VAlign_Center);
 	}
 
-	USizeBox* PanelSizeBox = WidgetTree->ConstructWidget<USizeBox>(USizeBox::StaticClass(), TEXT("PausePanelSizeBox"));
+	USizeBox* PanelSizeBox = WidgetTree->ConstructWidget<USizeBox>(USizeBox::StaticClass(), TEXT("RuntimePausePanelSizeBox"));
 	PanelSizeBox->SetWidthOverride(FMath::Clamp(PanelWidth, 320.0f, 1200.0f));
 	MainPanelBorder->SetContent(PanelSizeBox);
 
-	UVerticalBox* PanelVBox = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(), TEXT("PausePanelVBox"));
+	UVerticalBox* PanelVBox = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(), TEXT("RuntimePausePanelVBox"));
 	PanelSizeBox->SetContent(PanelVBox);
 
-	AccentLineBorder = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(), TEXT("PauseAccentLine"));
+	AccentLineBorder = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass(), TEXT("RuntimePauseAccentLine"));
 	AccentLineBorder->SetBrush(FSlateRoundedBoxBrush(AccentColor, 3.0f));
 	if (UVerticalBoxSlot* AccentSlot = PanelVBox->AddChildToVerticalBox(AccentLineBorder))
 	{
@@ -252,31 +407,31 @@ void UZonefallPauseMenuWidget::BuildLayoutIfNeeded()
 		AccentSlot->SetSize(ESlateSizeRule::Automatic);
 	}
 
-	RootMenuBox = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(), TEXT("PauseRootMenuBox"));
+	RootMenuBox = WidgetTree->ConstructWidget<UVerticalBox>(UVerticalBox::StaticClass(), TEXT("RuntimePauseRootMenuBox"));
 	PanelVBox->AddChildToVerticalBox(RootMenuBox);
 
-	TitleLabel = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("PauseTitleLabel"));
+	TitleLabel = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("RuntimePauseTitleLabel"));
 	if (UVerticalBoxSlot* TitleSlot = RootMenuBox->AddChildToVerticalBox(TitleLabel))
 	{
 		TitleSlot->SetPadding(FMargin(6.0f, 2.0f, 6.0f, 18.0f));
 	}
 
-	SessionInfoLabel = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("PauseSessionInfoLabel"));
+	SessionInfoLabel = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("RuntimePauseSessionInfoLabel"));
 	if (UVerticalBoxSlot* InfoSlot = RootMenuBox->AddChildToVerticalBox(SessionInfoLabel))
 	{
 		InfoSlot->SetPadding(FMargin(6.0f, 0.0f, 6.0f, 6.0f));
 	}
 
-	SessionDateLabel = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("PauseSessionDateLabel"));
+	SessionDateLabel = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("RuntimePauseSessionDateLabel"));
 	if (UVerticalBoxSlot* DateSlot = RootMenuBox->AddChildToVerticalBox(SessionDateLabel))
 	{
 		DateSlot->SetPadding(FMargin(6.0f, 0.0f, 6.0f, 16.0f));
 	}
 
-	ResumeButton = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), TEXT("PauseResumeButton"));
-	SettingsButton = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), TEXT("PauseSettingsButton"));
-	MainMenuButton = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), TEXT("PauseMainMenuButton"));
-	QuitButton = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), TEXT("PauseQuitButton"));
+	ResumeButton = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), TEXT("RuntimePauseResumeButton"));
+	SettingsButton = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), TEXT("RuntimePauseSettingsButton"));
+	MainMenuButton = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), TEXT("RuntimePauseMainMenuButton"));
+	QuitButton = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), TEXT("RuntimePauseQuitButton"));
 
 	if (UVerticalBoxSlot* ResumeSlot = RootMenuBox->AddChildToVerticalBox(ResumeButton))
 	{
@@ -344,19 +499,19 @@ void UZonefallPauseMenuWidget::ResolveDesignerWidgetsIfNeeded()
 	}
 	if (!ResumeButton)
 	{
-		ResumeButton = Cast<UButton>(WidgetTree->FindWidget(TEXT("PauseResumeButton")));
+		ResumeButton = ResolveButtonFromWidgetName(WidgetTree, ResumeButtonName, TEXT("PauseResumeButton"));
 	}
 	if (!SettingsButton)
 	{
-		SettingsButton = Cast<UButton>(WidgetTree->FindWidget(TEXT("PauseSettingsButton")));
+		SettingsButton = ResolveButtonFromWidgetName(WidgetTree, SettingsButtonName, TEXT("PauseSettingsButton"));
 	}
 	if (!MainMenuButton)
 	{
-		MainMenuButton = Cast<UButton>(WidgetTree->FindWidget(TEXT("PauseMainMenuButton")));
+		MainMenuButton = ResolveButtonFromWidgetName(WidgetTree, MainMenuButtonName, TEXT("PauseMainMenuButton"));
 	}
 	if (!QuitButton)
 	{
-		QuitButton = Cast<UButton>(WidgetTree->FindWidget(TEXT("PauseQuitButton")));
+		QuitButton = ResolveButtonFromWidgetName(WidgetTree, QuitButtonName, TEXT("PauseQuitButton"));
 	}
 
 	UE_LOG(
@@ -626,10 +781,8 @@ void UZonefallPauseMenuWidget::HandleResumeClicked()
 	bActionInProgress = true;
 	if (UWorld* World = GetWorld())
 	{
-		World->GetTimerManager().SetTimerForNextTick([this]()
-		{
-			bActionInProgress = false;
-		});
+		FTimerDelegate ResetActionDelegate = FTimerDelegate::CreateUObject(this, &UZonefallPauseMenuWidget::ResetActionInProgress);
+		World->GetTimerManager().SetTimerForNextTick(ResetActionDelegate);
 	}
 
 	// Preferred path: let GameInstance fully close menu UI state and restore gameplay input.
@@ -689,10 +842,8 @@ void UZonefallPauseMenuWidget::HandleMainMenuClicked()
 	bActionInProgress = true;
 	if (UWorld* World = GetWorld())
 	{
-		World->GetTimerManager().SetTimerForNextTick([this]()
-		{
-			bActionInProgress = false;
-		});
+		FTimerDelegate ResetActionDelegate = FTimerDelegate::CreateUObject(this, &UZonefallPauseMenuWidget::ResetActionInProgress);
+		World->GetTimerManager().SetTimerForNextTick(ResetActionDelegate);
 	}
 
 	OnMainMenuRequested.Broadcast();
@@ -757,5 +908,10 @@ void UZonefallPauseMenuWidget::HandleAnyUnhovered()
 	UpdateButtonTextColor(SettingsButton, TextNormalColor);
 	UpdateButtonTextColor(MainMenuButton, TextNormalColor);
 	UpdateButtonTextColor(QuitButton, TextNormalColor);
+}
+
+void UZonefallPauseMenuWidget::ResetActionInProgress()
+{
+	bActionInProgress = false;
 }
 

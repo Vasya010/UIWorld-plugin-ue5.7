@@ -471,6 +471,41 @@ DEFINE_FUNCTION(UZonefallPauseMenuWidget::execHandleSettingsHovered)
 }
 // ********** End Class UZonefallPauseMenuWidget Function HandleSettingsHovered ********************
 
+// ********** Begin Class UZonefallPauseMenuWidget Function ResetActionInProgress ******************
+struct Z_Construct_UFunction_UZonefallPauseMenuWidget_ResetActionInProgress_Statics
+{
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "ModuleRelativePath", "Public/UI/ZonefallPauseMenuWidget.h" },
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function ResetActionInProgress constinit property declarations *****************
+// ********** End Function ResetActionInProgress constinit property declarations *******************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UZonefallPauseMenuWidget_ResetActionInProgress_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UZonefallPauseMenuWidget, nullptr, "ResetActionInProgress", 	nullptr, 
+	0, 
+0,
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x00040401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UZonefallPauseMenuWidget_ResetActionInProgress_Statics::Function_MetaDataParams), Z_Construct_UFunction_UZonefallPauseMenuWidget_ResetActionInProgress_Statics::Function_MetaDataParams)},  };
+UFunction* Z_Construct_UFunction_UZonefallPauseMenuWidget_ResetActionInProgress()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UZonefallPauseMenuWidget_ResetActionInProgress_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UZonefallPauseMenuWidget::execResetActionInProgress)
+{
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	P_THIS->ResetActionInProgress();
+	P_NATIVE_END;
+}
+// ********** End Class UZonefallPauseMenuWidget Function ResetActionInProgress ********************
+
 // ********** Begin Class UZonefallPauseMenuWidget *************************************************
 FClassRegistrationInfo Z_Registration_Info_UClass_UZonefallPauseMenuWidget;
 UClass* UZonefallPauseMenuWidget::GetPrivateStaticClass()
@@ -549,6 +584,22 @@ struct Z_Construct_UClass_UZonefallPauseMenuWidget_Statics
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_SessionInfoPrefixText_MetaData[] = {
 		{ "Category", "Zonefall|UI|Pause|Text" },
+		{ "ModuleRelativePath", "Public/UI/ZonefallPauseMenuWidget.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_ResumeButtonName_MetaData[] = {
+		{ "Category", "Zonefall|UI|Pause|Designer" },
+		{ "ModuleRelativePath", "Public/UI/ZonefallPauseMenuWidget.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_SettingsButtonName_MetaData[] = {
+		{ "Category", "Zonefall|UI|Pause|Designer" },
+		{ "ModuleRelativePath", "Public/UI/ZonefallPauseMenuWidget.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_MainMenuButtonName_MetaData[] = {
+		{ "Category", "Zonefall|UI|Pause|Designer" },
+		{ "ModuleRelativePath", "Public/UI/ZonefallPauseMenuWidget.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_QuitButtonName_MetaData[] = {
+		{ "Category", "Zonefall|UI|Pause|Designer" },
 		{ "ModuleRelativePath", "Public/UI/ZonefallPauseMenuWidget.h" },
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_TextNormalColor_MetaData[] = {
@@ -685,6 +736,10 @@ struct Z_Construct_UClass_UZonefallPauseMenuWidget_Statics
 	static const UECodeGen_Private::FTextPropertyParams NewProp_MainMenuText;
 	static const UECodeGen_Private::FTextPropertyParams NewProp_QuitText;
 	static const UECodeGen_Private::FTextPropertyParams NewProp_SessionInfoPrefixText;
+	static const UECodeGen_Private::FNamePropertyParams NewProp_ResumeButtonName;
+	static const UECodeGen_Private::FNamePropertyParams NewProp_SettingsButtonName;
+	static const UECodeGen_Private::FNamePropertyParams NewProp_MainMenuButtonName;
+	static const UECodeGen_Private::FNamePropertyParams NewProp_QuitButtonName;
 	static const UECodeGen_Private::FStructPropertyParams NewProp_TextNormalColor;
 	static const UECodeGen_Private::FStructPropertyParams NewProp_TextHoverColor;
 	static const UECodeGen_Private::FStructPropertyParams NewProp_PanelTint;
@@ -725,6 +780,7 @@ struct Z_Construct_UClass_UZonefallPauseMenuWidget_Statics
 		{ .NameUTF8 = UTF8TEXT("HandleResumeHovered"), .Pointer = &UZonefallPauseMenuWidget::execHandleResumeHovered },
 		{ .NameUTF8 = UTF8TEXT("HandleSettingsClicked"), .Pointer = &UZonefallPauseMenuWidget::execHandleSettingsClicked },
 		{ .NameUTF8 = UTF8TEXT("HandleSettingsHovered"), .Pointer = &UZonefallPauseMenuWidget::execHandleSettingsHovered },
+		{ .NameUTF8 = UTF8TEXT("ResetActionInProgress"), .Pointer = &UZonefallPauseMenuWidget::execResetActionInProgress },
 	};
 	static UObject* (*const DependentSingletons[])();
 	static constexpr FClassFunctionLinkInfo FuncInfo[] = {
@@ -737,6 +793,7 @@ struct Z_Construct_UClass_UZonefallPauseMenuWidget_Statics
 		{ &Z_Construct_UFunction_UZonefallPauseMenuWidget_HandleResumeHovered, "HandleResumeHovered" }, // 3854483304
 		{ &Z_Construct_UFunction_UZonefallPauseMenuWidget_HandleSettingsClicked, "HandleSettingsClicked" }, // 853146093
 		{ &Z_Construct_UFunction_UZonefallPauseMenuWidget_HandleSettingsHovered, "HandleSettingsHovered" }, // 1752502428
+		{ &Z_Construct_UFunction_UZonefallPauseMenuWidget_ResetActionInProgress, "ResetActionInProgress" }, // 390568671
 	};
 	static_assert(UE_ARRAY_COUNT(FuncInfo) < 2048);
 	static constexpr FCppClassTypeInfoStatic StaticCppClassTypeInfo = {
@@ -756,6 +813,10 @@ const UECodeGen_Private::FTextPropertyParams Z_Construct_UClass_UZonefallPauseMe
 const UECodeGen_Private::FTextPropertyParams Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_MainMenuText = { "MainMenuText", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Text, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallPauseMenuWidget, MainMenuText), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_MainMenuText_MetaData), NewProp_MainMenuText_MetaData) };
 const UECodeGen_Private::FTextPropertyParams Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_QuitText = { "QuitText", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Text, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallPauseMenuWidget, QuitText), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_QuitText_MetaData), NewProp_QuitText_MetaData) };
 const UECodeGen_Private::FTextPropertyParams Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_SessionInfoPrefixText = { "SessionInfoPrefixText", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Text, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallPauseMenuWidget, SessionInfoPrefixText), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_SessionInfoPrefixText_MetaData), NewProp_SessionInfoPrefixText_MetaData) };
+const UECodeGen_Private::FNamePropertyParams Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_ResumeButtonName = { "ResumeButtonName", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Name, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallPauseMenuWidget, ResumeButtonName), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ResumeButtonName_MetaData), NewProp_ResumeButtonName_MetaData) };
+const UECodeGen_Private::FNamePropertyParams Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_SettingsButtonName = { "SettingsButtonName", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Name, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallPauseMenuWidget, SettingsButtonName), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_SettingsButtonName_MetaData), NewProp_SettingsButtonName_MetaData) };
+const UECodeGen_Private::FNamePropertyParams Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_MainMenuButtonName = { "MainMenuButtonName", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Name, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallPauseMenuWidget, MainMenuButtonName), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_MainMenuButtonName_MetaData), NewProp_MainMenuButtonName_MetaData) };
+const UECodeGen_Private::FNamePropertyParams Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_QuitButtonName = { "QuitButtonName", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Name, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallPauseMenuWidget, QuitButtonName), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_QuitButtonName_MetaData), NewProp_QuitButtonName_MetaData) };
 const UECodeGen_Private::FStructPropertyParams Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_TextNormalColor = { "TextNormalColor", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallPauseMenuWidget, TextNormalColor), Z_Construct_UScriptStruct_FLinearColor, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_TextNormalColor_MetaData), NewProp_TextNormalColor_MetaData) };
 const UECodeGen_Private::FStructPropertyParams Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_TextHoverColor = { "TextHoverColor", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallPauseMenuWidget, TextHoverColor), Z_Construct_UScriptStruct_FLinearColor, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_TextHoverColor_MetaData), NewProp_TextHoverColor_MetaData) };
 const UECodeGen_Private::FStructPropertyParams Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_PanelTint = { "PanelTint", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallPauseMenuWidget, PanelTint), Z_Construct_UScriptStruct_FLinearColor, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_PanelTint_MetaData), NewProp_PanelTint_MetaData) };
@@ -804,6 +865,10 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UZonefall
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_MainMenuText,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_QuitText,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_SessionInfoPrefixText,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_ResumeButtonName,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_SettingsButtonName,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_MainMenuButtonName,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_QuitButtonName,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_TextNormalColor,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_TextHoverColor,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallPauseMenuWidget_Statics::NewProp_PanelTint,
@@ -873,10 +938,10 @@ UZonefallPauseMenuWidget::~UZonefallPauseMenuWidget() {}
 struct Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallPauseMenuWidget_h__Script_UIWorld_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_UZonefallPauseMenuWidget, UZonefallPauseMenuWidget::StaticClass, TEXT("UZonefallPauseMenuWidget"), &Z_Registration_Info_UClass_UZonefallPauseMenuWidget, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UZonefallPauseMenuWidget), 2328175782U) },
+		{ Z_Construct_UClass_UZonefallPauseMenuWidget, UZonefallPauseMenuWidget::StaticClass, TEXT("UZonefallPauseMenuWidget"), &Z_Registration_Info_UClass_UZonefallPauseMenuWidget, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UZonefallPauseMenuWidget), 1445448378U) },
 	};
 }; // Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallPauseMenuWidget_h__Script_UIWorld_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallPauseMenuWidget_h__Script_UIWorld_2575082405{
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallPauseMenuWidget_h__Script_UIWorld_4098556625{
 	TEXT("/Script/UIWorld"),
 	Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallPauseMenuWidget_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallPauseMenuWidget_h__Script_UIWorld_Statics::ClassInfo),
 	nullptr, 0,

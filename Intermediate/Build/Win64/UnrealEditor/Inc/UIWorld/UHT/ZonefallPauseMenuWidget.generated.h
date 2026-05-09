@@ -46,6 +46,7 @@ UIWORLD_API void FOnPauseQuitRequested_DelegateWrapper(const FMulticastScriptDel
 
 // ********** Begin Class UZonefallPauseMenuWidget *************************************************
 #define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallPauseMenuWidget_h_21_RPC_WRAPPERS_NO_PURE_DECLS \
+	DECLARE_FUNCTION(execResetActionInProgress); \
 	DECLARE_FUNCTION(execHandleAnyUnhovered); \
 	DECLARE_FUNCTION(execHandleQuitHovered); \
 	DECLARE_FUNCTION(execHandleMainMenuHovered); \

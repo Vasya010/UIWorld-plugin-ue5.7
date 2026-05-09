@@ -16,7 +16,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPauseMainMenuRequested);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPauseQuitRequested);
 
 UCLASS(BlueprintType, Blueprintable)
-class ZONEFALL_API UZonefallPauseMenuWidget : public UUserWidget
+class UIWORLD_API UZonefallPauseMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -24,6 +24,7 @@ public:
 	UZonefallPauseMenuWidget(const FObjectInitializer& ObjectInitializer);
 
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 
@@ -56,6 +57,18 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Text")
 	FText SessionInfoPrefixText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Designer")
+	FName ResumeButtonName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Designer")
+	FName SettingsButtonName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Designer")
+	FName MainMenuButtonName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Designer")
+	FName QuitButtonName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Style")
 	FLinearColor TextNormalColor;
@@ -165,6 +178,9 @@ private:
 
 	UFUNCTION()
 	void HandleAnyUnhovered();
+
+	UFUNCTION()
+	void ResetActionInProgress();
 
 	float PulseTime;
 	float IntroProgress;

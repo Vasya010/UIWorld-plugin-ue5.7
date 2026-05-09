@@ -12,6 +12,7 @@
 #include "OnlineSubsystem.h"
 #include "SocketSubsystem.h"
 #include "UI/ZonefallLoadingScreenWidget.h"
+#include "UI/ZonefallPauseMenuWidget.h"
 #include "UI/ZonefallShaderLoadingWidget.h"
 #include "HAL/FileManager.h"
 #include "HAL/PlatformFileManager.h"
@@ -23,7 +24,12 @@
 DEFINE_LOG_CATEGORY_STATIC(LogUIWorldStartupFlow, Log, All);
 
 UUIWorldMenuGameInstance::UUIWorldMenuGameInstance()
-	: bCacheWidgetsByScreen(true)
+	: bAutoShowMenuOnStart(true)
+	, bShowShaderLoadingOnStartup(true)
+	, StartupShaderLoadingDuration(3.5f)
+	, bUseAdaptiveStartupShaderDelay(true)
+	, StartupShaderMaxDuration(20.0f)
+	, bCacheWidgetsByScreen(true)
 	, MenuZOrder(100)
 	, MainMenuLevelName(TEXT("Menu"))
 	, OnlineHostMapName(TEXT("Menu"))
@@ -36,11 +42,6 @@ UUIWorldMenuGameInstance::UUIWorldMenuGameInstance()
 	, MapDelayPer100MB(1.25f)
 	, MapDelayMaxSeconds(8.0f)
 	, bUseMoviePlayerLoadingScreen(true)
-	, bAutoShowMenuOnStart(true)
-	, bShowShaderLoadingOnStartup(true)
-	, StartupShaderLoadingDuration(3.5f)
-	, bUseAdaptiveStartupShaderDelay(true)
-	, StartupShaderMaxDuration(20.0f)
 	, CurrentMenuScreen(EUIWorldMenuScreen::MainMenu)
 	, PinnedMenuWidget(nullptr)
 	, ActiveLoadingScreenWidget(nullptr)
@@ -171,14 +172,24 @@ TSubclassOf<UUserWidget> UUIWorldMenuGameInstance::ResolveMenuClass(EUIWorldMenu
 	switch (MenuScreen)
 	{
 	case EUIWorldMenuScreen::MainMenu:
+		UE_LOG(LogUIWorldStartupFlow, Verbose, TEXT("[MenuFlow] ResolveMenuClass -> MainMenu (%s)"), *GetNameSafe(MainMenuWidgetClass.Get()));
 		return MainMenuWidgetClass;
 	case EUIWorldMenuScreen::OnlineMenu:
+		UE_LOG(LogUIWorldStartupFlow, Verbose, TEXT("[MenuFlow] ResolveMenuClass -> OnlineMenu (%s)"), *GetNameSafe((OnlineMenuWidgetClass ? OnlineMenuWidgetClass : MainMenuWidgetClass).Get()));
 		return OnlineMenuWidgetClass ? OnlineMenuWidgetClass : MainMenuWidgetClass;
 	case EUIWorldMenuScreen::PauseMenu:
-		return PauseMenuWidgetClass ? PauseMenuWidgetClass : MainMenuWidgetClass;
+		if (PauseMenuWidgetClass)
+		{
+			UE_LOG(LogUIWorldStartupFlow, Verbose, TEXT("[MenuFlow] ResolveMenuClass -> PauseMenu (%s)"), *GetNameSafe(PauseMenuWidgetClass.Get()));
+			return PauseMenuWidgetClass;
+		}
+		UE_LOG(LogUIWorldStartupFlow, Warning, TEXT("ResolveMenuClass(PauseMenu): PauseMenuWidgetClass is null, using UZonefallPauseMenuWidget fallback."));
+		return UZonefallPauseMenuWidget::StaticClass();
 	case EUIWorldMenuScreen::SettingsMenu:
+		UE_LOG(LogUIWorldStartupFlow, Verbose, TEXT("[MenuFlow] ResolveMenuClass -> SettingsMenu (%s)"), *GetNameSafe((SettingsMenuWidgetClass ? SettingsMenuWidgetClass : MainMenuWidgetClass).Get()));
 		return SettingsMenuWidgetClass ? SettingsMenuWidgetClass : MainMenuWidgetClass;
 	default:
+		UE_LOG(LogUIWorldStartupFlow, Warning, TEXT("[MenuFlow] ResolveMenuClass -> Default fallback to MainMenu (%s)"), *GetNameSafe(MainMenuWidgetClass.Get()));
 		return MainMenuWidgetClass;
 	}
 }
@@ -187,6 +198,13 @@ UUserWidget* UUIWorldMenuGameInstance::ResolveOrCreateWidget(APlayerController* 
 {
 	if (!PlayerController || !WidgetClass)
 	{
+		UE_LOG(
+			LogUIWorldStartupFlow,
+			Warning,
+			TEXT("[MenuFlow] ResolveOrCreateWidget aborted. PlayerController=%d WidgetClass=%s"),
+			PlayerController != nullptr,
+			*GetNameSafe(WidgetClass.Get())
+		);
 		return nullptr;
 	}
 
@@ -203,15 +221,35 @@ UUserWidget* UUIWorldMenuGameInstance::ResolveOrCreateWidget(APlayerController* 
 	UUserWidget* FinalWidget = CachedWidget;
 	if (bNeedNewWidget)
 	{
+		UE_LOG(
+			LogUIWorldStartupFlow,
+			Log,
+			TEXT("[MenuFlow] Creating widget. Screen=%d Class=%s Force=%d CachedValid=%d"),
+			static_cast<int32>(CurrentMenuScreen),
+			*GetNameSafe(WidgetClass.Get()),
+			bForceRebuild ? 1 : 0,
+			CachedWidget != nullptr
+		);
 		FinalWidget = CreateWidget<UUserWidget>(PlayerController, WidgetClass);
 		if (!FinalWidget)
 		{
+			UE_LOG(LogUIWorldStartupFlow, Error, TEXT("[MenuFlow] CreateWidget failed for class=%s"), *GetNameSafe(WidgetClass.Get()));
 			return nullptr;
 		}
 		if (bCacheWidgetsByScreen)
 		{
 			MenuWidgetCache.Add(CurrentMenuScreen, FinalWidget);
 		}
+	}
+	else
+	{
+		UE_LOG(
+			LogUIWorldStartupFlow,
+			Verbose,
+			TEXT("[MenuFlow] Reusing cached widget. Screen=%d Widget=%s"),
+			static_cast<int32>(CurrentMenuScreen),
+			*GetNameSafe(FinalWidget)
+		);
 	}
 	return FinalWidget;
 }
@@ -246,6 +284,15 @@ void UUIWorldMenuGameInstance::HideCurrentMenuWidget()
 
 UUserWidget* UUIWorldMenuGameInstance::ShowMenuFromList(EUIWorldMenuScreen MenuScreen, bool bForceRebuild)
 {
+	UE_LOG(
+		LogUIWorldStartupFlow,
+		Log,
+		TEXT("[MenuFlow] ShowMenuFromList start. Screen=%d Force=%d StartupActive=%d StartupDone=%d"),
+		static_cast<int32>(MenuScreen),
+		bForceRebuild ? 1 : 0,
+		bStartupShaderPhaseActive ? 1 : 0,
+		bStartupShaderPhaseCompleted ? 1 : 0
+	);
 	if (bShowShaderLoadingOnStartup && ShaderLoadingWidgetClass && !bStartupShaderPhaseCompleted)
 	{
 		if (!bStartupShaderPhaseActive)
@@ -264,6 +311,7 @@ UUserWidget* UUIWorldMenuGameInstance::ShowMenuFromList(EUIWorldMenuScreen MenuS
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(World, 0);
 	if (!PlayerController)
 	{
+		UE_LOG(LogUIWorldStartupFlow, Warning, TEXT("[MenuFlow] ShowMenuFromList failed: PlayerController is null."));
 		return nullptr;
 	}
 
@@ -272,6 +320,7 @@ UUserWidget* UUIWorldMenuGameInstance::ShowMenuFromList(EUIWorldMenuScreen MenuS
 	UUserWidget* WorkingWidget = ResolveOrCreateWidget(PlayerController, SelectedWidgetClass, bForceRebuild);
 	if (!WorkingWidget)
 	{
+		UE_LOG(LogUIWorldStartupFlow, Error, TEXT("[MenuFlow] ShowMenuFromList failed: ResolveOrCreateWidget returned null."));
 		return nullptr;
 	}
 
@@ -279,10 +328,22 @@ UUserWidget* UUIWorldMenuGameInstance::ShowMenuFromList(EUIWorldMenuScreen MenuS
 	if (!WorkingWidget->IsInViewport())
 	{
 		WorkingWidget->AddToViewport(MenuZOrder);
+		UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[MenuFlow] Widget added to viewport. Widget=%s Z=%d"), *GetNameSafe(WorkingWidget), MenuZOrder);
+	}
+	else
+	{
+		UE_LOG(LogUIWorldStartupFlow, Verbose, TEXT("[MenuFlow] Widget already in viewport. Widget=%s"), *GetNameSafe(WorkingWidget));
 	}
 
 	ApplyMenuInputMode(PlayerController, WorkingWidget);
 	PinnedMenuWidget = WorkingWidget;
+	UE_LOG(
+		LogUIWorldStartupFlow,
+		Log,
+		TEXT("[MenuFlow] ShowMenuFromList success. Screen=%d Widget=%s"),
+		static_cast<int32>(CurrentMenuScreen),
+		*GetNameSafe(PinnedMenuWidget)
+	);
 	OnMenuWidgetChanged.Broadcast(WorkingWidget);
 	OnMenuScreenChanged.Broadcast(CurrentMenuScreen);
 	return WorkingWidget;
@@ -510,6 +571,7 @@ UUserWidget* UUIWorldMenuGameInstance::OpenPauseSettingsMenu(bool bForceRebuild)
 	{
 		UGameplayStatics::SetGamePaused(World, true);
 	}
+	UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[PauseFlow] OpenPauseSettingsMenu called. Force=%d"), bForceRebuild ? 1 : 0);
 	return ShowMenuFromList(EUIWorldMenuScreen::SettingsMenu, bForceRebuild);
 }
 
@@ -519,6 +581,7 @@ UUserWidget* UUIWorldMenuGameInstance::BackMenuPause(bool bForceRebuild)
 	{
 		UGameplayStatics::SetGamePaused(World, true);
 	}
+	UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[PauseFlow] BackMenuPause called. Force=%d"), bForceRebuild ? 1 : 0);
 	return ShowMenuFromList(EUIWorldMenuScreen::PauseMenu, bForceRebuild);
 }
 
