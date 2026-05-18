@@ -142,7 +142,9 @@ private:
 	int32 DotCount;
 	int32 InitialShaderJobCount;
 	int32 LastKnownRemainingJobs;
+	int32 ConsecutiveZeroJobTicks;
 	bool bShaderProgressInitialized;
+	bool bEnteredFinalizingState;
 	float SmoothedProgressPercent;
 	float AnimationTimeSeconds;
 };

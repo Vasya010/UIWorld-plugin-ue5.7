@@ -6,10 +6,16 @@
 #include "HAL/IConsoleManager.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Logging/LogMacros.h"
+#include "Misc/ConfigCacheIni.h"
 #include "StreamlineLibraryDLSSG.h"
 
 namespace ZonefallSettingsParse
 {
+	static const TCHAR* UpscalerConfigSection()
+	{
+		return TEXT("/Script/Zonefall.ZonefallUpscalerSettings");
+	}
+
 	static FString CanonicalizeSpacesAndCase(const FString& InValue)
 	{
 		FString Value = InValue.TrimStartAndEnd();
@@ -251,6 +257,50 @@ void UZonefallSettingsDataObject::SetDefaults()
 	SanitizeSettings();
 }
 
+void UZonefallSettingsDataObject::LoadUpscalerSettingsFromConfig()
+{
+	// Per-user persistence: GameUserSettings.ini (Saved/Config/<Platform>/GameUserSettings.ini in packaged).
+	FString SavedDLSS;
+	FString SavedFG;
+	FString SavedFSR;
+	FString SavedFSRFG;
+
+	if (GConfig)
+	{
+		GConfig->GetString(ZonefallSettingsParse::UpscalerConfigSection(), TEXT("DLSSMode"), SavedDLSS, GGameUserSettingsIni);
+		GConfig->GetString(ZonefallSettingsParse::UpscalerConfigSection(), TEXT("FrameGeneration"), SavedFG, GGameUserSettingsIni);
+		GConfig->GetString(ZonefallSettingsParse::UpscalerConfigSection(), TEXT("FSRMode"), SavedFSR, GGameUserSettingsIni);
+		GConfig->GetString(ZonefallSettingsParse::UpscalerConfigSection(), TEXT("FSRFrameGeneration"), SavedFSRFG, GGameUserSettingsIni);
+	}
+
+	// Only override if we actually have something persisted.
+	if (!SavedDLSS.IsEmpty()) { DLSSMode = SavedDLSS; }
+	if (!SavedFG.IsEmpty()) { FrameGeneration = SavedFG; }
+	if (!SavedFSR.IsEmpty()) { FSRMode = SavedFSR; }
+	if (!SavedFSRFG.IsEmpty()) { FSRFrameGeneration = SavedFSRFG; }
+
+	// Ensure values are valid for current runtime support.
+	bDLSSSupported = ZonefallSettingsParse::IsDLSSSupported();
+	bFrameGenerationSupported = ZonefallSettingsParse::IsFrameGenerationSupported();
+	bFSRSupported = ZonefallSettingsParse::IsFSRSupported();
+	bFSRFrameGenerationSupported = ZonefallSettingsParse::IsFSRFrameGenerationSupported();
+	SanitizeSettings();
+}
+
+void UZonefallSettingsDataObject::SaveUpscalerSettingsToConfig() const
+{
+	if (!GConfig)
+	{
+		return;
+	}
+
+	GConfig->SetString(ZonefallSettingsParse::UpscalerConfigSection(), TEXT("DLSSMode"), *DLSSMode, GGameUserSettingsIni);
+	GConfig->SetString(ZonefallSettingsParse::UpscalerConfigSection(), TEXT("FrameGeneration"), *FrameGeneration, GGameUserSettingsIni);
+	GConfig->SetString(ZonefallSettingsParse::UpscalerConfigSection(), TEXT("FSRMode"), *FSRMode, GGameUserSettingsIni);
+	GConfig->SetString(ZonefallSettingsParse::UpscalerConfigSection(), TEXT("FSRFrameGeneration"), *FSRFrameGeneration, GGameUserSettingsIni);
+	GConfig->Flush(false, GGameUserSettingsIni);
+}
+
 void UZonefallSettingsDataObject::LoadFromSystem()
 {
 	UGameUserSettings* Settings = UGameUserSettings::GetGameUserSettings();
@@ -325,6 +375,9 @@ void UZonefallSettingsDataObject::LoadFromSystem()
 	FrameGeneration = ZonefallSettingsParse::DetectFrameGenerationString(bFrameGenerationSupported);
 	FSRMode = ZonefallSettingsParse::DetectFSRModeString(bFSRSupported);
 	FSRFrameGeneration = ZonefallSettingsParse::DetectFSRFrameGenerationString(bFSRFrameGenerationSupported);
+	// If we persisted upscaler preferences, prefer showing them in UI.
+	// The actual runtime application is done on startup by the game instance (or after Apply).
+	LoadUpscalerSettingsFromConfig();
 
 	const FIntPoint Resolution = Settings->GetScreenResolution();
 	ScreenResolution = FString::Printf(TEXT("%dx%d"), Resolution.X, Resolution.Y);
@@ -502,6 +555,9 @@ void UZonefallSettingsDataObject::ApplyToSystem(UObject* WorldContextObject)
 		UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, bEnableFSRFG ? TEXT("r.FidelityFX.FI.Enabled 1") : TEXT("r.FidelityFX.FI.Enabled 0"));
 	}
 
+	// Persist upscaler preferences separately (CVars may not serialize through UGameUserSettings).
+	SaveUpscalerSettingsToConfig();
+
 	// Read back real runtime state (in case platform/project overrides CVars).
 	Lumen = ZonefallSettingsParse::DetectLumenStateString();
 	bDLSSSupported = ZonefallSettingsParse::IsDLSSSupported();
@@ -526,6 +582,80 @@ void UZonefallSettingsDataObject::ApplyToSystem(UObject* WorldContextObject)
 		RuntimeFSRQuality
 	);
 	UE_LOG(LogTemp, Log, TEXT("[SettingsDebug][Lumen] Requested=%s Actual=%s"), *RequestedLumenState, *ZonefallSettingsParse::DetectLumenStateString());
+}
+
+void UZonefallSettingsDataObject::ApplyUpscalerSettingsOnly(UObject* WorldContextObject)
+{
+	// Refresh capability flags before sanitizing.
+	bDLSSSupported = ZonefallSettingsParse::IsDLSSSupported();
+	bFrameGenerationSupported = ZonefallSettingsParse::IsFrameGenerationSupported();
+	bFSRSupported = ZonefallSettingsParse::IsFSRSupported();
+	bFSRFrameGenerationSupported = ZonefallSettingsParse::IsFSRFrameGenerationSupported();
+	SanitizeSettings();
+
+	if (!WorldContextObject)
+	{
+		return;
+	}
+
+	const bool bRequestDLSS = (DLSSMode != TEXT("Off") && DLSSMode != TEXT("Unavailable")) && bDLSSSupported;
+	const bool bRequestFSR = (FSRMode != TEXT("Off") && FSRMode != TEXT("Unavailable")) && bFSRSupported && !bRequestDLSS;
+
+	// Neutral baseline for stable behavior.
+	if (bDLSSSupported && UDLSSLibrary::IsDLSSEnabled())
+	{
+		UDLSSLibrary::EnableDLSS(false);
+	}
+	ZonefallSettingsParse::SetIntCVar(TEXT("r.FidelityFX.FSR.Enabled"), 0);
+	UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, TEXT("r.FidelityFX.FSR.Enabled 0"));
+
+	if (bRequestDLSS)
+	{
+		UDLSSMode Mode = UDLSSMode::Quality;
+		if (DLSSMode == TEXT("Balanced")) { Mode = UDLSSMode::Balanced; }
+		else if (DLSSMode == TEXT("Performance")) { Mode = UDLSSMode::Performance; }
+		else if (DLSSMode == TEXT("Ultra Performance")) { Mode = UDLSSMode::UltraPerformance; }
+		else if (DLSSMode == TEXT("DLAA")) { Mode = UDLSSMode::DLAA; }
+
+		UDLSSLibrary::SetDLSSMode(WorldContextObject, Mode);
+		UDLSSLibrary::EnableDLSS(true);
+	}
+	else if (bRequestFSR)
+	{
+		const int32 FSRQualityModeValue = ZonefallSettingsParse::ResolveFSRQualityModeValue(FSRMode);
+		ZonefallSettingsParse::SetIntCVar(TEXT("r.FidelityFX.FSR.QualityMode"), FSRQualityModeValue);
+		ZonefallSettingsParse::SetIntCVar(TEXT("r.FidelityFX.FSR.Enabled"), 1);
+		UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, TEXT("r.FidelityFX.FSR.Enabled 1"));
+		UKismetSystemLibrary::ExecuteConsoleCommand(
+			WorldContextObject,
+			FString::Printf(TEXT("r.FidelityFX.FSR.QualityMode %d"), FSRQualityModeValue)
+		);
+	}
+
+	if (bFrameGenerationSupported)
+	{
+		if (FSRFrameGeneration == TEXT("On"))
+		{
+			FrameGeneration = TEXT("Off");
+		}
+
+		const EStreamlineDLSSGMode FGMode = (FrameGeneration == TEXT("On")) ? EStreamlineDLSSGMode::On2X : EStreamlineDLSSGMode::Off;
+		UWorld* World = WorldContextObject->GetWorld();
+		const bool bAllowSetFG = World && World->WorldType == EWorldType::Game;
+		const bool bFeatureStillSupported = UStreamlineLibraryDLSSG::QueryDLSSGSupport() == EStreamlineFeatureSupport::Supported;
+		if (bAllowSetFG && bFeatureStillSupported)
+		{
+			UStreamlineLibraryDLSSG::SetDLSSGMode(FGMode);
+		}
+	}
+
+	if (bFSRFrameGenerationSupported)
+	{
+		const bool bEnableFSRFG =
+			(FSRFrameGeneration == TEXT("On")) &&
+			(FrameGeneration != TEXT("On"));
+		UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, bEnableFSRFG ? TEXT("r.FidelityFX.FI.Enabled 1") : TEXT("r.FidelityFX.FI.Enabled 0"));
+	}
 }
 
 void UZonefallSettingsDataObject::ApplyDisplayModeAndResolution(bool bSaveSettings)

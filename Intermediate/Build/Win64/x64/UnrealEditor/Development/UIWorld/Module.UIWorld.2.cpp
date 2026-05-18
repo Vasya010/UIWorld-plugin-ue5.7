@@ -5,4 +5,3 @@
 #include "E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/UnrealEditor/Inc/UIWorld/UHT/ZonefallModernProgressBarWidget.gen.cpp"
 #include "E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/UnrealEditor/Inc/UIWorld/UHT/ZonefallPauseMenuWidget.gen.cpp"
 #include "E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/UnrealEditor/Inc/UIWorld/UHT/ZonefallSettingsDataObject.gen.cpp"
-#include "E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/UnrealEditor/Inc/UIWorld/UHT/ZonefallSettingsMenuWidget.gen.cpp"

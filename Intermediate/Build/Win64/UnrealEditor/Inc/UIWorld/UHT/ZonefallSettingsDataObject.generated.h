@@ -20,6 +20,9 @@ enum class EZonefallGraphicsPreset : uint8;
 
 // ********** Begin Class UZonefallSettingsDataObject **********************************************
 #define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h_18_RPC_WRAPPERS_NO_PURE_DECLS \
+	DECLARE_FUNCTION(execApplyUpscalerSettingsOnly); \
+	DECLARE_FUNCTION(execSaveUpscalerSettingsToConfig); \
+	DECLARE_FUNCTION(execLoadUpscalerSettingsFromConfig); \
 	DECLARE_FUNCTION(execApplyGraphicsPreset); \
 	DECLARE_FUNCTION(execSanitizeSettings); \
 	DECLARE_FUNCTION(execSetScreenResolutionFromString); \

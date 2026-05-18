@@ -40,7 +40,9 @@ UZonefallShaderLoadingWidget::UZonefallShaderLoadingWidget(const FObjectInitiali
 	, DotCount(0)
 	, InitialShaderJobCount(0)
 	, LastKnownRemainingJobs(0)
+	, ConsecutiveZeroJobTicks(0)
 	, bShaderProgressInitialized(false)
+	, bEnteredFinalizingState(false)
 	, SmoothedProgressPercent(0.0f)
 	, AnimationTimeSeconds(0.0f)
 {
@@ -390,7 +392,18 @@ void UZonefallShaderLoadingWidget::HandleTextAnimTick()
 	if (bUseRealShaderCompilerProgress && GShaderCompilingManager)
 	{
 		const int32 RemainingJobs = FMath::Max(0, GShaderCompilingManager->GetNumRemainingJobs());
-		LastKnownRemainingJobs = RemainingJobs;
+		if (RemainingJobs <= 0)
+		{
+			++ConsecutiveZeroJobTicks;
+		}
+		else
+		{
+			ConsecutiveZeroJobTicks = 0;
+			bEnteredFinalizingState = false;
+		}
+
+		const bool bStableZeroJobs = ConsecutiveZeroJobTicks >= 3;
+		LastKnownRemainingJobs = bStableZeroJobs ? 0 : RemainingJobs;
 		if (!bShaderProgressInitialized)
 		{
 			InitialShaderJobCount = FMath::Max(1, RemainingJobs);
@@ -403,10 +416,12 @@ void UZonefallShaderLoadingWidget::HandleTextAnimTick()
 
 		if (InitialShaderJobCount > 0)
 		{
-			ShaderCompileProgressPercent = ((InitialShaderJobCount - RemainingJobs) * 100.0f) / static_cast<float>(InitialShaderJobCount);
+			const float ComputedPercent = ((InitialShaderJobCount - RemainingJobs) * 100.0f) / static_cast<float>(InitialShaderJobCount);
+			ShaderCompileProgressPercent = FMath::Max(ShaderCompileProgressPercent, ComputedPercent);
 		}
-		if (RemainingJobs <= 0)
+		if (bStableZeroJobs)
 		{
+			bEnteredFinalizingState = true;
 			ShaderCompileProgressPercent = 100.0f;
 		}
 	}
@@ -426,13 +441,13 @@ void UZonefallShaderLoadingWidget::HandleTextAnimTick()
 		SmoothedProgressPercent = 1.0f;
 	}
 
-	if (LastKnownRemainingJobs <= 0 && SmoothedProgressPercent < 99.5f)
+	if (bEnteredFinalizingState || (LastKnownRemainingJobs <= 0 && SmoothedProgressPercent >= 99.5f))
 	{
-		ShaderText->SetText(FText::FromString(ShaderCheckingCacheText.ToString() + Dots));
+		ShaderText->SetText(ShaderFinalizingText);
 	}
 	else if (LastKnownRemainingJobs <= 0)
 	{
-		ShaderText->SetText(ShaderFinalizingText);
+		ShaderText->SetText(FText::FromString(ShaderCheckingCacheText.ToString() + Dots));
 	}
 	else
 	{

@@ -254,6 +254,64 @@ DEFINE_FUNCTION(UZonefallSettingsDataObject::execApplyToSystem)
 }
 // ********** End Class UZonefallSettingsDataObject Function ApplyToSystem *************************
 
+// ********** Begin Class UZonefallSettingsDataObject Function ApplyUpscalerSettingsOnly ***********
+struct Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyUpscalerSettingsOnly_Statics
+{
+	struct ZonefallSettingsDataObject_eventApplyUpscalerSettingsOnly_Parms
+	{
+		UObject* WorldContextObject;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "Zonefall|Settings" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/**\n\x09 * Applies ONLY upscaler-related settings (FSR/DLSS/FrameGen) to runtime CVars/libraries.\n\x09 * Safe to call on startup to restore FSR without overriding other game user settings.\n\x09 */" },
+#endif
+		{ "ModuleRelativePath", "Public/UI/ZonefallSettingsDataObject.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Applies ONLY upscaler-related settings (FSR/DLSS/FrameGen) to runtime CVars/libraries.\nSafe to call on startup to restore FSR without overriding other game user settings." },
+#endif
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function ApplyUpscalerSettingsOnly constinit property declarations *************
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_WorldContextObject;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function ApplyUpscalerSettingsOnly constinit property declarations ***************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function ApplyUpscalerSettingsOnly Property Definitions ************************
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyUpscalerSettingsOnly_Statics::NewProp_WorldContextObject = { "WorldContextObject", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ZonefallSettingsDataObject_eventApplyUpscalerSettingsOnly_Parms, WorldContextObject), Z_Construct_UClass_UObject_NoRegister, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyUpscalerSettingsOnly_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyUpscalerSettingsOnly_Statics::NewProp_WorldContextObject,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyUpscalerSettingsOnly_Statics::PropPointers) < 2048);
+// ********** End Function ApplyUpscalerSettingsOnly Property Definitions **************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyUpscalerSettingsOnly_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UZonefallSettingsDataObject, nullptr, "ApplyUpscalerSettingsOnly", 	Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyUpscalerSettingsOnly_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyUpscalerSettingsOnly_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyUpscalerSettingsOnly_Statics::ZonefallSettingsDataObject_eventApplyUpscalerSettingsOnly_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyUpscalerSettingsOnly_Statics::Function_MetaDataParams), Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyUpscalerSettingsOnly_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyUpscalerSettingsOnly_Statics::ZonefallSettingsDataObject_eventApplyUpscalerSettingsOnly_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyUpscalerSettingsOnly()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyUpscalerSettingsOnly_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UZonefallSettingsDataObject::execApplyUpscalerSettingsOnly)
+{
+	P_GET_OBJECT(UObject,Z_Param_WorldContextObject);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	P_THIS->ApplyUpscalerSettingsOnly(Z_Param_WorldContextObject);
+	P_NATIVE_END;
+}
+// ********** End Class UZonefallSettingsDataObject Function ApplyUpscalerSettingsOnly *************
+
 // ********** Begin Class UZonefallSettingsDataObject Function GetAvailableScreenResolutions *******
 struct Z_Construct_UFunction_UZonefallSettingsDataObject_GetAvailableScreenResolutions_Statics
 {
@@ -413,6 +471,48 @@ DEFINE_FUNCTION(UZonefallSettingsDataObject::execLoadFromSystem)
 }
 // ********** End Class UZonefallSettingsDataObject Function LoadFromSystem ************************
 
+// ********** Begin Class UZonefallSettingsDataObject Function LoadUpscalerSettingsFromConfig ******
+struct Z_Construct_UFunction_UZonefallSettingsDataObject_LoadUpscalerSettingsFromConfig_Statics
+{
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "Zonefall|Settings" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/**\n\x09 * Loads persisted upscaler settings (FSR/DLSS/FrameGen) from per-user config (GameUserSettings.ini).\n\x09 * This exists because upscaler CVars are not guaranteed to be serialized by UGameUserSettings.\n\x09 */" },
+#endif
+		{ "ModuleRelativePath", "Public/UI/ZonefallSettingsDataObject.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Loads persisted upscaler settings (FSR/DLSS/FrameGen) from per-user config (GameUserSettings.ini).\nThis exists because upscaler CVars are not guaranteed to be serialized by UGameUserSettings." },
+#endif
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function LoadUpscalerSettingsFromConfig constinit property declarations ********
+// ********** End Function LoadUpscalerSettingsFromConfig constinit property declarations **********
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UZonefallSettingsDataObject_LoadUpscalerSettingsFromConfig_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UZonefallSettingsDataObject, nullptr, "LoadUpscalerSettingsFromConfig", 	nullptr, 
+	0, 
+0,
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UZonefallSettingsDataObject_LoadUpscalerSettingsFromConfig_Statics::Function_MetaDataParams), Z_Construct_UFunction_UZonefallSettingsDataObject_LoadUpscalerSettingsFromConfig_Statics::Function_MetaDataParams)},  };
+UFunction* Z_Construct_UFunction_UZonefallSettingsDataObject_LoadUpscalerSettingsFromConfig()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UZonefallSettingsDataObject_LoadUpscalerSettingsFromConfig_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UZonefallSettingsDataObject::execLoadUpscalerSettingsFromConfig)
+{
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	P_THIS->LoadUpscalerSettingsFromConfig();
+	P_NATIVE_END;
+}
+// ********** End Class UZonefallSettingsDataObject Function LoadUpscalerSettingsFromConfig ********
+
 // ********** Begin Class UZonefallSettingsDataObject Function SanitizeSettings ********************
 struct Z_Construct_UFunction_UZonefallSettingsDataObject_SanitizeSettings_Statics
 {
@@ -454,6 +554,48 @@ DEFINE_FUNCTION(UZonefallSettingsDataObject::execSanitizeSettings)
 	P_NATIVE_END;
 }
 // ********** End Class UZonefallSettingsDataObject Function SanitizeSettings **********************
+
+// ********** Begin Class UZonefallSettingsDataObject Function SaveUpscalerSettingsToConfig ********
+struct Z_Construct_UFunction_UZonefallSettingsDataObject_SaveUpscalerSettingsToConfig_Statics
+{
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "Zonefall|Settings" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Persists current upscaler settings (FSR/DLSS/FrameGen) to per-user config (GameUserSettings.ini). */" },
+#endif
+		{ "ModuleRelativePath", "Public/UI/ZonefallSettingsDataObject.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Persists current upscaler settings (FSR/DLSS/FrameGen) to per-user config (GameUserSettings.ini)." },
+#endif
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function SaveUpscalerSettingsToConfig constinit property declarations **********
+// ********** End Function SaveUpscalerSettingsToConfig constinit property declarations ************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UZonefallSettingsDataObject_SaveUpscalerSettingsToConfig_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UZonefallSettingsDataObject, nullptr, "SaveUpscalerSettingsToConfig", 	nullptr, 
+	0, 
+0,
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x44020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UZonefallSettingsDataObject_SaveUpscalerSettingsToConfig_Statics::Function_MetaDataParams), Z_Construct_UFunction_UZonefallSettingsDataObject_SaveUpscalerSettingsToConfig_Statics::Function_MetaDataParams)},  };
+UFunction* Z_Construct_UFunction_UZonefallSettingsDataObject_SaveUpscalerSettingsToConfig()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UZonefallSettingsDataObject_SaveUpscalerSettingsToConfig_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UZonefallSettingsDataObject::execSaveUpscalerSettingsToConfig)
+{
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	P_THIS->SaveUpscalerSettingsToConfig();
+	P_NATIVE_END;
+}
+// ********** End Class UZonefallSettingsDataObject Function SaveUpscalerSettingsToConfig **********
 
 // ********** Begin Class UZonefallSettingsDataObject Function SetDefaults *************************
 struct Z_Construct_UFunction_UZonefallSettingsDataObject_SetDefaults_Statics
@@ -705,10 +847,13 @@ struct Z_Construct_UClass_UZonefallSettingsDataObject_Statics
 		{ .NameUTF8 = UTF8TEXT("ApplyDisplayModeAndResolution"), .Pointer = &UZonefallSettingsDataObject::execApplyDisplayModeAndResolution },
 		{ .NameUTF8 = UTF8TEXT("ApplyGraphicsPreset"), .Pointer = &UZonefallSettingsDataObject::execApplyGraphicsPreset },
 		{ .NameUTF8 = UTF8TEXT("ApplyToSystem"), .Pointer = &UZonefallSettingsDataObject::execApplyToSystem },
+		{ .NameUTF8 = UTF8TEXT("ApplyUpscalerSettingsOnly"), .Pointer = &UZonefallSettingsDataObject::execApplyUpscalerSettingsOnly },
 		{ .NameUTF8 = UTF8TEXT("GetAvailableScreenResolutions"), .Pointer = &UZonefallSettingsDataObject::execGetAvailableScreenResolutions },
 		{ .NameUTF8 = UTF8TEXT("GetCurrentScreenResolutionString"), .Pointer = &UZonefallSettingsDataObject::execGetCurrentScreenResolutionString },
 		{ .NameUTF8 = UTF8TEXT("LoadFromSystem"), .Pointer = &UZonefallSettingsDataObject::execLoadFromSystem },
+		{ .NameUTF8 = UTF8TEXT("LoadUpscalerSettingsFromConfig"), .Pointer = &UZonefallSettingsDataObject::execLoadUpscalerSettingsFromConfig },
 		{ .NameUTF8 = UTF8TEXT("SanitizeSettings"), .Pointer = &UZonefallSettingsDataObject::execSanitizeSettings },
+		{ .NameUTF8 = UTF8TEXT("SaveUpscalerSettingsToConfig"), .Pointer = &UZonefallSettingsDataObject::execSaveUpscalerSettingsToConfig },
 		{ .NameUTF8 = UTF8TEXT("SetDefaults"), .Pointer = &UZonefallSettingsDataObject::execSetDefaults },
 		{ .NameUTF8 = UTF8TEXT("SetScreenResolutionFromString"), .Pointer = &UZonefallSettingsDataObject::execSetScreenResolutionFromString },
 	};
@@ -717,10 +862,13 @@ struct Z_Construct_UClass_UZonefallSettingsDataObject_Statics
 		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyDisplayModeAndResolution, "ApplyDisplayModeAndResolution" }, // 1816398751
 		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyGraphicsPreset, "ApplyGraphicsPreset" }, // 4166528035
 		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyToSystem, "ApplyToSystem" }, // 1493230624
+		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyUpscalerSettingsOnly, "ApplyUpscalerSettingsOnly" }, // 3209068204
 		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_GetAvailableScreenResolutions, "GetAvailableScreenResolutions" }, // 810559174
 		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_GetCurrentScreenResolutionString, "GetCurrentScreenResolutionString" }, // 2488088489
 		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_LoadFromSystem, "LoadFromSystem" }, // 2096354152
+		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_LoadUpscalerSettingsFromConfig, "LoadUpscalerSettingsFromConfig" }, // 3163002483
 		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_SanitizeSettings, "SanitizeSettings" }, // 2817720149
+		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_SaveUpscalerSettingsToConfig, "SaveUpscalerSettingsToConfig" }, // 3470784520
 		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_SetDefaults, "SetDefaults" }, // 3467944177
 		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_SetScreenResolutionFromString, "SetScreenResolutionFromString" }, // 673599283
 	};
@@ -827,10 +975,10 @@ struct Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_
 		{ EZonefallGraphicsPreset_StaticEnum, TEXT("EZonefallGraphicsPreset"), &Z_Registration_Info_UEnum_EZonefallGraphicsPreset, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 2227815438U) },
 	};
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_UZonefallSettingsDataObject, UZonefallSettingsDataObject::StaticClass, TEXT("UZonefallSettingsDataObject"), &Z_Registration_Info_UClass_UZonefallSettingsDataObject, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UZonefallSettingsDataObject), 3667559918U) },
+		{ Z_Construct_UClass_UZonefallSettingsDataObject, UZonefallSettingsDataObject::StaticClass, TEXT("UZonefallSettingsDataObject"), &Z_Registration_Info_UClass_UZonefallSettingsDataObject, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UZonefallSettingsDataObject), 3254788422U) },
 	};
 }; // Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h__Script_UIWorld_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h__Script_UIWorld_1809538974{
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h__Script_UIWorld_1627444745{
 	TEXT("/Script/UIWorld"),
 	Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h__Script_UIWorld_Statics::ClassInfo),
 	nullptr, 0,

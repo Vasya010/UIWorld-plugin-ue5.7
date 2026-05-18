@@ -13,12 +13,15 @@
 #include "SocketSubsystem.h"
 #include "UI/ZonefallLoadingScreenWidget.h"
 #include "UI/ZonefallPauseMenuWidget.h"
+#include "UI/ZonefallSettingsDataObject.h"
 #include "UI/ZonefallShaderLoadingWidget.h"
 #include "HAL/FileManager.h"
 #include "HAL/PlatformFileManager.h"
 #include "Misc/FileHelper.h"
+#include "Misc/PackageName.h"
 #include "Misc/Paths.h"
 #include "Misc/App.h"
+#include "UObject/Package.h"
 #include "ShaderCompiler.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogUIWorldStartupFlow, Log, All);
@@ -116,6 +119,92 @@ namespace
 		}
 		return Out;
 	}
+
+	/** Short names like "1" or "Menu" work in PIE but often fail in packaged builds; resolve to a full /Game/... map package when possible. */
+	static FName UIWorldResolveLevelNameForOpen(UWorld* World, FName LevelName)
+	{
+		if (LevelName.IsNone())
+		{
+			return NAME_None;
+		}
+
+		FString Raw = LevelName.ToString();
+		if (Raw.IsEmpty())
+		{
+			return NAME_None;
+		}
+
+		{
+			const int32 DotIdx = Raw.Find(TEXT("."), ESearchCase::CaseSensitive, ESearchDir::FromStart);
+			if (DotIdx != INDEX_NONE)
+			{
+				const FString MaybePackage = Raw.Left(DotIdx);
+				if (FPackageName::DoesPackageExist(MaybePackage))
+				{
+					return FName(*MaybePackage);
+				}
+			}
+		}
+
+		if (Raw.StartsWith(TEXT("/")))
+		{
+			if (FPackageName::DoesPackageExist(Raw))
+			{
+				return LevelName;
+			}
+			const FString AsPackage = FPackageName::ObjectPathToPackageName(Raw);
+			if (AsPackage != Raw && FPackageName::DoesPackageExist(AsPackage))
+			{
+				return FName(*AsPackage);
+			}
+			UE_LOG(
+				LogUIWorldStartupFlow,
+				Warning,
+				TEXT("[LevelLoad] Package not found for '%s'. Ensure the map is cooked (Project Settings > Packaging / Asset Manager)."),
+				*Raw
+			);
+			return LevelName;
+		}
+
+		static const TCHAR* Prefixes[] = {
+			TEXT("/Game/"),
+			TEXT("/Game/Maps/"),
+			TEXT("/Game/Levels/"),
+		};
+
+		for (const TCHAR* Prefix : Prefixes)
+		{
+			const FString Candidate = FString::Printf(TEXT("%s%s"), Prefix, *Raw);
+			if (FPackageName::DoesPackageExist(Candidate))
+			{
+				UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[LevelLoad] Resolved '%s' -> '%s'"), *Raw, *Candidate);
+				return FName(*Candidate);
+			}
+		}
+
+		if (World && World->GetOutermost())
+		{
+			const FString OuterName = World->GetOutermost()->GetName();
+			const FString Dir = FPackageName::GetLongPackagePath(OuterName);
+			if (!Dir.IsEmpty())
+			{
+				const FString SameFolder = FPaths::Combine(Dir, Raw);
+				if (FPackageName::DoesPackageExist(SameFolder))
+				{
+					UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[LevelLoad] Resolved '%s' -> '%s' (next to %s)"), *Raw, *SameFolder, *OuterName);
+					return FName(*SameFolder);
+				}
+			}
+		}
+
+		UE_LOG(
+			LogUIWorldStartupFlow,
+			Warning,
+			TEXT("[LevelLoad] Could not resolve short map name '%s'. Use a full path (e.g. /Game/Levels/MyMap) and include the map in packaging."),
+			*Raw
+		);
+		return LevelName;
+	}
 }
 
 void UUIWorldMenuGameInstance::Init()
@@ -130,6 +219,15 @@ void UUIWorldMenuGameInstance::OnStart()
 
 	bStartupShaderPhaseActive = false;
 	bStartupShaderPhaseCompleted = false;
+
+	// Restore persisted upscaler settings early (FSR/DLSS/FG CVars often reset between runs).
+	// This is especially important in packaged builds where CVars fall back to defaults on launch.
+	{
+		UZonefallSettingsDataObject* StartupSettings = NewObject<UZonefallSettingsDataObject>(this);
+		StartupSettings->SetDefaults();
+		StartupSettings->LoadUpscalerSettingsFromConfig();
+		StartupSettings->ApplyUpscalerSettingsOnly(this);
+	}
 
 	UE_LOG(
 		LogUIWorldStartupFlow,
@@ -405,7 +503,8 @@ bool UUIWorldMenuGameInstance::LoadLevelAndFocusGame(FName LevelName, bool bAbso
 
 	CloseMenuUI(false);
 	bApplyGameFocusOnNextMapLoad = true;
-	UGameplayStatics::OpenLevel(World, LevelName, bAbsolute);
+	const FName Resolved = UIWorldResolveLevelNameForOpen(World, LevelName);
+	UGameplayStatics::OpenLevel(World, Resolved, bAbsolute);
 	return true;
 }
 
@@ -424,7 +523,7 @@ bool UUIWorldMenuGameInstance::LoadLevelWithLoadingScreen(FName LevelName, bool 
 	ShowSimpleTravelLoadingScreen();
 	CloseMenuUI(false);
 	bApplyGameFocusOnNextMapLoad = true;
-	PendingLevelNameToLoad = LevelName;
+	PendingLevelNameToLoad = UIWorldResolveLevelNameForOpen(World, LevelName);
 	bPendingLevelAbsolute = bAbsolute;
 
 	World->GetTimerManager().ClearTimer(PendingLoadLevelTimerHandle);
@@ -433,7 +532,7 @@ bool UUIWorldMenuGameInstance::LoadLevelWithLoadingScreen(FName LevelName, bool 
 		: FMath::Clamp(LoadingScreenDelayBeforeOpenLevel, 0.0f, 2.0f);
 	if (bUseMapComplexityDelay)
 	{
-		Delay += EstimateMapComplexityDelay(LevelName);
+		Delay += EstimateMapComplexityDelay(PendingLevelNameToLoad);
 	}
 	Delay = FMath::Clamp(Delay, 0.0f, 30.0f);
 	if (Delay <= KINDA_SMALL_NUMBER)
@@ -461,7 +560,7 @@ void UUIWorldMenuGameInstance::ExecutePendingLevelLoad()
 		return;
 	}
 
-	const FName LevelToOpen = PendingLevelNameToLoad;
+	const FName LevelToOpen = UIWorldResolveLevelNameForOpen(World, PendingLevelNameToLoad);
 	const bool bAbsolute = bPendingLevelAbsolute;
 	PendingLevelNameToLoad = NAME_None;
 	if (UZonefallLoadingScreenWidget* TypedLoading = Cast<UZonefallLoadingScreenWidget>(ActiveLoadingScreenWidget))
@@ -671,7 +770,20 @@ bool UUIWorldMenuGameInstance::LoadMainMenuLevel(bool bAbsolute)
 	{
 		return false;
 	}
-	return LoadLevelAndFocusGame(MainMenuLevelName, bAbsolute);
+
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return false;
+	}
+
+	// Main menu should return to UI focus flow (visible cursor), not gameplay focus.
+	UGameplayStatics::SetGamePaused(World, false);
+	CloseMenuUI(false);
+	bApplyGameFocusOnNextMapLoad = false;
+	const FName ResolvedMainMenu = UIWorldResolveLevelNameForOpen(World, MainMenuLevelName);
+	UGameplayStatics::OpenLevel(World, ResolvedMainMenu, bAbsolute);
+	return true;
 }
 
 void UUIWorldMenuGameInstance::QuitGameNow(bool bIgnorePlatformRestrictions)
@@ -1118,7 +1230,17 @@ void UUIWorldMenuGameInstance::PollStartupShaderPhase()
 	const float Elapsed = World->GetRealTimeSeconds() - StartupShaderPhaseStartSeconds;
 	const bool bReachedMinDuration = Elapsed >= MinDuration;
 	const bool bReachedMaxDuration = Elapsed >= MaxDuration;
-	const bool bShaderDone = !ActiveStartupShaderWidget || ActiveStartupShaderWidget->IsShaderCompilationLikelyFinished();
+	const int32 RemainingJobs = GShaderCompilingManager
+		? FMath::Max(0, GShaderCompilingManager->GetNumRemainingJobs())
+		: 0;
+	const bool bCompilerReportsDone = (GShaderCompilingManager == nullptr) || (RemainingJobs <= 0);
+	const bool bWidgetReportsDone = !ActiveStartupShaderWidget || ActiveStartupShaderWidget->IsShaderCompilationLikelyFinished();
+	const bool bShaderDone = bCompilerReportsDone || bWidgetReportsDone;
+
+	if (bCompilerReportsDone && ActiveStartupShaderWidget)
+	{
+		ActiveStartupShaderWidget->SetShaderCompileProgress(100.0f);
+	}
 
 	if ((bReachedMinDuration && bShaderDone) || bReachedMaxDuration)
 	{

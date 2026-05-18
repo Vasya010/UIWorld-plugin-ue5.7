@@ -1,0 +1,11 @@
+{
+	"SourceFiles": [
+		"E:\\Zonefall\\Plugins\\UIWorld\\_BuildOutput\\HostProject\\Plugins\\UIWorld\\Source\\UIWorld\\UIWorld.Build.cs",
+		"E:\\Zonefall\\Plugins\\UIWorld\\_BuildOutput\\HostProject\\Intermediate\\Source\\HostProject.Build.cs",
+		"E:\\Zonefall\\Plugins\\UIWorld\\_BuildOutput\\HostProject\\Intermediate\\Source\\HostProject.Target.cs",
+		"E:\\Zonefall\\Plugins\\UIWorld\\_BuildOutput\\HostProject\\Intermediate\\Source\\HostProjectClient.Target.cs",
+		"E:\\Zonefall\\Plugins\\UIWorld\\_BuildOutput\\HostProject\\Intermediate\\Source\\HostProjectEditor.Target.cs",
+		"E:\\Zonefall\\Plugins\\UIWorld\\_BuildOutput\\HostProject\\Intermediate\\Source\\HostProjectServer.Target.cs"
+	],
+	"EngineVersion": "5.7.4"
+}

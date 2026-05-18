@@ -20,7 +20,7 @@
 /ALTERNATENAME:__imp___std_init_once_complete=__imp_InitOnceComplete
 /DELAYLOAD:"d3d12.dll"
 /DELAYLOAD:"DBGHELP.DLL"
-/LIBPATH:"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.50.35717/lib/x64"
+/LIBPATH:"C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.44.35207/lib/x64"
 /LIBPATH:"C:/Program Files (x86)/Windows Kits/10/lib/10.0.22621.0/ucrt/x64"
 /LIBPATH:"C:/Program Files (x86)/Windows Kits/10/lib/10.0.22621.0/um/x64"
 /NODEFAULTLIB:"LIBCMT"
@@ -37,13 +37,14 @@
 /NOIMPLIB
 /NOEXP
 /NATVIS:"../Intermediate/Build/Win64/x64/UnrealEditor/Development/RenderCore/RenderCore.natvis"
-"E:/Zonefall/Intermediate/Build/Win64/x64/ZonefallEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.InclOrderUnreal5_4.h.obj"
-"E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/Module.UIWorld.1.cpp.obj"
-"E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/Module.UIWorld.2.cpp.obj"
-"E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/Module.UIWorld.3.cpp.obj"
+"E:/Zonefall/Intermediate/Build/Win64/x64/ZonefallEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h.obj"
+"E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/Module.UIWorld.cpp.obj"
 "E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/UIWorldMenuGameInstance.cpp.obj"
 "E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/UIWorldModule.cpp.obj"
+"E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/UIWorldSaveGame.cpp.obj"
+"E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/UIWorldSaveManager.cpp.obj"
 "E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/UIWorldMainMenuWidget.cpp.obj"
+"E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/UIWorldSimpleMainMenuWidget.cpp.obj"
 "E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/ZonefallFancyMenuWidget.cpp.obj"
 "E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/ZonefallLoadingScreenWidget.cpp.obj"
 "E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/ZonefallModernButtonWidget.cpp.obj"

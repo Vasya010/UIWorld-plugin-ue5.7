@@ -96,6 +96,24 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Zonefall|Settings")
 	void ApplyGraphicsPreset(EZonefallGraphicsPreset Preset);
 
+	/**
+	 * Loads persisted upscaler settings (FSR/DLSS/FrameGen) from per-user config (GameUserSettings.ini).
+	 * This exists because upscaler CVars are not guaranteed to be serialized by UGameUserSettings.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Zonefall|Settings")
+	void LoadUpscalerSettingsFromConfig();
+
+	/** Persists current upscaler settings (FSR/DLSS/FrameGen) to per-user config (GameUserSettings.ini). */
+	UFUNCTION(BlueprintCallable, Category = "Zonefall|Settings")
+	void SaveUpscalerSettingsToConfig() const;
+
+	/**
+	 * Applies ONLY upscaler-related settings (FSR/DLSS/FrameGen) to runtime CVars/libraries.
+	 * Safe to call on startup to restore FSR without overriding other game user settings.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Zonefall|Settings")
+	void ApplyUpscalerSettingsOnly(UObject* WorldContextObject);
+
 private:
 	static FString NormalizeDisplayModeValue(const FString& InValue);
 	static FString NormalizeQualityValue(const FString& InValue);

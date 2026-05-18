@@ -16,10 +16,10 @@
 			"ZonefallModernComboBoxWidget.gen.cpp.obj",
 			"ZonefallModernProgressBarWidget.gen.cpp.obj",
 			"ZonefallPauseMenuWidget.gen.cpp.obj",
-			"ZonefallSettingsDataObject.gen.cpp.obj",
-			"ZonefallSettingsMenuWidget.gen.cpp.obj"
+			"ZonefallSettingsDataObject.gen.cpp.obj"
 		],
 		"Module.UIWorld.3.cpp.obj": [
+			"ZonefallSettingsMenuWidget.gen.cpp.obj",
 			"ZonefallShaderLoadingWidget.gen.cpp.obj",
 			"ZonefallStartupIntroWidget.gen.cpp.obj",
 			"PerModuleInline.gen.cpp.obj",
@@ -34,11 +34,7 @@
 			"ZonefallModernButtonWidget.cpp.obj",
 			"ZonefallModernComboBoxWidget.cpp.obj",
 			"ZonefallModernProgressBarWidget.cpp.obj",
-			"ZonefallPauseMenuWidget.cpp.obj",
-			"ZonefallSettingsDataObject.cpp.obj",
-			"ZonefallSettingsMenuWidget.cpp.obj",
-			"ZonefallShaderLoadingWidget.cpp.obj",
-			"ZonefallStartupIntroWidget.cpp.obj"
+			"ZonefallPauseMenuWidget.cpp.obj"
 		]
 	}
 }

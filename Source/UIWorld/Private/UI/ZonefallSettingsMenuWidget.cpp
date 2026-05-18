@@ -7,7 +7,11 @@
 #include "Components/Border.h"
 #include "Components/Button.h"
 #include "Components/ComboBoxString.h"
+#include "Components/HorizontalBox.h"
+#include "Components/HorizontalBoxSlot.h"
 #include "Components/ProgressBar.h"
+#include "Components/SizeBox.h"
+#include "Components/Spacer.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "Components/VerticalBoxSlot.h"
@@ -229,14 +233,40 @@ void UZonefallSettingsMenuWidget::BuildLayoutIfNeeded()
 		TitleSlot->SetPadding(FMargin(4, 4, 4, 16));
 	}
 
+	auto AddSectionHeader = [this](const TCHAR* HeaderText)
+	{
+		if (!RootBox)
+		{
+			return;
+		}
+
+		UTextBlock* Header = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
+		FSlateFontInfo HeaderFont;
+		HeaderFont.Size = 22;
+		Header->SetFont(HeaderFont);
+		Header->SetText(FText::FromString(HeaderText));
+		Header->SetColorAndOpacity(FSlateColor(FLinearColor(0.72f, 0.84f, 0.98f, 1.0f)));
+		Header->SetShadowOffset(FVector2D(0.0f, 1.0f));
+		Header->SetShadowColorAndOpacity(FLinearColor(0.0f, 0.0f, 0.0f, 0.70f));
+		if (UVerticalBoxSlot* Slot = RootBox->AddChildToVerticalBox(Header))
+		{
+			Slot->SetPadding(FMargin(0, 14, 0, 6));
+		}
+	};
+
+	AddSectionHeader(TEXT("DISPLAY"));
 	DisplayModeComboBox = CreateOptionCombo(TEXT("DisplayModeCombo"), DisplayModeText);
+	ScreenResolutionComboBox = CreateOptionCombo(TEXT("Fullscreen"), ScreenResolutionText);
+
+	AddSectionHeader(TEXT("GRAPHICS"));
 	GraphicsPresetComboBox = CreateOptionCombo(TEXT("GraphicsPresetCombo"), GraphicsPresetText);
 	OverallQualityComboBox = CreateOptionCombo(TEXT("OverallQualityCombo"), OverallQualityText);
 	ResolutionScaleComboBox = CreateOptionCombo(TEXT("ResolutionScaleCombo"), ResolutionScaleText);
-	ScreenResolutionComboBox = CreateOptionCombo(TEXT("Fullscreen"), ScreenResolutionText);
 	VSyncComboBox = CreateOptionCombo(TEXT("VSyncCombo"), VSyncText);
 	FPSLimitComboBox = CreateOptionCombo(TEXT("FPSLimitCombo"), FPSLimitText);
 	LumenComboBox = CreateOptionCombo(TEXT("LumenCombo"), LumenText);
+
+	AddSectionHeader(TEXT("UPSCALING"));
 	DLSSComboBox = CreateOptionCombo(TEXT("DLSSCombo"), DLSSText);
 	FrameGenerationComboBox = CreateOptionCombo(TEXT("FrameGenerationCombo"), FrameGenerationText);
 	FSRComboBox = CreateOptionCombo(TEXT("FSRCombo"), FSRText);
@@ -718,19 +748,50 @@ void UZonefallSettingsMenuWidget::ApplyModernVisualTheme()
 
 UComboBoxString* UZonefallSettingsMenuWidget::CreateOptionCombo(const FName Name, TObjectPtr<UTextBlock>& OutTextBlock)
 {
+	// AAA-ish row: label + control on the same line in a rounded panel.
+	UBorder* RowPanel = WidgetTree->ConstructWidget<UBorder>(UBorder::StaticClass());
+	RowPanel->SetBrush(FSlateRoundedBoxBrush(FLinearColor(0.02f, 0.04f, 0.07f, 0.65f), 12.0f));
+	RowPanel->SetPadding(FMargin(12.0f, 10.0f));
+
+	UHorizontalBox* Row = WidgetTree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass());
+	RowPanel->SetContent(Row);
+
 	OutTextBlock = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
-	ApplyLabelStyle(OutTextBlock, 20);
-	if (UVerticalBoxSlot* LabelSlot = RootBox->AddChildToVerticalBox(OutTextBlock))
+	ApplyLabelStyle(OutTextBlock, 19);
+
+	USizeBox* LabelSize = WidgetTree->ConstructWidget<USizeBox>(USizeBox::StaticClass());
+	LabelSize->SetWidthOverride(260.0f);
+	LabelSize->SetContent(OutTextBlock);
+
+	if (UHorizontalBoxSlot* LabelSlot = Row->AddChildToHorizontalBox(LabelSize))
 	{
-		LabelSlot->SetPadding(FMargin(0, 6, 0, 2));
+		LabelSlot->SetPadding(FMargin(0, 0, 12, 0));
+		LabelSlot->SetHorizontalAlignment(HAlign_Left);
+		LabelSlot->SetVerticalAlignment(VAlign_Center);
+	}
+
+	USpacer* Spacer = WidgetTree->ConstructWidget<USpacer>(USpacer::StaticClass());
+	if (UHorizontalBoxSlot* SpacerSlot = Row->AddChildToHorizontalBox(Spacer))
+	{
+		SpacerSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
 	}
 
 	UComboBoxString* Combo = WidgetTree->ConstructWidget<UComboBoxString>(UComboBoxString::StaticClass(), Name);
 	ApplyComboBoxStyle(Combo);
-	if (UVerticalBoxSlot* ComboSlot = RootBox->AddChildToVerticalBox(Combo))
+	USizeBox* ComboSize = WidgetTree->ConstructWidget<USizeBox>(USizeBox::StaticClass());
+	ComboSize->SetMinDesiredWidth(340.0f);
+	ComboSize->SetContent(Combo);
+	if (UHorizontalBoxSlot* ComboSlot = Row->AddChildToHorizontalBox(ComboSize))
 	{
-		ComboSlot->SetPadding(FMargin(0, 2, 0, 8));
+		ComboSlot->SetHorizontalAlignment(HAlign_Fill);
+		ComboSlot->SetVerticalAlignment(VAlign_Center);
 	}
+
+	if (UVerticalBoxSlot* RowSlot = RootBox->AddChildToVerticalBox(RowPanel))
+	{
+		RowSlot->SetPadding(FMargin(0, 4, 0, 6));
+	}
+
 	return Combo;
 }
 

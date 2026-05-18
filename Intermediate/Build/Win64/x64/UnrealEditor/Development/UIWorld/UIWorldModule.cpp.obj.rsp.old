@@ -1,0 +1,14 @@
+"E:/Zonefall/Plugins/UIWorld/Source/UIWorld/Private/UIWorldModule.cpp"
+@"E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/UIWorld.Shared.rsp"
+/FI"E:/Zonefall/Intermediate/Build/Win64/x64/ZonefallEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h"
+/FI"E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/Definitions.UIWorld.h"
+/Yu"E:/Zonefall/Intermediate/Build/Win64/x64/ZonefallEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h"
+/Fp"E:/Zonefall/Intermediate/Build/Win64/x64/ZonefallEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h.pch"
+/Fo"E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/UIWorldModule.cpp.obj"
+/experimental:log "E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/UIWorldModule.cpp.sarif"
+/sourceDependencies "E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/UIWorldModule.cpp.dep.json"
+/nologo
+/TP
+/GR-
+/std:c++20
+/wd5054
