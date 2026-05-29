@@ -1017,7 +1017,7 @@ UZonefallModernButtonWidget::~UZonefallModernButtonWidget() {}
 // ********** End Class UZonefallModernButtonWidget ************************************************
 
 // ********** Begin Registration *******************************************************************
-struct Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h__Script_UIWorld_Statics
+struct Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h__Script_UIWorld_Statics
 {
 	static constexpr FEnumRegisterCompiledInInfo EnumInfo[] = {
 		{ EZonefallModernButtonTheme_StaticEnum, TEXT("EZonefallModernButtonTheme"), &Z_Registration_Info_UEnum_EZonefallModernButtonTheme, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 3382823800U) },
@@ -1025,12 +1025,12 @@ struct Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
 		{ Z_Construct_UClass_UZonefallModernButtonWidget, UZonefallModernButtonWidget::StaticClass, TEXT("UZonefallModernButtonWidget"), &Z_Registration_Info_UClass_UZonefallModernButtonWidget, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UZonefallModernButtonWidget), 2446560959U) },
 	};
-}; // Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h__Script_UIWorld_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h__Script_UIWorld_989530972{
+}; // Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h__Script_UIWorld_Statics 
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h__Script_UIWorld_989530972{
 	TEXT("/Script/UIWorld"),
-	Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h__Script_UIWorld_Statics::ClassInfo),
+	Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h__Script_UIWorld_Statics::ClassInfo),
 	nullptr, 0,
-	Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h__Script_UIWorld_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h__Script_UIWorld_Statics::EnumInfo),
+	Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h__Script_UIWorld_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h__Script_UIWorld_Statics::EnumInfo),
 };
 // ********** End Registration *********************************************************************
 

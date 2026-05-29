@@ -15,9 +15,10 @@
 #include "UObject/ScriptMacros.h"
 
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
+enum class EZonefallOnlineTravelPhase : uint8;
 
 // ********** Begin Class UZonefallLoadingScreenWidget *********************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h_16_RPC_WRAPPERS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h_17_RPC_WRAPPERS_NO_PURE_DECLS \
 	DECLARE_FUNCTION(execHandleProgressTick); \
 	DECLARE_FUNCTION(execHandleStatusTextTick); \
 	DECLARE_FUNCTION(execHandleLoadingTextTick); \
@@ -26,13 +27,16 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 	DECLARE_FUNCTION(execStartImageRotation); \
 	DECLARE_FUNCTION(execEnterFinalizingPhase); \
 	DECLARE_FUNCTION(execCompleteLoading); \
+	DECLARE_FUNCTION(execSetOnlineTravelStatus); \
+	DECLARE_FUNCTION(execConfigureOnlineTravelLoading); \
+	DECLARE_FUNCTION(execStartOnlineTravelLoading); \
 	DECLARE_FUNCTION(execStartLoading);
 
 
 struct Z_Construct_UClass_UZonefallLoadingScreenWidget_Statics;
 UIWORLD_API UClass* Z_Construct_UClass_UZonefallLoadingScreenWidget_NoRegister();
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h_16_INCLASS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h_17_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesUZonefallLoadingScreenWidget(); \
 	friend struct ::Z_Construct_UClass_UZonefallLoadingScreenWidget_Statics; \
@@ -43,7 +47,7 @@ public: \
 	DECLARE_SERIALIZER(UZonefallLoadingScreenWidget)
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h_16_ENHANCED_CONSTRUCTORS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h_17_ENHANCED_CONSTRUCTORS \
 	/** Deleted move- and copy-constructors, should never be used */ \
 	UZonefallLoadingScreenWidget(UZonefallLoadingScreenWidget&&) = delete; \
 	UZonefallLoadingScreenWidget(const UZonefallLoadingScreenWidget&) = delete; \
@@ -53,13 +57,13 @@ public: \
 	NO_API virtual ~UZonefallLoadingScreenWidget();
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h_13_PROLOG
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h_16_GENERATED_BODY \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h_14_PROLOG
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h_17_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h_16_RPC_WRAPPERS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h_16_INCLASS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h_16_ENHANCED_CONSTRUCTORS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h_17_RPC_WRAPPERS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h_17_INCLASS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h_17_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
@@ -69,6 +73,6 @@ class UZonefallLoadingScreenWidget;
 // ********** End Class UZonefallLoadingScreenWidget ***********************************************
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h
+#define CURRENT_FILE_ID FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h
 
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

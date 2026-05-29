@@ -1,0 +1,16 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "e:\\zonefallprotocol\\plugins\\uiworld\\source\\uiworld\\private\\localization\\zonefalllocalizationsubsystem.cpp",
+        "ProvidedModule": "",
+        "PCH": "e:\\zonefallprotocol\\intermediate\\build\\win64\\x64\\zonefallprotocoleditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.inclorderunreal5_4.h.pch",
+        "Includes": [
+            "e:\\zonefallprotocol\\plugins\\uiworld\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\uiworld\\definitions.uiworld.h",
+            "e:\\zonefallprotocol\\plugins\\uiworld\\source\\uiworld\\public\\localization\\zonefalllocalizationsubsystem.h",
+            "e:\\zonefallprotocol\\plugins\\uiworld\\intermediate\\build\\win64\\unrealeditor\\inc\\uiworld\\uht\\zonefalllocalizationsubsystem.generated.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\core\\public\\internationalization\\culture.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

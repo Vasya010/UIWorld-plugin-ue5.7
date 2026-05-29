@@ -132,15 +132,15 @@ UUIWorldSaveGame::~UUIWorldSaveGame() {}
 // ********** End Class UUIWorldSaveGame ***********************************************************
 
 // ********** Begin Registration *******************************************************************
-struct Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveGame_h__Script_UIWorld_Statics
+struct Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveGame_h__Script_UIWorld_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
 		{ Z_Construct_UClass_UUIWorldSaveGame, UUIWorldSaveGame::StaticClass, TEXT("UUIWorldSaveGame"), &Z_Registration_Info_UClass_UUIWorldSaveGame, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UUIWorldSaveGame), 1768510882U) },
 	};
-}; // Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveGame_h__Script_UIWorld_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveGame_h__Script_UIWorld_69895419{
+}; // Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveGame_h__Script_UIWorld_Statics 
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveGame_h__Script_UIWorld_69895419{
 	TEXT("/Script/UIWorld"),
-	Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveGame_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveGame_h__Script_UIWorld_Statics::ClassInfo),
+	Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveGame_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveGame_h__Script_UIWorld_Statics::ClassInfo),
 	nullptr, 0,
 	nullptr, 0,
 };

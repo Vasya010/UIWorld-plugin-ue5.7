@@ -376,15 +376,15 @@ UUIWorldSaveManager::~UUIWorldSaveManager() {}
 // ********** End Class UUIWorldSaveManager ********************************************************
 
 // ********** Begin Registration *******************************************************************
-struct Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveManager_h__Script_UIWorld_Statics
+struct Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveManager_h__Script_UIWorld_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
 		{ Z_Construct_UClass_UUIWorldSaveManager, UUIWorldSaveManager::StaticClass, TEXT("UUIWorldSaveManager"), &Z_Registration_Info_UClass_UUIWorldSaveManager, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UUIWorldSaveManager), 284224086U) },
 	};
-}; // Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveManager_h__Script_UIWorld_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveManager_h__Script_UIWorld_1497061372{
+}; // Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveManager_h__Script_UIWorld_Statics 
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveManager_h__Script_UIWorld_1497061372{
 	TEXT("/Script/UIWorld"),
-	Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveManager_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveManager_h__Script_UIWorld_Statics::ClassInfo),
+	Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveManager_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_Save_UIWorldSaveManager_h__Script_UIWorld_Statics::ClassInfo),
 	nullptr, 0,
 	nullptr, 0,
 };

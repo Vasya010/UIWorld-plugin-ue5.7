@@ -1554,15 +1554,15 @@ UZonefallSettingsMenuWidget::~UZonefallSettingsMenuWidget() {}
 // ********** End Class UZonefallSettingsMenuWidget ************************************************
 
 // ********** Begin Registration *******************************************************************
-struct Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h__Script_UIWorld_Statics
+struct Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h__Script_UIWorld_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
 		{ Z_Construct_UClass_UZonefallSettingsMenuWidget, UZonefallSettingsMenuWidget::StaticClass, TEXT("UZonefallSettingsMenuWidget"), &Z_Registration_Info_UClass_UZonefallSettingsMenuWidget, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UZonefallSettingsMenuWidget), 4259834166U) },
 	};
-}; // Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h__Script_UIWorld_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h__Script_UIWorld_1249543382{
+}; // Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h__Script_UIWorld_Statics 
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h__Script_UIWorld_1249543382{
 	TEXT("/Script/UIWorld"),
-	Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h__Script_UIWorld_Statics::ClassInfo),
+	Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h__Script_UIWorld_Statics::ClassInfo),
 	nullptr, 0,
 	nullptr, 0,
 };

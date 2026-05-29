@@ -1,12 +1,22 @@
 #include "ZonefallSettingsDataObject.h"
 
+#include "AudioDevice.h"
+#include "Camera/CameraComponent.h"
+#include "Character/ZonefallPlayerCharacter.h"
 #include "DLSSLibrary.h"
+#include "Engine/Engine.h"
 #include "Engine/World.h"
 #include "GameFramework/GameUserSettings.h"
+#include "GameFramework/PlayerController.h"
+#include "GenericPlatform/GenericPlatformMisc.h"
 #include "HAL/IConsoleManager.h"
+#include "HAL/PlatformMemory.h"
+#include "HAL/PlatformMisc.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Logging/LogMacros.h"
 #include "Misc/ConfigCacheIni.h"
+#include "RHI.h"
 #include "StreamlineLibraryDLSSG.h"
 
 namespace ZonefallSettingsParse
@@ -14,6 +24,11 @@ namespace ZonefallSettingsParse
 	static const TCHAR* UpscalerConfigSection()
 	{
 		return TEXT("/Script/Zonefall.ZonefallUpscalerSettings");
+	}
+
+	static const TCHAR* AudioDisplayConfigSection()
+	{
+		return TEXT("/Script/Zonefall.ZonefallAudioDisplaySettings");
 	}
 
 	static FString CanonicalizeSpacesAndCase(const FString& InValue)
@@ -38,6 +53,17 @@ namespace ZonefallSettingsParse
 		return 2;
 	}
 
+	static FString GroupLevelToString(int32 Level)
+	{
+		switch (FMath::Clamp(Level, 0, 4))
+		{
+		case 0: return TEXT("Low");
+		case 1: return TEXT("Medium");
+		case 2: return TEXT("High");
+		default: return TEXT("Epic"); // 3 (Epic) and 4 (Cinematic) both shown as Epic in the UI.
+		}
+	}
+
 	static bool IsDLSSSupported()
 	{
 		return UDLSSLibrary::QueryDLSSSupport() == UDLSSSupport::Supported;
@@ -55,7 +81,9 @@ namespace ZonefallSettingsParse
 
 	static bool IsFSRFrameGenerationSupported()
 	{
-		return IConsoleManager::Get().FindConsoleVariable(TEXT("r.FidelityFX.FI.Enabled")) != nullptr;
+		// Force-unavailable: FSR3 frame interpolation crashes in this plugin build
+		// (FFXD3D12Backend::UpdateSwapChain assert). Re-enable only once the plugin is stable.
+		return false;
 	}
 
 	static FString DetectDLSSModeString(bool bSupported)
@@ -249,6 +277,9 @@ void UZonefallSettingsDataObject::SetDefaults()
 	VSync = TEXT("On");
 	FPSLimit = TEXT("120");
 	Lumen = TEXT("On");
+	DirectXVersion = TEXT("DirectX 12");
+	RayTracing = TEXT("Off");
+	VolumetricClouds = TEXT("High");
 	DLSSMode = TEXT("Off");
 	FrameGeneration = TEXT("Off");
 	FSRMode = TEXT("Off");
@@ -379,6 +410,60 @@ void UZonefallSettingsDataObject::LoadFromSystem()
 	// The actual runtime application is done on startup by the game instance (or after Apply).
 	LoadUpscalerSettingsFromConfig();
 
+	// Restore persisted audio/display extras.
+	if (GConfig)
+	{
+		const TCHAR* Section = ZonefallSettingsParse::AudioDisplayConfigSection();
+		float V = 0.0f;
+		if (GConfig->GetFloat(Section, TEXT("MasterVolume"), V, GGameUserSettingsIni)) { MasterVolume = FMath::Clamp(V, 0.0f, 1.0f); }
+		if (GConfig->GetFloat(Section, TEXT("SfxVolume"), V, GGameUserSettingsIni)) { SfxVolume = FMath::Clamp(V, 0.0f, 1.0f); }
+		if (GConfig->GetFloat(Section, TEXT("MusicVolume"), V, GGameUserSettingsIni)) { MusicVolume = FMath::Clamp(V, 0.0f, 1.0f); }
+		if (GConfig->GetFloat(Section, TEXT("VoiceVolume"), V, GGameUserSettingsIni)) { VoiceVolume = FMath::Clamp(V, 0.0f, 1.0f); }
+		if (GConfig->GetFloat(Section, TEXT("Brightness"), V, GGameUserSettingsIni)) { Brightness = FMath::Clamp(V, 0.5f, 2.0f); }
+		if (GConfig->GetFloat(Section, TEXT("FieldOfView"), V, GGameUserSettingsIni)) { FieldOfView = FMath::Clamp(V, 60.0f, 120.0f); }
+	}
+
+	// Detect the currently-running graphics RHI for the DirectX combo.
+	{
+		const FString RHIName = GDynamicRHI ? FString(GDynamicRHI->GetName()) : FString();
+		DirectXVersion = RHIName.Contains(TEXT("D3D11")) ? TEXT("DirectX 11") : TEXT("DirectX 12");
+	}
+
+	// Read the persisted ray tracing master switch.
+	if (GConfig)
+	{
+		bool bRT = false;
+		GConfig->GetBool(TEXT("/Script/Engine.RendererSettings"), TEXT("r.RayTracing"), bRT, GEngineIni);
+		RayTracing = bRT ? TEXT("On") : TEXT("Off");
+	}
+
+	// Volumetric clouds: reflect the live CVar (on/off); default High when enabled.
+	if (IConsoleVariable* CloudCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.VolumetricCloud")))
+	{
+		if (CloudCVar->GetInt() == 0)
+		{
+			VolumetricClouds = TEXT("Off");
+		}
+		else if (VolumetricClouds.IsEmpty() || VolumetricClouds == TEXT("Off"))
+		{
+			VolumetricClouds = TEXT("High");
+		}
+	}
+
+	// Populate advanced per-group quality from the current scalability state.
+	{
+		AdvancedQuality.Add(TEXT("ViewDistance"), ZonefallSettingsParse::GroupLevelToString(Settings->ScalabilityQuality.ViewDistanceQuality));
+		AdvancedQuality.Add(TEXT("Shadows"), ZonefallSettingsParse::GroupLevelToString(Settings->ScalabilityQuality.ShadowQuality));
+		AdvancedQuality.Add(TEXT("GlobalIllumination"), ZonefallSettingsParse::GroupLevelToString(Settings->ScalabilityQuality.GlobalIlluminationQuality));
+		AdvancedQuality.Add(TEXT("Reflections"), ZonefallSettingsParse::GroupLevelToString(Settings->ScalabilityQuality.ReflectionQuality));
+		AdvancedQuality.Add(TEXT("PostProcess"), ZonefallSettingsParse::GroupLevelToString(Settings->ScalabilityQuality.PostProcessQuality));
+		AdvancedQuality.Add(TEXT("Textures"), ZonefallSettingsParse::GroupLevelToString(Settings->ScalabilityQuality.TextureQuality));
+		AdvancedQuality.Add(TEXT("Effects"), ZonefallSettingsParse::GroupLevelToString(Settings->ScalabilityQuality.EffectsQuality));
+		AdvancedQuality.Add(TEXT("Foliage"), ZonefallSettingsParse::GroupLevelToString(Settings->ScalabilityQuality.FoliageQuality));
+		AdvancedQuality.Add(TEXT("Shading"), ZonefallSettingsParse::GroupLevelToString(Settings->ScalabilityQuality.ShadingQuality));
+		AdvancedQuality.Add(TEXT("AntiAliasing"), ZonefallSettingsParse::GroupLevelToString(Settings->ScalabilityQuality.AntiAliasingQuality));
+	}
+
 	const FIntPoint Resolution = Settings->GetScreenResolution();
 	ScreenResolution = FString::Printf(TEXT("%dx%d"), Resolution.X, Resolution.Y);
 	SanitizeSettings();
@@ -457,6 +542,30 @@ void UZonefallSettingsDataObject::ApplyToSystem(UObject* WorldContextObject)
 	Settings->ScalabilityQuality.EffectsQuality = TargetQualityLevel;
 	Settings->ScalabilityQuality.FoliageQuality = TargetQualityLevel;
 	Settings->ScalabilityQuality.ShadingQuality = TargetQualityLevel;
+
+	// Per-group overrides on top of the overall preset (advanced graphics).
+	{
+		auto ApplyGroup = [&](const TCHAR* Group, int32& Field)
+		{
+			if (const FString* V = AdvancedQuality.Find(FName(Group)))
+			{
+				if (!V->IsEmpty())
+				{
+					Field = ZonefallSettingsParse::ParseOverallQualityLevel(*V);
+				}
+			}
+		};
+		ApplyGroup(TEXT("ViewDistance"), Settings->ScalabilityQuality.ViewDistanceQuality);
+		ApplyGroup(TEXT("Shadows"), Settings->ScalabilityQuality.ShadowQuality);
+		ApplyGroup(TEXT("GlobalIllumination"), Settings->ScalabilityQuality.GlobalIlluminationQuality);
+		ApplyGroup(TEXT("Reflections"), Settings->ScalabilityQuality.ReflectionQuality);
+		ApplyGroup(TEXT("PostProcess"), Settings->ScalabilityQuality.PostProcessQuality);
+		ApplyGroup(TEXT("Textures"), Settings->ScalabilityQuality.TextureQuality);
+		ApplyGroup(TEXT("Effects"), Settings->ScalabilityQuality.EffectsQuality);
+		ApplyGroup(TEXT("Foliage"), Settings->ScalabilityQuality.FoliageQuality);
+		ApplyGroup(TEXT("Shading"), Settings->ScalabilityQuality.ShadingQuality);
+		ApplyGroup(TEXT("AntiAliasing"), Settings->ScalabilityQuality.AntiAliasingQuality);
+	}
 
 	const FString ScaleNumeric = ResolutionScale.Replace(TEXT("%"), TEXT(""));
 	const float Scale = FMath::Clamp(FCString::Atof(*ScaleNumeric), 50.0f, 100.0f);
@@ -545,14 +654,13 @@ void UZonefallSettingsDataObject::ApplyToSystem(UObject* WorldContextObject)
 		}
 	}
 
-	// FSR frame generation. Mutually exclusive only with DLSS Frame Generation.
-	// Allow pairing with DLSS upscaling (common in some games).
-	if (WorldContextObject && bFSRFrameGenerationSupported)
+	// FSR Frame Generation (frame interpolation) is force-disabled: it crashes in this FSR
+	// plugin build (FFXD3D12Backend::UpdateSwapChain assert during Present). Keep it OFF so the
+	// game stays stable. DLSS/FSR upscaling are unaffected.
+	if (WorldContextObject)
 	{
-		const bool bEnableFSRFG =
-			(FSRFrameGeneration == TEXT("On")) &&
-			(FrameGeneration != TEXT("On"));
-		UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, bEnableFSRFG ? TEXT("r.FidelityFX.FI.Enabled 1") : TEXT("r.FidelityFX.FI.Enabled 0"));
+		FSRFrameGeneration = TEXT("Off");
+		UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, TEXT("r.FidelityFX.FI.Enabled 0"));
 	}
 
 	// Persist upscaler preferences separately (CVars may not serialize through UGameUserSettings).
@@ -582,6 +690,98 @@ void UZonefallSettingsDataObject::ApplyToSystem(UObject* WorldContextObject)
 		RuntimeFSRQuality
 	);
 	UE_LOG(LogTemp, Log, TEXT("[SettingsDebug][Lumen] Requested=%s Actual=%s"), *RequestedLumenState, *ZonefallSettingsParse::DetectLumenStateString());
+
+	// --- Ray Tracing (RTX) ---
+	{
+		const bool bRT = (RayTracing == TEXT("On"));
+		if (WorldContextObject)
+		{
+			// These take effect at runtime when ray tracing was enabled at startup.
+			UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, FString::Printf(TEXT("r.Lumen.HardwareRayTracing %d"), bRT ? 1 : 0));
+			UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, FString::Printf(TEXT("r.RayTracing.Shadows %d"), bRT ? 1 : 0));
+			UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, FString::Printf(TEXT("r.RayTracing.Reflections %d"), bRT ? 1 : 0));
+			UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, FString::Printf(TEXT("r.RayTracing.AmbientOcclusion %d"), bRT ? 1 : 0));
+		}
+		// Persist the master switch (read at startup — RT can only be enabled before init).
+		if (GConfig)
+		{
+			GConfig->SetBool(TEXT("/Script/Engine.RendererSettings"), TEXT("r.RayTracing"), bRT, GEngineIni);
+			GConfig->Flush(false, GEngineIni);
+		}
+	}
+
+	// --- Volumetric clouds (applies live via CVars) ---
+	if (WorldContextObject)
+	{
+		const bool bClouds = (VolumetricClouds != TEXT("Off"));
+		UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, FString::Printf(TEXT("r.VolumetricCloud %d"), bClouds ? 1 : 0));
+		if (bClouds)
+		{
+			int32 ViewSamples = 512;   // High
+			int32 ReflSamples = 40;
+			if (VolumetricClouds == TEXT("Low"))  { ViewSamples = 256; ReflSamples = 24; }
+			else if (VolumetricClouds == TEXT("Epic")) { ViewSamples = 1024; ReflSamples = 80; }
+			UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, FString::Printf(TEXT("r.VolumetricCloud.ViewRaySampleMaxCount %d"), ViewSamples));
+			UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, FString::Printf(TEXT("r.VolumetricCloud.ReflectionRaySampleMaxCount %d"), ReflSamples));
+		}
+		if (GConfig)
+		{
+			GConfig->SetBool(TEXT("/Script/Engine.RendererSettings"), TEXT("r.VolumetricCloud"), bClouds, GEngineIni);
+			GConfig->Flush(false, GEngineIni);
+		}
+	}
+
+	// --- DirectX / RHI preference (applies on next launch) ---
+	if (GConfig && !DirectXVersion.IsEmpty())
+	{
+		const FString RHIValue = (DirectXVersion == TEXT("DirectX 11"))
+			? TEXT("DefaultGraphicsRHI_DX11")
+			: TEXT("DefaultGraphicsRHI_DX12");
+		GConfig->SetString(TEXT("/Script/WindowsTargetPlatform.WindowsTargetSettings"), TEXT("DefaultGraphicsRHI"), *RHIValue, GEngineIni);
+		GConfig->Flush(false, GEngineIni);
+	}
+
+	// --- Brightness (display gamma): higher Brightness -> lower gamma -> brighter image. ---
+	if (GEngine)
+	{
+		GEngine->DisplayGamma = FMath::Clamp(2.2f / FMath::Max(0.05f, Brightness), 0.5f, 6.0f);
+	}
+
+	// --- Audio (master volume) + FOV: applied to the live world / local player. ---
+	if (WorldContextObject)
+	{
+		if (UWorld* World = WorldContextObject->GetWorld())
+		{
+			if (FAudioDeviceHandle AudioDevice = World->GetAudioDevice())
+			{
+				// Master volume without needing a SoundMix/SoundClass asset.
+				AudioDevice->SetTransientPrimaryVolume(FMath::Clamp(MasterVolume, 0.0f, 1.0f));
+			}
+
+			if (APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0))
+			{
+				if (AZonefallPlayerCharacter* ZChar = Cast<AZonefallPlayerCharacter>(PC->GetPawn()))
+				{
+					const float ClampedFOV = FMath::Clamp(FieldOfView, 60.0f, 120.0f);
+					if (ZChar->ThirdPersonCamera) { ZChar->ThirdPersonCamera->SetFieldOfView(ClampedFOV); }
+					if (ZChar->FirstPersonCamera) { ZChar->FirstPersonCamera->SetFieldOfView(ClampedFOV); }
+				}
+			}
+		}
+	}
+
+	// --- Persist audio/display extras (UGameUserSettings doesn't serialize these). ---
+	if (GConfig)
+	{
+		const TCHAR* Section = ZonefallSettingsParse::AudioDisplayConfigSection();
+		GConfig->SetFloat(Section, TEXT("MasterVolume"), MasterVolume, GGameUserSettingsIni);
+		GConfig->SetFloat(Section, TEXT("SfxVolume"), SfxVolume, GGameUserSettingsIni);
+		GConfig->SetFloat(Section, TEXT("MusicVolume"), MusicVolume, GGameUserSettingsIni);
+		GConfig->SetFloat(Section, TEXT("VoiceVolume"), VoiceVolume, GGameUserSettingsIni);
+		GConfig->SetFloat(Section, TEXT("Brightness"), Brightness, GGameUserSettingsIni);
+		GConfig->SetFloat(Section, TEXT("FieldOfView"), FieldOfView, GGameUserSettingsIni);
+		GConfig->Flush(false, GGameUserSettingsIni);
+	}
 }
 
 void UZonefallSettingsDataObject::ApplyUpscalerSettingsOnly(UObject* WorldContextObject)
@@ -649,12 +849,11 @@ void UZonefallSettingsDataObject::ApplyUpscalerSettingsOnly(UObject* WorldContex
 		}
 	}
 
-	if (bFSRFrameGenerationSupported)
+	// Keep FSR Frame Generation OFF on startup too (crash-prone in this plugin build).
+	if (WorldContextObject)
 	{
-		const bool bEnableFSRFG =
-			(FSRFrameGeneration == TEXT("On")) &&
-			(FrameGeneration != TEXT("On"));
-		UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, bEnableFSRFG ? TEXT("r.FidelityFX.FI.Enabled 1") : TEXT("r.FidelityFX.FI.Enabled 0"));
+		FSRFrameGeneration = TEXT("Off");
+		UKismetSystemLibrary::ExecuteConsoleCommand(WorldContextObject, TEXT("r.FidelityFX.FI.Enabled 0"));
 	}
 }
 
@@ -857,7 +1056,6 @@ void UZonefallSettingsDataObject::ApplyGraphicsPreset(EZonefallGraphicsPreset Pr
 		break;
 
 	case EZonefallGraphicsPreset::Quality:
-	default:
 		DisplayMode = TEXT("Fullscreen");
 		OverallQuality = TEXT("Epic");
 		ResolutionScale = TEXT("100%");
@@ -879,9 +1077,91 @@ void UZonefallSettingsDataObject::ApplyGraphicsPreset(EZonefallGraphicsPreset Pr
 			FSRFrameGeneration = bFSRFrameGenerationSupported ? TEXT("On") : TEXT("Off");
 		}
 		break;
+
+	case EZonefallGraphicsPreset::Ultra:
+		// Maximum visual fidelity. Targets high-end GPUs.
+		DisplayMode = TEXT("Fullscreen");
+		OverallQuality = TEXT("Cinematic");
+		ResolutionScale = TEXT("100%");
+		VSync = TEXT("On");
+		FPSLimit = TEXT("Unlimited");
+		Lumen = TEXT("On");
+		if (bDLSSSupported)
+		{
+			DLSSMode = TEXT("DLAA");
+			FrameGeneration = bFrameGenerationSupported ? TEXT("On") : TEXT("Off");
+			FSRMode = TEXT("Off");
+			FSRFrameGeneration = TEXT("Off");
+		}
+		else
+		{
+			DLSSMode = TEXT("Off");
+			FrameGeneration = TEXT("Off");
+			FSRMode = bFSRSupported ? TEXT("Native AA") : TEXT("Off");
+			FSRFrameGeneration = bFSRFrameGenerationSupported ? TEXT("On") : TEXT("Off");
+		}
+		break;
+
+	case EZonefallGraphicsPreset::AutoDetect:
+	default:
+		ApplyGraphicsPreset(DetectRecommendedPreset());
+		return;
 	}
 
 	SanitizeSettings();
+}
+
+EZonefallGraphicsPreset UZonefallSettingsDataObject::DetectRecommendedPreset() const
+{
+	const FPlatformMemoryStats MemStats = FPlatformMemory::GetStats();
+	const uint64 TotalPhysicalMB = MemStats.TotalPhysical / (1024ull * 1024ull);
+	const int32 NumCores = FPlatformMisc::NumberOfCores();
+	const int32 NumLogicalCores = FPlatformMisc::NumberOfCoresIncludingHyperthreads();
+
+	// Sniff GPU class via brand string (rough heuristic; works for NVIDIA/AMD/Intel desktops).
+	const FString GpuBrand = FPlatformMisc::GetPrimaryGPUBrand();
+	const FString GpuLower = GpuBrand.ToLower();
+
+	const bool bHighEnd =
+		GpuLower.Contains(TEXT("rtx 40")) ||
+		GpuLower.Contains(TEXT("rtx 50")) ||
+		GpuLower.Contains(TEXT("rtx 4080")) ||
+		GpuLower.Contains(TEXT("rtx 4090")) ||
+		GpuLower.Contains(TEXT("rx 7900")) ||
+		GpuLower.Contains(TEXT("rx 9070")) ||
+		GpuLower.Contains(TEXT("rx 9080")) ||
+		GpuLower.Contains(TEXT("arc b770"));
+
+	const bool bMidHigh =
+		GpuLower.Contains(TEXT("rtx 30")) ||
+		GpuLower.Contains(TEXT("rtx 4070")) ||
+		GpuLower.Contains(TEXT("rtx 4060")) ||
+		GpuLower.Contains(TEXT("rx 6800")) ||
+		GpuLower.Contains(TEXT("rx 7700")) ||
+		GpuLower.Contains(TEXT("rx 7800"));
+
+	const bool bMid =
+		GpuLower.Contains(TEXT("rtx 20")) ||
+		GpuLower.Contains(TEXT("gtx 16")) ||
+		GpuLower.Contains(TEXT("rx 6600")) ||
+		GpuLower.Contains(TEXT("rx 6700"));
+
+	UE_LOG(LogTemp, Log, TEXT("[SettingsDebug][AutoDetect] GPU='%s' RAM=%lluMB Cores=%d/%d -> highend=%d midhigh=%d mid=%d"),
+		*GpuBrand, TotalPhysicalMB, NumCores, NumLogicalCores, bHighEnd ? 1 : 0, bMidHigh ? 1 : 0, bMid ? 1 : 0);
+
+	if (bHighEnd && TotalPhysicalMB >= 24000 && NumLogicalCores >= 12)
+	{
+		return EZonefallGraphicsPreset::Ultra;
+	}
+	if (bMidHigh && TotalPhysicalMB >= 16000)
+	{
+		return EZonefallGraphicsPreset::Quality;
+	}
+	if (bMid && TotalPhysicalMB >= 8000)
+	{
+		return EZonefallGraphicsPreset::Balanced;
+	}
+	return EZonefallGraphicsPreset::Competitive;
 }
 
 FString UZonefallSettingsDataObject::NormalizeDisplayModeValue(const FString& InValue)

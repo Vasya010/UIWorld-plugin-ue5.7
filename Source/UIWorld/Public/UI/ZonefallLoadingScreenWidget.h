@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "UIWorldMenuGameInstance.h"
 #include "ZonefallLoadingScreenWidget.generated.h"
 
 class UBorder;
@@ -99,6 +100,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Zonefall|UI|Loading")
 	void StartLoading();
 
+	/** Legacy entry — prefer ConfigureOnlineTravelLoading for host/join. */
+	UFUNCTION(BlueprintCallable, Category = "Zonefall|UI|Loading")
+	void StartOnlineTravelLoading(const FText& Subtitle);
+
+	/** Slower progress + online-specific status lines (host / join / sync). */
+	UFUNCTION(BlueprintCallable, Category = "Zonefall|UI|Loading")
+	void ConfigureOnlineTravelLoading(EZonefallOnlineTravelPhase Phase, const FText& StatusHint);
+
+	UFUNCTION(BlueprintCallable, Category = "Zonefall|UI|Loading")
+	void SetOnlineTravelStatus(const FText& Status);
+
 	UFUNCTION(BlueprintCallable, Category = "Zonefall|UI|Loading")
 	void CompleteLoading();
 
@@ -166,6 +178,10 @@ private:
 	float ProgressDurationSeconds;
 	FText BaseAnimatedTitleText;
 	FText BaseAnimatedSubtitleText;
+
+	bool bOnlineTravelMode = false;
+	float OnlineProgressCap = 92.0f;
+	EZonefallOnlineTravelPhase OnlineTravelPhase = EZonefallOnlineTravelPhase::Joining;
 };
 
 

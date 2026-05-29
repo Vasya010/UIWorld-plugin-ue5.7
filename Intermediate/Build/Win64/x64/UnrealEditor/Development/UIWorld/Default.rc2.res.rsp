@@ -87,9 +87,8 @@
 /DUE_BUILD_DEVELOPMENT=1
 /DORIGINAL_FILE_NAME="UnrealEditor-UIWorld.dll"
 /DBUILD_ICON_FILE_NAME="\"..\\Build\\Windows\\Resources\\Default.ico\""
-/DPROJECT_COMPANY_NAME="Jakub W"
-/DPROJECT_COPYRIGHT_STRING="An advanced locomotion design with many mechanics for single-player adventure games based on C++ and Blueprint"
-/DPROJECT_PRODUCT_NAME="Zonefall: Shadow Protocol"
-/DPROJECT_PRODUCT_IDENTIFIER=Zonefall
-/fo "E:/Zonefall/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/Default.rc2.res"
+/DPROJECT_COPYRIGHT_STRING="Fill out your copyright notice in the Description page of Project Settings."
+/DPROJECT_PRODUCT_NAME="Third Person BP Game Template"
+/DPROJECT_PRODUCT_IDENTIFIER=Zonefallprotocol
+/fo "E:/Zonefallprotocol/Plugins/UIWorld/Intermediate/Build/Win64/x64/UnrealEditor/Development/UIWorld/Default.rc2.res"
 "../Build/Windows/Resources/Default.rc2"

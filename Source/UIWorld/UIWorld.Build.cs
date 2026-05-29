@@ -13,6 +13,7 @@ public class UIWorld : ModuleRules
 			"CoreUObject",
 			"Engine",
 			"InputCore",
+			"EnhancedInput",
 			"UMG",
 			"MediaAssets",
 			"DLSSBlueprint",
@@ -25,6 +26,7 @@ public class UIWorld : ModuleRules
 			"SlateCore",
 			"MoviePlayer",
 			"RenderCore",
+			"RHI",
 			"OnlineSubsystem",
 			"OnlineSubsystemUtils",
 			"Sockets"

@@ -17,7 +17,7 @@
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 
 // ********** Begin Class UUIWorldSimpleMainMenuWidget *********************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_UIWorldSimpleMainMenuWidget_h_15_RPC_WRAPPERS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_UIWorldSimpleMainMenuWidget_h_15_RPC_WRAPPERS_NO_PURE_DECLS \
 	DECLARE_FUNCTION(execHandleQuitUnhovered); \
 	DECLARE_FUNCTION(execHandleQuitHovered); \
 	DECLARE_FUNCTION(execHandleOnlineUnhovered); \
@@ -38,7 +38,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 struct Z_Construct_UClass_UUIWorldSimpleMainMenuWidget_Statics;
 UIWORLD_API UClass* Z_Construct_UClass_UUIWorldSimpleMainMenuWidget_NoRegister();
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_UIWorldSimpleMainMenuWidget_h_15_INCLASS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_UIWorldSimpleMainMenuWidget_h_15_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesUUIWorldSimpleMainMenuWidget(); \
 	friend struct ::Z_Construct_UClass_UUIWorldSimpleMainMenuWidget_Statics; \
@@ -49,7 +49,7 @@ public: \
 	DECLARE_SERIALIZER(UUIWorldSimpleMainMenuWidget)
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_UIWorldSimpleMainMenuWidget_h_15_ENHANCED_CONSTRUCTORS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_UIWorldSimpleMainMenuWidget_h_15_ENHANCED_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API UUIWorldSimpleMainMenuWidget(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get()); \
 	/** Deleted move- and copy-constructors, should never be used */ \
@@ -61,13 +61,13 @@ public: \
 	NO_API virtual ~UUIWorldSimpleMainMenuWidget();
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_UIWorldSimpleMainMenuWidget_h_12_PROLOG
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_UIWorldSimpleMainMenuWidget_h_15_GENERATED_BODY \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_UIWorldSimpleMainMenuWidget_h_12_PROLOG
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_UIWorldSimpleMainMenuWidget_h_15_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_UIWorldSimpleMainMenuWidget_h_15_RPC_WRAPPERS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_UIWorldSimpleMainMenuWidget_h_15_INCLASS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_UIWorldSimpleMainMenuWidget_h_15_ENHANCED_CONSTRUCTORS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_UIWorldSimpleMainMenuWidget_h_15_RPC_WRAPPERS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_UIWorldSimpleMainMenuWidget_h_15_INCLASS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_UIWorldSimpleMainMenuWidget_h_15_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
@@ -77,6 +77,6 @@ class UUIWorldSimpleMainMenuWidget;
 // ********** End Class UUIWorldSimpleMainMenuWidget ***********************************************
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_UIWorldSimpleMainMenuWidget_h
+#define CURRENT_FILE_ID FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_UIWorldSimpleMainMenuWidget_h
 
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

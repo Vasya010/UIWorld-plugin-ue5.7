@@ -111,6 +111,83 @@ void UZonefallLoadingScreenWidget::NativeDestruct()
 	Super::NativeDestruct();
 }
 
+void UZonefallLoadingScreenWidget::StartOnlineTravelLoading(const FText& Subtitle)
+{
+	ConfigureOnlineTravelLoading(EZonefallOnlineTravelPhase::Joining, Subtitle);
+}
+
+void UZonefallLoadingScreenWidget::ConfigureOnlineTravelLoading(EZonefallOnlineTravelPhase Phase, const FText& StatusHint)
+{
+	bOnlineTravelMode = true;
+	OnlineTravelPhase = Phase;
+	OnlineProgressCap = 92.0f;
+	ProgressAlpha = 0.02f;
+
+	switch (Phase)
+	{
+	case EZonefallOnlineTravelPhase::Hosting:
+		LoadingTitle = NSLOCTEXT("ZonefallUI", "OnlineHostTitle", "CREATING SESSION");
+		LoadingStatusPhrases = {
+			NSLOCTEXT("ZonefallUI", "OnlineHostP1", "Registering your lobby"),
+			NSLOCTEXT("ZonefallUI", "OnlineHostP2", "Opening world slots for players"),
+			NSLOCTEXT("ZonefallUI", "OnlineHostP3", "Streaming the open world"),
+			NSLOCTEXT("ZonefallUI", "OnlineHostP4", "Session is going live")
+		};
+		break;
+	case EZonefallOnlineTravelPhase::Syncing:
+		LoadingTitle = NSLOCTEXT("ZonefallUI", "OnlineSyncTitle", "ENTERING WORLD");
+		LoadingStatusPhrases = {
+			NSLOCTEXT("ZonefallUI", "OnlineSyncP1", "Syncing world state with host"),
+			NSLOCTEXT("ZonefallUI", "OnlineSyncP2", "Spawning players and vehicles"),
+			NSLOCTEXT("ZonefallUI", "OnlineSyncP3", "Finalizing your character")
+		};
+		break;
+	default:
+		LoadingTitle = NSLOCTEXT("ZonefallUI", "OnlineJoinTitle", "JOINING SESSION");
+		LoadingStatusPhrases = {
+			NSLOCTEXT("ZonefallUI", "OnlineJoinP1", "Finding the host"),
+			NSLOCTEXT("ZonefallUI", "OnlineJoinP2", "Connecting to the session"),
+			NSLOCTEXT("ZonefallUI", "OnlineJoinP3", "Loading the shared world"),
+			NSLOCTEXT("ZonefallUI", "OnlineJoinP4", "Spawning into the match")
+		};
+		break;
+	}
+
+	LoadingSubtitle = StatusHint.IsEmpty()
+		? LoadingStatusPhrases[0]
+		: StatusHint;
+	BaseAnimatedTitleText = LoadingTitle;
+	BaseAnimatedSubtitleText = LoadingSubtitle;
+	StatusPhraseIndex = 0;
+
+	bAnimateProgress = true;
+	bAnimateStatusText = true;
+	bAnimateLoadingText = true;
+	bAutoRotateImages = false;
+	bAutoStartProgress = true;
+	ProgressDurationMinSeconds = 8.0f;
+	ProgressDurationMaxSeconds = 28.0f;
+	ProgressDurationSeconds = 18.0f;
+	StatusTextAnimInterval = 2.0f;
+	LoadingTextAnimInterval = 0.4f;
+
+	UpdateTexts();
+	StartLoading();
+}
+
+void UZonefallLoadingScreenWidget::SetOnlineTravelStatus(const FText& Status)
+{
+	if (!Status.IsEmpty())
+	{
+		LoadingSubtitle = Status;
+		BaseAnimatedSubtitleText = Status;
+		if (SubtitleText)
+		{
+			SubtitleText->SetText(Status);
+		}
+	}
+}
+
 void UZonefallLoadingScreenWidget::StartLoading()
 {
 	if (bAnimateProgress)
@@ -155,6 +232,7 @@ void UZonefallLoadingScreenWidget::StartLoading()
 
 void UZonefallLoadingScreenWidget::CompleteLoading()
 {
+	bOnlineTravelMode = false;
 	if (UWorld* World = GetWorld())
 	{
 		World->GetTimerManager().ClearTimer(LoadingTextTimerHandle);
@@ -535,18 +613,32 @@ void UZonefallLoadingScreenWidget::HandleProgressTick()
 		return;
 	}
 
-	const float Step = FMath::Clamp(FMath::Max(ProgressTickInterval, 0.02f) / FMath::Max(ProgressDurationSeconds, 0.2f), 0.002f, 0.08f);
-	ProgressAlpha = FMath::Clamp(ProgressAlpha + Step, 0.0f, 1.0f);
+	const float StepScale = bOnlineTravelMode ? 0.45f : 1.0f;
+	const float Step = FMath::Clamp(
+		(FMath::Max(ProgressTickInterval, 0.02f) / FMath::Max(ProgressDurationSeconds, 0.2f)) * StepScale,
+		0.001f,
+		0.06f);
+	const float MaxAlpha = bOnlineTravelMode ? (OnlineProgressCap / 100.0f) : 1.0f;
+	ProgressAlpha = FMath::Clamp(ProgressAlpha + Step, 0.0f, MaxAlpha);
 
 	// Ease curve: quick feedback at start, slower near completion to look natural.
-	const float Smoothed = FMath::InterpEaseOut(0.0f, 1.0f, ProgressAlpha, 2.2f);
-	const float Capped = FMath::Min(Smoothed, 0.985f);
+	const float Smoothed = FMath::InterpEaseOut(0.0f, 1.0f, ProgressAlpha / FMath::Max(MaxAlpha, 0.01f), 2.2f);
+	const float Capped = bOnlineTravelMode
+		? FMath::Min(Smoothed * MaxAlpha, MaxAlpha)
+		: FMath::Min(Smoothed, 0.985f);
 
-	const int32 Percent = FMath::Clamp(FMath::RoundToInt(Capped * 100.0f), 1, 99);
+	const int32 Percent = bOnlineTravelMode
+		? FMath::Clamp(FMath::RoundToInt(Capped * 100.0f), 1, FMath::RoundToInt(OnlineProgressCap))
+		: FMath::Clamp(FMath::RoundToInt(Capped * 100.0f), 1, 99);
 	const TCHAR SpinnerChars[] = { TEXT('|'), TEXT('/'), TEXT('-'), TEXT('\\') };
 	const TCHAR SpinnerChar = SpinnerChars[SpinnerFrameIndex % 4];
 	SpinnerFrameIndex = (SpinnerFrameIndex + 1) % 4;
-	ProgressText->SetText(FText::FromString(FString::Printf(TEXT("%c Loading %d%%"), SpinnerChar, Percent)));
+	const FString ProgressLabel = bOnlineTravelMode
+		? (OnlineTravelPhase == EZonefallOnlineTravelPhase::Hosting
+			? FString::Printf(TEXT("%c Hosting %d%%"), SpinnerChar, Percent)
+			: FString::Printf(TEXT("%c Connecting %d%%"), SpinnerChar, Percent))
+		: FString::Printf(TEXT("%c Loading %d%%"), SpinnerChar, Percent);
+	ProgressText->SetText(FText::FromString(ProgressLabel));
 }
 
 float UZonefallLoadingScreenWidget::EstimateHardwareProgressDuration() const

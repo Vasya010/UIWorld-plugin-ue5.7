@@ -1,12 +1,12 @@
 {
     "Version": "1.2",
     "Data": {
-        "Source": "e:\\zonefall\\plugins\\uiworld\\source\\uiworld\\private\\ui\\zonefallmodernprogressbarwidget.cpp",
+        "Source": "e:\\zonefallprotocol\\plugins\\uiworld\\source\\uiworld\\private\\ui\\zonefallmodernprogressbarwidget.cpp",
         "ProvidedModule": "",
-        "PCH": "e:\\zonefall\\intermediate\\build\\win64\\x64\\zonefalleditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.h.pch",
+        "PCH": "e:\\zonefallprotocol\\intermediate\\build\\win64\\x64\\zonefallprotocoleditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.inclorderunreal5_4.h.pch",
         "Includes": [
-            "e:\\zonefall\\plugins\\uiworld\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\uiworld\\definitions.uiworld.h",
-            "e:\\zonefall\\plugins\\uiworld\\source\\uiworld\\public\\ui\\zonefallmodernprogressbarwidget.h",
+            "e:\\zonefallprotocol\\plugins\\uiworld\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\uiworld\\definitions.uiworld.h",
+            "e:\\zonefallprotocol\\plugins\\uiworld\\source\\uiworld\\public\\ui\\zonefallmodernprogressbarwidget.h",
             "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\umg\\public\\blueprint\\userwidget.h",
             "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\umg\\public\\blueprint\\umgsequenceplaymode.h",
             "c:\\program files\\epic games\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\umg\\uht\\umgsequenceplaymode.generated.h",
@@ -84,7 +84,7 @@
             "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\moviescene\\public\\entitysystem\\relativeptr.h",
             "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\moviescene\\public\\evaluation\\moviescenepreanimatedstate.h",
             "c:\\program files\\epic games\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\umg\\uht\\userwidget.generated.h",
-            "e:\\zonefall\\plugins\\uiworld\\intermediate\\build\\win64\\unrealeditor\\inc\\uiworld\\uht\\zonefallmodernprogressbarwidget.generated.h",
+            "e:\\zonefallprotocol\\plugins\\uiworld\\intermediate\\build\\win64\\unrealeditor\\inc\\uiworld\\uht\\zonefallmodernprogressbarwidget.generated.h",
             "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\umg\\public\\blueprint\\widgettree.h",
             "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\umg\\public\\components\\panelwidget.h",
             "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\umg\\public\\components\\panelslot.h",

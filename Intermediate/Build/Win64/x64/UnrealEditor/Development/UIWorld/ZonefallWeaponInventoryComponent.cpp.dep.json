@@ -1,0 +1,19 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "e:\\zonefallprotocol\\plugins\\uiworld\\source\\uiworld\\private\\weapons\\zonefallweaponinventorycomponent.cpp",
+        "ProvidedModule": "",
+        "PCH": "e:\\zonefallprotocol\\intermediate\\build\\win64\\x64\\zonefallprotocoleditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.inclorderunreal5_4.h.pch",
+        "Includes": [
+            "e:\\zonefallprotocol\\plugins\\uiworld\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\uiworld\\definitions.uiworld.h",
+            "e:\\zonefallprotocol\\plugins\\uiworld\\source\\uiworld\\public\\weapons\\zonefallweaponinventorycomponent.h",
+            "e:\\zonefallprotocol\\plugins\\uiworld\\source\\uiworld\\public\\weapons\\zonefallweapontypes.h",
+            "e:\\zonefallprotocol\\plugins\\uiworld\\intermediate\\build\\win64\\unrealeditor\\inc\\uiworld\\uht\\zonefallweapontypes.generated.h",
+            "e:\\zonefallprotocol\\plugins\\uiworld\\intermediate\\build\\win64\\unrealeditor\\inc\\uiworld\\uht\\zonefallweaponinventorycomponent.generated.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\engine\\public\\net\\unrealnetwork.h",
+            "c:\\program files\\epic games\\ue_5.7\\engine\\source\\runtime\\net\\core\\public\\net\\core\\propertyconditions\\propertyconditions.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

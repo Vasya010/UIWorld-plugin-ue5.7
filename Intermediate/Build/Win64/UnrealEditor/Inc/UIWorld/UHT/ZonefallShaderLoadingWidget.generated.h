@@ -17,7 +17,7 @@
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 
 // ********** Begin Class UZonefallShaderLoadingWidget *********************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h_18_RPC_WRAPPERS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h_19_RPC_WRAPPERS_NO_PURE_DECLS \
 	DECLARE_FUNCTION(execHandleTextAnimTick); \
 	DECLARE_FUNCTION(execIsShaderCompilationLikelyFinished); \
 	DECLARE_FUNCTION(execSetInitialShaderJobCount); \
@@ -27,7 +27,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 struct Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics;
 UIWORLD_API UClass* Z_Construct_UClass_UZonefallShaderLoadingWidget_NoRegister();
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h_18_INCLASS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h_19_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesUZonefallShaderLoadingWidget(); \
 	friend struct ::Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics; \
@@ -38,7 +38,7 @@ public: \
 	DECLARE_SERIALIZER(UZonefallShaderLoadingWidget)
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h_18_ENHANCED_CONSTRUCTORS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h_19_ENHANCED_CONSTRUCTORS \
 	/** Deleted move- and copy-constructors, should never be used */ \
 	UZonefallShaderLoadingWidget(UZonefallShaderLoadingWidget&&) = delete; \
 	UZonefallShaderLoadingWidget(const UZonefallShaderLoadingWidget&) = delete; \
@@ -48,13 +48,13 @@ public: \
 	NO_API virtual ~UZonefallShaderLoadingWidget();
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h_15_PROLOG
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h_18_GENERATED_BODY \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h_16_PROLOG
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h_19_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h_18_RPC_WRAPPERS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h_18_INCLASS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h_18_ENHANCED_CONSTRUCTORS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h_19_RPC_WRAPPERS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h_19_INCLASS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h_19_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
@@ -64,6 +64,6 @@ class UZonefallShaderLoadingWidget;
 // ********** End Class UZonefallShaderLoadingWidget ***********************************************
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h
+#define CURRENT_FILE_ID FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h
 
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

@@ -38,6 +38,8 @@ struct Z_Construct_UEnum_UIWorld_EZonefallGraphicsPreset_Statics
 {
 #if WITH_METADATA
 	static constexpr UECodeGen_Private::FMetaDataPairParam Enum_MetaDataParams[] = {
+		{ "AutoDetect.DisplayName", "Auto Detect" },
+		{ "AutoDetect.Name", "EZonefallGraphicsPreset::AutoDetect" },
 		{ "Balanced.DisplayName", "Balanced" },
 		{ "Balanced.Name", "EZonefallGraphicsPreset::Balanced" },
 		{ "BlueprintType", "true" },
@@ -46,12 +48,16 @@ struct Z_Construct_UEnum_UIWorld_EZonefallGraphicsPreset_Statics
 		{ "ModuleRelativePath", "Public/UI/ZonefallSettingsDataObject.h" },
 		{ "Quality.DisplayName", "Quality" },
 		{ "Quality.Name", "EZonefallGraphicsPreset::Quality" },
+		{ "Ultra.DisplayName", "Ultra" },
+		{ "Ultra.Name", "EZonefallGraphicsPreset::Ultra" },
 	};
 #endif // WITH_METADATA
 	static constexpr UECodeGen_Private::FEnumeratorParam Enumerators[] = {
 		{ "EZonefallGraphicsPreset::Competitive", (int64)EZonefallGraphicsPreset::Competitive },
 		{ "EZonefallGraphicsPreset::Balanced", (int64)EZonefallGraphicsPreset::Balanced },
 		{ "EZonefallGraphicsPreset::Quality", (int64)EZonefallGraphicsPreset::Quality },
+		{ "EZonefallGraphicsPreset::Ultra", (int64)EZonefallGraphicsPreset::Ultra },
+		{ "EZonefallGraphicsPreset::AutoDetect", (int64)EZonefallGraphicsPreset::AutoDetect },
 	};
 	static const UECodeGen_Private::FEnumParams EnumParams;
 }; // struct Z_Construct_UEnum_UIWorld_EZonefallGraphicsPreset_Statics 
@@ -171,7 +177,7 @@ struct Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyGraphicsPreset_Sta
 
 // ********** Begin Function ApplyGraphicsPreset Property Definitions ******************************
 const UECodeGen_Private::FBytePropertyParams Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyGraphicsPreset_Statics::NewProp_Preset_Underlying = { "UnderlyingType", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Byte, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, nullptr, METADATA_PARAMS(0, nullptr) };
-const UECodeGen_Private::FEnumPropertyParams Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyGraphicsPreset_Statics::NewProp_Preset = { "Preset", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ZonefallSettingsDataObject_eventApplyGraphicsPreset_Parms, Preset), Z_Construct_UEnum_UIWorld_EZonefallGraphicsPreset, METADATA_PARAMS(0, nullptr) }; // 2227815438
+const UECodeGen_Private::FEnumPropertyParams Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyGraphicsPreset_Statics::NewProp_Preset = { "Preset", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ZonefallSettingsDataObject_eventApplyGraphicsPreset_Parms, Preset), Z_Construct_UEnum_UIWorld_EZonefallGraphicsPreset, METADATA_PARAMS(0, nullptr) }; // 2916051861
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyGraphicsPreset_Statics::PropPointers[] = {
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyGraphicsPreset_Statics::NewProp_Preset_Underlying,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyGraphicsPreset_Statics::NewProp_Preset,
@@ -311,6 +317,66 @@ DEFINE_FUNCTION(UZonefallSettingsDataObject::execApplyUpscalerSettingsOnly)
 	P_NATIVE_END;
 }
 // ********** End Class UZonefallSettingsDataObject Function ApplyUpscalerSettingsOnly *************
+
+// ********** Begin Class UZonefallSettingsDataObject Function DetectRecommendedPreset *************
+struct Z_Construct_UFunction_UZonefallSettingsDataObject_DetectRecommendedPreset_Statics
+{
+	struct ZonefallSettingsDataObject_eventDetectRecommendedPreset_Parms
+	{
+		EZonefallGraphicsPreset ReturnValue;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "Zonefall|Settings" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Inspects the current GPU/CPU/RAM and picks the most appropriate preset.\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UI/ZonefallSettingsDataObject.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Inspects the current GPU/CPU/RAM and picks the most appropriate preset." },
+#endif
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function DetectRecommendedPreset constinit property declarations ***************
+	static const UECodeGen_Private::FBytePropertyParams NewProp_ReturnValue_Underlying;
+	static const UECodeGen_Private::FEnumPropertyParams NewProp_ReturnValue;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function DetectRecommendedPreset constinit property declarations *****************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function DetectRecommendedPreset Property Definitions **************************
+const UECodeGen_Private::FBytePropertyParams Z_Construct_UFunction_UZonefallSettingsDataObject_DetectRecommendedPreset_Statics::NewProp_ReturnValue_Underlying = { "UnderlyingType", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Byte, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, nullptr, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FEnumPropertyParams Z_Construct_UFunction_UZonefallSettingsDataObject_DetectRecommendedPreset_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ZonefallSettingsDataObject_eventDetectRecommendedPreset_Parms, ReturnValue), Z_Construct_UEnum_UIWorld_EZonefallGraphicsPreset, METADATA_PARAMS(0, nullptr) }; // 2916051861
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UZonefallSettingsDataObject_DetectRecommendedPreset_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UZonefallSettingsDataObject_DetectRecommendedPreset_Statics::NewProp_ReturnValue_Underlying,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UZonefallSettingsDataObject_DetectRecommendedPreset_Statics::NewProp_ReturnValue,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UZonefallSettingsDataObject_DetectRecommendedPreset_Statics::PropPointers) < 2048);
+// ********** End Function DetectRecommendedPreset Property Definitions ****************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UZonefallSettingsDataObject_DetectRecommendedPreset_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UZonefallSettingsDataObject, nullptr, "DetectRecommendedPreset", 	Z_Construct_UFunction_UZonefallSettingsDataObject_DetectRecommendedPreset_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UZonefallSettingsDataObject_DetectRecommendedPreset_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UZonefallSettingsDataObject_DetectRecommendedPreset_Statics::ZonefallSettingsDataObject_eventDetectRecommendedPreset_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x54020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UZonefallSettingsDataObject_DetectRecommendedPreset_Statics::Function_MetaDataParams), Z_Construct_UFunction_UZonefallSettingsDataObject_DetectRecommendedPreset_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UZonefallSettingsDataObject_DetectRecommendedPreset_Statics::ZonefallSettingsDataObject_eventDetectRecommendedPreset_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UZonefallSettingsDataObject_DetectRecommendedPreset()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UZonefallSettingsDataObject_DetectRecommendedPreset_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UZonefallSettingsDataObject::execDetectRecommendedPreset)
+{
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(EZonefallGraphicsPreset*)Z_Param__Result=P_THIS->DetectRecommendedPreset();
+	P_NATIVE_END;
+}
+// ********** End Class UZonefallSettingsDataObject Function DetectRecommendedPreset ***************
 
 // ********** Begin Class UZonefallSettingsDataObject Function GetAvailableScreenResolutions *******
 struct Z_Construct_UFunction_UZonefallSettingsDataObject_GetAvailableScreenResolutions_Statics
@@ -777,6 +843,46 @@ struct Z_Construct_UClass_UZonefallSettingsDataObject_Statics
 		{ "Category", "Zonefall|Settings" },
 		{ "ModuleRelativePath", "Public/UI/ZonefallSettingsDataObject.h" },
 	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_DirectXVersion_MetaData[] = {
+		{ "Category", "Zonefall|Settings" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// \"DirectX 12\" / \"DirectX 11\" \xe2\x80\x94 applied on next launch (RHI can't switch at runtime).\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UI/ZonefallSettingsDataObject.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "\"DirectX 12\" / \"DirectX 11\" \xe2\x80\x94 applied on next launch (RHI can't switch at runtime)." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_RayTracing_MetaData[] = {
+		{ "Category", "Zonefall|Settings" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// \"On\" / \"Off\" \xe2\x80\x94 hardware ray tracing (RTX). Runtime RT features toggle immediately;\n// fully enabling/disabling RT applies on next launch.\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UI/ZonefallSettingsDataObject.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "\"On\" / \"Off\" \xe2\x80\x94 hardware ray tracing (RTX). Runtime RT features toggle immediately;\nfully enabling/disabling RT applies on next launch." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_VolumetricClouds_MetaData[] = {
+		{ "Category", "Zonefall|Settings" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// \"Off\" / \"Low\" / \"High\" / \"Epic\" \xe2\x80\x94 volumetric clouds quality (applies live via CVars).\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UI/ZonefallSettingsDataObject.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "\"Off\" / \"Low\" / \"High\" / \"Epic\" \xe2\x80\x94 volumetric clouds quality (applies live via CVars)." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_AdvancedQuality_MetaData[] = {
+		{ "Category", "Zonefall|Settings|Advanced" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Per-group quality overrides (group name -> \"Low\"/\"Medium\"/\"High\"/\"Epic\").\n// Groups: ViewDistance, Shadows, GlobalIllumination, Reflections, PostProcess,\n// Textures, Effects, Foliage, Shading, AntiAliasing.\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UI/ZonefallSettingsDataObject.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Per-group quality overrides (group name -> \"Low\"/\"Medium\"/\"High\"/\"Epic\").\nGroups: ViewDistance, Shadows, GlobalIllumination, Reflections, PostProcess,\nTextures, Effects, Foliage, Shading, AntiAliasing." },
+#endif
+	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_DLSSMode_MetaData[] = {
 		{ "Category", "Zonefall|Settings" },
 		{ "ModuleRelativePath", "Public/UI/ZonefallSettingsDataObject.h" },
@@ -819,6 +925,60 @@ struct Z_Construct_UClass_UZonefallSettingsDataObject_Statics
 		{ "ToolTip", "Selected screen resolution in format \"1920x1080\"." },
 #endif
 	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_Brightness_MetaData[] = {
+		{ "Category", "Zonefall|Settings" },
+		{ "ClampMax", "2.0" },
+		{ "ClampMin", "0.5" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Brightness (gamma), 0.5..2.0. 1.0 == default.\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UI/ZonefallSettingsDataObject.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Brightness (gamma), 0.5..2.0. 1.0 == default." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_FieldOfView_MetaData[] = {
+		{ "Category", "Zonefall|Settings" },
+		{ "ClampMax", "120.0" },
+		{ "ClampMin", "60.0" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Field of view in degrees for the player camera. Game must apply it from a delegate.\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UI/ZonefallSettingsDataObject.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Field of view in degrees for the player camera. Game must apply it from a delegate." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_MasterVolume_MetaData[] = {
+		{ "Category", "Zonefall|Settings|Audio" },
+		{ "ClampMax", "1.0" },
+		{ "ClampMin", "0.0" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Master / SFX / Music / Voice volumes (0..1).\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UI/ZonefallSettingsDataObject.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Master / SFX / Music / Voice volumes (0..1)." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_SfxVolume_MetaData[] = {
+		{ "Category", "Zonefall|Settings|Audio" },
+		{ "ClampMax", "1.0" },
+		{ "ClampMin", "0.0" },
+		{ "ModuleRelativePath", "Public/UI/ZonefallSettingsDataObject.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_MusicVolume_MetaData[] = {
+		{ "Category", "Zonefall|Settings|Audio" },
+		{ "ClampMax", "1.0" },
+		{ "ClampMin", "0.0" },
+		{ "ModuleRelativePath", "Public/UI/ZonefallSettingsDataObject.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_VoiceVolume_MetaData[] = {
+		{ "Category", "Zonefall|Settings|Audio" },
+		{ "ClampMax", "1.0" },
+		{ "ClampMin", "0.0" },
+		{ "ModuleRelativePath", "Public/UI/ZonefallSettingsDataObject.h" },
+	};
 #endif // WITH_METADATA
 
 // ********** Begin Class UZonefallSettingsDataObject constinit property declarations **************
@@ -828,6 +988,12 @@ struct Z_Construct_UClass_UZonefallSettingsDataObject_Statics
 	static const UECodeGen_Private::FStrPropertyParams NewProp_VSync;
 	static const UECodeGen_Private::FStrPropertyParams NewProp_FPSLimit;
 	static const UECodeGen_Private::FStrPropertyParams NewProp_Lumen;
+	static const UECodeGen_Private::FStrPropertyParams NewProp_DirectXVersion;
+	static const UECodeGen_Private::FStrPropertyParams NewProp_RayTracing;
+	static const UECodeGen_Private::FStrPropertyParams NewProp_VolumetricClouds;
+	static const UECodeGen_Private::FStrPropertyParams NewProp_AdvancedQuality_ValueProp;
+	static const UECodeGen_Private::FNamePropertyParams NewProp_AdvancedQuality_Key_KeyProp;
+	static const UECodeGen_Private::FMapPropertyParams NewProp_AdvancedQuality;
 	static const UECodeGen_Private::FStrPropertyParams NewProp_DLSSMode;
 	static const UECodeGen_Private::FStrPropertyParams NewProp_FrameGeneration;
 	static const UECodeGen_Private::FStrPropertyParams NewProp_FSRMode;
@@ -841,6 +1007,12 @@ struct Z_Construct_UClass_UZonefallSettingsDataObject_Statics
 	static void NewProp_bFSRFrameGenerationSupported_SetBit(void* Obj);
 	static const UECodeGen_Private::FBoolPropertyParams NewProp_bFSRFrameGenerationSupported;
 	static const UECodeGen_Private::FStrPropertyParams NewProp_ScreenResolution;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_Brightness;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_FieldOfView;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_MasterVolume;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_SfxVolume;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_MusicVolume;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_VoiceVolume;
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 // ********** End Class UZonefallSettingsDataObject constinit property declarations ****************
 	static constexpr UE::CodeGen::FClassNativeFunction Funcs[] = {
@@ -848,6 +1020,7 @@ struct Z_Construct_UClass_UZonefallSettingsDataObject_Statics
 		{ .NameUTF8 = UTF8TEXT("ApplyGraphicsPreset"), .Pointer = &UZonefallSettingsDataObject::execApplyGraphicsPreset },
 		{ .NameUTF8 = UTF8TEXT("ApplyToSystem"), .Pointer = &UZonefallSettingsDataObject::execApplyToSystem },
 		{ .NameUTF8 = UTF8TEXT("ApplyUpscalerSettingsOnly"), .Pointer = &UZonefallSettingsDataObject::execApplyUpscalerSettingsOnly },
+		{ .NameUTF8 = UTF8TEXT("DetectRecommendedPreset"), .Pointer = &UZonefallSettingsDataObject::execDetectRecommendedPreset },
 		{ .NameUTF8 = UTF8TEXT("GetAvailableScreenResolutions"), .Pointer = &UZonefallSettingsDataObject::execGetAvailableScreenResolutions },
 		{ .NameUTF8 = UTF8TEXT("GetCurrentScreenResolutionString"), .Pointer = &UZonefallSettingsDataObject::execGetCurrentScreenResolutionString },
 		{ .NameUTF8 = UTF8TEXT("LoadFromSystem"), .Pointer = &UZonefallSettingsDataObject::execLoadFromSystem },
@@ -860,9 +1033,10 @@ struct Z_Construct_UClass_UZonefallSettingsDataObject_Statics
 	static UObject* (*const DependentSingletons[])();
 	static constexpr FClassFunctionLinkInfo FuncInfo[] = {
 		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyDisplayModeAndResolution, "ApplyDisplayModeAndResolution" }, // 1816398751
-		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyGraphicsPreset, "ApplyGraphicsPreset" }, // 4166528035
+		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyGraphicsPreset, "ApplyGraphicsPreset" }, // 1402910420
 		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyToSystem, "ApplyToSystem" }, // 1493230624
 		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_ApplyUpscalerSettingsOnly, "ApplyUpscalerSettingsOnly" }, // 3209068204
+		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_DetectRecommendedPreset, "DetectRecommendedPreset" }, // 28332236
 		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_GetAvailableScreenResolutions, "GetAvailableScreenResolutions" }, // 810559174
 		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_GetCurrentScreenResolutionString, "GetCurrentScreenResolutionString" }, // 2488088489
 		{ &Z_Construct_UFunction_UZonefallSettingsDataObject_LoadFromSystem, "LoadFromSystem" }, // 2096354152
@@ -886,6 +1060,12 @@ const UECodeGen_Private::FStrPropertyParams Z_Construct_UClass_UZonefallSettings
 const UECodeGen_Private::FStrPropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_VSync = { "VSync", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallSettingsDataObject, VSync), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_VSync_MetaData), NewProp_VSync_MetaData) };
 const UECodeGen_Private::FStrPropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_FPSLimit = { "FPSLimit", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallSettingsDataObject, FPSLimit), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_FPSLimit_MetaData), NewProp_FPSLimit_MetaData) };
 const UECodeGen_Private::FStrPropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_Lumen = { "Lumen", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallSettingsDataObject, Lumen), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_Lumen_MetaData), NewProp_Lumen_MetaData) };
+const UECodeGen_Private::FStrPropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_DirectXVersion = { "DirectXVersion", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallSettingsDataObject, DirectXVersion), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_DirectXVersion_MetaData), NewProp_DirectXVersion_MetaData) };
+const UECodeGen_Private::FStrPropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_RayTracing = { "RayTracing", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallSettingsDataObject, RayTracing), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_RayTracing_MetaData), NewProp_RayTracing_MetaData) };
+const UECodeGen_Private::FStrPropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_VolumetricClouds = { "VolumetricClouds", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallSettingsDataObject, VolumetricClouds), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_VolumetricClouds_MetaData), NewProp_VolumetricClouds_MetaData) };
+const UECodeGen_Private::FStrPropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_AdvancedQuality_ValueProp = { "AdvancedQuality", nullptr, (EPropertyFlags)0x0000000000000001, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 1, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FNamePropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_AdvancedQuality_Key_KeyProp = { "AdvancedQuality_Key", nullptr, (EPropertyFlags)0x0000000000000001, UECodeGen_Private::EPropertyGenFlags::Name, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FMapPropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_AdvancedQuality = { "AdvancedQuality", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Map, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallSettingsDataObject, AdvancedQuality), EMapPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_AdvancedQuality_MetaData), NewProp_AdvancedQuality_MetaData) };
 const UECodeGen_Private::FStrPropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_DLSSMode = { "DLSSMode", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallSettingsDataObject, DLSSMode), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_DLSSMode_MetaData), NewProp_DLSSMode_MetaData) };
 const UECodeGen_Private::FStrPropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_FrameGeneration = { "FrameGeneration", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallSettingsDataObject, FrameGeneration), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_FrameGeneration_MetaData), NewProp_FrameGeneration_MetaData) };
 const UECodeGen_Private::FStrPropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_FSRMode = { "FSRMode", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallSettingsDataObject, FSRMode), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_FSRMode_MetaData), NewProp_FSRMode_MetaData) };
@@ -911,6 +1091,12 @@ void Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_bFSRFrameGe
 }
 const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_bFSRFrameGenerationSupported = { "bFSRFrameGenerationSupported", nullptr, (EPropertyFlags)0x0010000000020015, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UZonefallSettingsDataObject), &Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_bFSRFrameGenerationSupported_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bFSRFrameGenerationSupported_MetaData), NewProp_bFSRFrameGenerationSupported_MetaData) };
 const UECodeGen_Private::FStrPropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_ScreenResolution = { "ScreenResolution", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallSettingsDataObject, ScreenResolution), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ScreenResolution_MetaData), NewProp_ScreenResolution_MetaData) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_Brightness = { "Brightness", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallSettingsDataObject, Brightness), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_Brightness_MetaData), NewProp_Brightness_MetaData) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_FieldOfView = { "FieldOfView", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallSettingsDataObject, FieldOfView), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_FieldOfView_MetaData), NewProp_FieldOfView_MetaData) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_MasterVolume = { "MasterVolume", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallSettingsDataObject, MasterVolume), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_MasterVolume_MetaData), NewProp_MasterVolume_MetaData) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_SfxVolume = { "SfxVolume", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallSettingsDataObject, SfxVolume), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_SfxVolume_MetaData), NewProp_SfxVolume_MetaData) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_MusicVolume = { "MusicVolume", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallSettingsDataObject, MusicVolume), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_MusicVolume_MetaData), NewProp_MusicVolume_MetaData) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_VoiceVolume = { "VoiceVolume", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallSettingsDataObject, VoiceVolume), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_VoiceVolume_MetaData), NewProp_VoiceVolume_MetaData) };
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UZonefallSettingsDataObject_Statics::PropPointers[] = {
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_DisplayMode,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_OverallQuality,
@@ -918,6 +1104,12 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UZonefall
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_VSync,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_FPSLimit,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_Lumen,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_DirectXVersion,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_RayTracing,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_VolumetricClouds,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_AdvancedQuality_ValueProp,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_AdvancedQuality_Key_KeyProp,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_AdvancedQuality,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_DLSSMode,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_FrameGeneration,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_FSRMode,
@@ -927,6 +1119,12 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UZonefall
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_bFSRSupported,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_bFSRFrameGenerationSupported,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_ScreenResolution,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_Brightness,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_FieldOfView,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_MasterVolume,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_SfxVolume,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_MusicVolume,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallSettingsDataObject_Statics::NewProp_VoiceVolume,
 };
 static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_UZonefallSettingsDataObject_Statics::PropPointers) < 2048);
 // ********** End Class UZonefallSettingsDataObject Property Definitions ***************************
@@ -969,20 +1167,20 @@ UZonefallSettingsDataObject::~UZonefallSettingsDataObject() {}
 // ********** End Class UZonefallSettingsDataObject ************************************************
 
 // ********** Begin Registration *******************************************************************
-struct Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h__Script_UIWorld_Statics
+struct Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h__Script_UIWorld_Statics
 {
 	static constexpr FEnumRegisterCompiledInInfo EnumInfo[] = {
-		{ EZonefallGraphicsPreset_StaticEnum, TEXT("EZonefallGraphicsPreset"), &Z_Registration_Info_UEnum_EZonefallGraphicsPreset, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 2227815438U) },
+		{ EZonefallGraphicsPreset_StaticEnum, TEXT("EZonefallGraphicsPreset"), &Z_Registration_Info_UEnum_EZonefallGraphicsPreset, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 2916051861U) },
 	};
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_UZonefallSettingsDataObject, UZonefallSettingsDataObject::StaticClass, TEXT("UZonefallSettingsDataObject"), &Z_Registration_Info_UClass_UZonefallSettingsDataObject, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UZonefallSettingsDataObject), 3254788422U) },
+		{ Z_Construct_UClass_UZonefallSettingsDataObject, UZonefallSettingsDataObject::StaticClass, TEXT("UZonefallSettingsDataObject"), &Z_Registration_Info_UClass_UZonefallSettingsDataObject, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UZonefallSettingsDataObject), 2482986837U) },
 	};
-}; // Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h__Script_UIWorld_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h__Script_UIWorld_1627444745{
+}; // Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h__Script_UIWorld_Statics 
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h__Script_UIWorld_3653813686{
 	TEXT("/Script/UIWorld"),
-	Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h__Script_UIWorld_Statics::ClassInfo),
+	Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h__Script_UIWorld_Statics::ClassInfo),
 	nullptr, 0,
-	Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h__Script_UIWorld_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h__Script_UIWorld_Statics::EnumInfo),
+	Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h__Script_UIWorld_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h__Script_UIWorld_Statics::EnumInfo),
 };
 // ********** End Registration *********************************************************************
 

@@ -14,12 +14,16 @@ void EmptyLinkFunctionForGeneratedCodeUIWorldMenuGameInstance() {}
 // ********** Begin Cross Module References ********************************************************
 COREUOBJECT_API UClass* Z_Construct_UClass_UClass_NoRegister();
 ENGINE_API UClass* Z_Construct_UClass_UGameInstance();
+ENGINE_API UClass* Z_Construct_UClass_UWorld_NoRegister();
 UIWORLD_API UClass* Z_Construct_UClass_UUIWorldMenuGameInstance();
 UIWORLD_API UClass* Z_Construct_UClass_UUIWorldMenuGameInstance_NoRegister();
 UIWORLD_API UClass* Z_Construct_UClass_UZonefallShaderLoadingWidget_NoRegister();
 UIWORLD_API UEnum* Z_Construct_UEnum_UIWorld_EUIWorldMenuScreen();
+UIWORLD_API UEnum* Z_Construct_UEnum_UIWorld_EZonefallLanguage();
+UIWORLD_API UEnum* Z_Construct_UEnum_UIWorld_EZonefallOnlineTravelPhase();
 UIWORLD_API UFunction* Z_Construct_UDelegateFunction_UIWorld_OnUIWorldMenuScreenChanged__DelegateSignature();
 UIWORLD_API UFunction* Z_Construct_UDelegateFunction_UIWorld_OnUIWorldMenuWidgetChanged__DelegateSignature();
+UIWORLD_API UFunction* Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineMatchReady__DelegateSignature();
 UIWORLD_API UFunction* Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineOpCompleted__DelegateSignature();
 UIWORLD_API UFunction* Z_Construct_UDelegateFunction_UIWorld_OnUIWorldSessionsFound__DelegateSignature();
 UIWORLD_API UScriptStruct* Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult();
@@ -93,6 +97,69 @@ UEnum* Z_Construct_UEnum_UIWorld_EUIWorldMenuScreen()
 }
 // ********** End Enum EUIWorldMenuScreen **********************************************************
 
+// ********** Begin Enum EZonefallOnlineTravelPhase ************************************************
+static FEnumRegistrationInfo Z_Registration_Info_UEnum_EZonefallOnlineTravelPhase;
+static UEnum* EZonefallOnlineTravelPhase_StaticEnum()
+{
+	if (!Z_Registration_Info_UEnum_EZonefallOnlineTravelPhase.OuterSingleton)
+	{
+		Z_Registration_Info_UEnum_EZonefallOnlineTravelPhase.OuterSingleton = GetStaticEnum(Z_Construct_UEnum_UIWorld_EZonefallOnlineTravelPhase, (UObject*)Z_Construct_UPackage__Script_UIWorld(), TEXT("EZonefallOnlineTravelPhase"));
+	}
+	return Z_Registration_Info_UEnum_EZonefallOnlineTravelPhase.OuterSingleton;
+}
+template<> UIWORLD_NON_ATTRIBUTED_API UEnum* StaticEnum<EZonefallOnlineTravelPhase>()
+{
+	return EZonefallOnlineTravelPhase_StaticEnum();
+}
+struct Z_Construct_UEnum_UIWorld_EZonefallOnlineTravelPhase_Statics
+{
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Enum_MetaDataParams[] = {
+		{ "BlueprintType", "true" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Host vs client online travel \xe2\x80\x94 drives loading-screen copy and pacing. */" },
+#endif
+		{ "Hosting.DisplayName", "Hosting" },
+		{ "Hosting.Name", "EZonefallOnlineTravelPhase::Hosting" },
+		{ "Joining.DisplayName", "Joining" },
+		{ "Joining.Name", "EZonefallOnlineTravelPhase::Joining" },
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+		{ "Syncing.DisplayName", "Syncing" },
+		{ "Syncing.Name", "EZonefallOnlineTravelPhase::Syncing" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Host vs client online travel \xe2\x80\x94 drives loading-screen copy and pacing." },
+#endif
+	};
+#endif // WITH_METADATA
+	static constexpr UECodeGen_Private::FEnumeratorParam Enumerators[] = {
+		{ "EZonefallOnlineTravelPhase::Joining", (int64)EZonefallOnlineTravelPhase::Joining },
+		{ "EZonefallOnlineTravelPhase::Hosting", (int64)EZonefallOnlineTravelPhase::Hosting },
+		{ "EZonefallOnlineTravelPhase::Syncing", (int64)EZonefallOnlineTravelPhase::Syncing },
+	};
+	static const UECodeGen_Private::FEnumParams EnumParams;
+}; // struct Z_Construct_UEnum_UIWorld_EZonefallOnlineTravelPhase_Statics 
+const UECodeGen_Private::FEnumParams Z_Construct_UEnum_UIWorld_EZonefallOnlineTravelPhase_Statics::EnumParams = {
+	(UObject*(*)())Z_Construct_UPackage__Script_UIWorld,
+	nullptr,
+	"EZonefallOnlineTravelPhase",
+	"EZonefallOnlineTravelPhase",
+	Z_Construct_UEnum_UIWorld_EZonefallOnlineTravelPhase_Statics::Enumerators,
+	RF_Public|RF_Transient|RF_MarkAsNative,
+	UE_ARRAY_COUNT(Z_Construct_UEnum_UIWorld_EZonefallOnlineTravelPhase_Statics::Enumerators),
+	EEnumFlags::None,
+	(uint8)UEnum::ECppForm::EnumClass,
+	METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UEnum_UIWorld_EZonefallOnlineTravelPhase_Statics::Enum_MetaDataParams), Z_Construct_UEnum_UIWorld_EZonefallOnlineTravelPhase_Statics::Enum_MetaDataParams)
+};
+UEnum* Z_Construct_UEnum_UIWorld_EZonefallOnlineTravelPhase()
+{
+	if (!Z_Registration_Info_UEnum_EZonefallOnlineTravelPhase.InnerSingleton)
+	{
+		UECodeGen_Private::ConstructUEnum(Z_Registration_Info_UEnum_EZonefallOnlineTravelPhase.InnerSingleton, Z_Construct_UEnum_UIWorld_EZonefallOnlineTravelPhase_Statics::EnumParams);
+	}
+	return Z_Registration_Info_UEnum_EZonefallOnlineTravelPhase.InnerSingleton;
+}
+// ********** End Enum EZonefallOnlineTravelPhase **************************************************
+
 // ********** Begin ScriptStruct FUIWorldOnlineSessionResult ***************************************
 struct Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics
 {
@@ -131,6 +198,42 @@ struct Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics
 		{ "Category", "UIWorld|Online" },
 		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
 	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_SearchResultIndex_MetaData[] = {
+		{ "Category", "UIWorld|Online" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Index into the last OSS session search (used after UI filtering/sorting). */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Index into the last OSS session search (used after UI filtering/sorting)." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_MapDisplayName_MetaData[] = {
+		{ "Category", "UIWorld|Online" },
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_bIsFull_MetaData[] = {
+		{ "Category", "UIWorld|Online" },
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_bPasswordProtected_MetaData[] = {
+		{ "Category", "UIWorld|Online" },
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_BuildId_MetaData[] = {
+		{ "Category", "UIWorld|Online" },
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_bBuildCompatible_MetaData[] = {
+		{ "Category", "UIWorld|Online" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** False when host build id does not match this client (Steam / packaged builds). */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "False when host build id does not match this client (Steam / packaged builds)." },
+#endif
+	};
 #endif // WITH_METADATA
 
 // ********** Begin ScriptStruct FUIWorldOnlineSessionResult constinit property declarations *******
@@ -142,6 +245,15 @@ struct Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics
 	static const UECodeGen_Private::FIntPropertyParams NewProp_CurrentPlayers;
 	static void NewProp_bIsLAN_SetBit(void* Obj);
 	static const UECodeGen_Private::FBoolPropertyParams NewProp_bIsLAN;
+	static const UECodeGen_Private::FIntPropertyParams NewProp_SearchResultIndex;
+	static const UECodeGen_Private::FStrPropertyParams NewProp_MapDisplayName;
+	static void NewProp_bIsFull_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bIsFull;
+	static void NewProp_bPasswordProtected_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bPasswordProtected;
+	static const UECodeGen_Private::FStrPropertyParams NewProp_BuildId;
+	static void NewProp_bBuildCompatible_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bBuildCompatible;
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 // ********** End ScriptStruct FUIWorldOnlineSessionResult constinit property declarations *********
 	static void* NewStructOps()
@@ -172,6 +284,24 @@ void Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_bIsL
 	((FUIWorldOnlineSessionResult*)Obj)->bIsLAN = 1;
 }
 const UECodeGen_Private::FBoolPropertyParams Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_bIsLAN = { "bIsLAN", nullptr, (EPropertyFlags)0x0010000000000014, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(FUIWorldOnlineSessionResult), &Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_bIsLAN_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bIsLAN_MetaData), NewProp_bIsLAN_MetaData) };
+const UECodeGen_Private::FIntPropertyParams Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_SearchResultIndex = { "SearchResultIndex", nullptr, (EPropertyFlags)0x0010000000000014, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FUIWorldOnlineSessionResult, SearchResultIndex), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_SearchResultIndex_MetaData), NewProp_SearchResultIndex_MetaData) };
+const UECodeGen_Private::FStrPropertyParams Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_MapDisplayName = { "MapDisplayName", nullptr, (EPropertyFlags)0x0010000000000014, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FUIWorldOnlineSessionResult, MapDisplayName), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_MapDisplayName_MetaData), NewProp_MapDisplayName_MetaData) };
+void Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_bIsFull_SetBit(void* Obj)
+{
+	((FUIWorldOnlineSessionResult*)Obj)->bIsFull = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_bIsFull = { "bIsFull", nullptr, (EPropertyFlags)0x0010000000000014, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(FUIWorldOnlineSessionResult), &Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_bIsFull_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bIsFull_MetaData), NewProp_bIsFull_MetaData) };
+void Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_bPasswordProtected_SetBit(void* Obj)
+{
+	((FUIWorldOnlineSessionResult*)Obj)->bPasswordProtected = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_bPasswordProtected = { "bPasswordProtected", nullptr, (EPropertyFlags)0x0010000000000014, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(FUIWorldOnlineSessionResult), &Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_bPasswordProtected_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bPasswordProtected_MetaData), NewProp_bPasswordProtected_MetaData) };
+const UECodeGen_Private::FStrPropertyParams Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_BuildId = { "BuildId", nullptr, (EPropertyFlags)0x0010000000000014, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(FUIWorldOnlineSessionResult, BuildId), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_BuildId_MetaData), NewProp_BuildId_MetaData) };
+void Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_bBuildCompatible_SetBit(void* Obj)
+{
+	((FUIWorldOnlineSessionResult*)Obj)->bBuildCompatible = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_bBuildCompatible = { "bBuildCompatible", nullptr, (EPropertyFlags)0x0010000000000014, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(FUIWorldOnlineSessionResult), &Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_bBuildCompatible_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bBuildCompatible_MetaData), NewProp_bBuildCompatible_MetaData) };
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::PropPointers[] = {
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_SessionId,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_OwningUserName,
@@ -180,6 +310,12 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UScriptStruct_FU
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_MaxPlayers,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_CurrentPlayers,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_bIsLAN,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_SearchResultIndex,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_MapDisplayName,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_bIsFull,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_bPasswordProtected,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_BuildId,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewProp_bBuildCompatible,
 };
 static_assert(UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::PropPointers) < 2048);
 // ********** End ScriptStruct FUIWorldOnlineSessionResult Property Definitions ********************
@@ -298,8 +434,8 @@ struct Z_Construct_UDelegateFunction_UIWorld_OnUIWorldSessionsFound__DelegateSig
 };
 
 // ********** Begin Delegate FOnUIWorldSessionsFound Property Definitions **************************
-const UECodeGen_Private::FStructPropertyParams Z_Construct_UDelegateFunction_UIWorld_OnUIWorldSessionsFound__DelegateSignature_Statics::NewProp_Results_Inner = { "Results", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult, METADATA_PARAMS(0, nullptr) }; // 3771526265
-const UECodeGen_Private::FArrayPropertyParams Z_Construct_UDelegateFunction_UIWorld_OnUIWorldSessionsFound__DelegateSignature_Statics::NewProp_Results = { "Results", nullptr, (EPropertyFlags)0x0010000008000182, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(_Script_UIWorld_eventOnUIWorldSessionsFound_Parms, Results), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_Results_MetaData), NewProp_Results_MetaData) }; // 3771526265
+const UECodeGen_Private::FStructPropertyParams Z_Construct_UDelegateFunction_UIWorld_OnUIWorldSessionsFound__DelegateSignature_Statics::NewProp_Results_Inner = { "Results", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult, METADATA_PARAMS(0, nullptr) }; // 11846451
+const UECodeGen_Private::FArrayPropertyParams Z_Construct_UDelegateFunction_UIWorld_OnUIWorldSessionsFound__DelegateSignature_Statics::NewProp_Results = { "Results", nullptr, (EPropertyFlags)0x0010000008000182, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(_Script_UIWorld_eventOnUIWorldSessionsFound_Parms, Results), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_Results_MetaData), NewProp_Results_MetaData) }; // 11846451
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UDelegateFunction_UIWorld_OnUIWorldSessionsFound__DelegateSignature_Statics::PropPointers[] = {
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UDelegateFunction_UIWorld_OnUIWorldSessionsFound__DelegateSignature_Statics::NewProp_Results_Inner,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UDelegateFunction_UIWorld_OnUIWorldSessionsFound__DelegateSignature_Statics::NewProp_Results,
@@ -331,6 +467,59 @@ void FOnUIWorldSessionsFound_DelegateWrapper(const FMulticastScriptDelegate& OnU
 	OnUIWorldSessionsFound.ProcessMulticastDelegate<UObject>(&Parms);
 }
 // ********** End Delegate FOnUIWorldSessionsFound *************************************************
+
+// ********** Begin Delegate FOnUIWorldOnlineMatchReady ********************************************
+struct Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineMatchReady__DelegateSignature_Statics
+{
+	struct _Script_UIWorld_eventOnUIWorldOnlineMatchReady_Parms
+	{
+		UWorld* World;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Delegate FOnUIWorldOnlineMatchReady constinit property declarations ************
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_World;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Delegate FOnUIWorldOnlineMatchReady constinit property declarations **************
+	static const UECodeGen_Private::FDelegateFunctionParams FuncParams;
+};
+
+// ********** Begin Delegate FOnUIWorldOnlineMatchReady Property Definitions ***********************
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineMatchReady__DelegateSignature_Statics::NewProp_World = { "World", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(_Script_UIWorld_eventOnUIWorldOnlineMatchReady_Parms, World), Z_Construct_UClass_UWorld_NoRegister, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineMatchReady__DelegateSignature_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineMatchReady__DelegateSignature_Statics::NewProp_World,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineMatchReady__DelegateSignature_Statics::PropPointers) < 2048);
+// ********** End Delegate FOnUIWorldOnlineMatchReady Property Definitions *************************
+const UECodeGen_Private::FDelegateFunctionParams Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineMatchReady__DelegateSignature_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UPackage__Script_UIWorld, nullptr, "OnUIWorldOnlineMatchReady__DelegateSignature", 	Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineMatchReady__DelegateSignature_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineMatchReady__DelegateSignature_Statics::PropPointers), 
+sizeof(Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineMatchReady__DelegateSignature_Statics::_Script_UIWorld_eventOnUIWorldOnlineMatchReady_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x00130000, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineMatchReady__DelegateSignature_Statics::Function_MetaDataParams), Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineMatchReady__DelegateSignature_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineMatchReady__DelegateSignature_Statics::_Script_UIWorld_eventOnUIWorldOnlineMatchReady_Parms) < MAX_uint16);
+UFunction* Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineMatchReady__DelegateSignature()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUDelegateFunction(&ReturnFunction, Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineMatchReady__DelegateSignature_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+void FOnUIWorldOnlineMatchReady_DelegateWrapper(const FMulticastScriptDelegate& OnUIWorldOnlineMatchReady, UWorld* World)
+{
+	struct _Script_UIWorld_eventOnUIWorldOnlineMatchReady_Parms
+	{
+		UWorld* World;
+	};
+	_Script_UIWorld_eventOnUIWorldOnlineMatchReady_Parms Parms;
+	Parms.World=World;
+	OnUIWorldOnlineMatchReady.ProcessMulticastDelegate<UObject>(&Parms);
+}
+// ********** End Delegate FOnUIWorldOnlineMatchReady **********************************************
 
 // ********** Begin Delegate FOnUIWorldMenuWidgetChanged *******************************************
 struct Z_Construct_UDelegateFunction_UIWorld_OnUIWorldMenuWidgetChanged__DelegateSignature_Statics
@@ -917,6 +1106,120 @@ DEFINE_FUNCTION(UUIWorldMenuGameInstance::execFindOnlineSessions)
 }
 // ********** End Class UUIWorldMenuGameInstance Function FindOnlineSessions ***********************
 
+// ********** Begin Class UUIWorldMenuGameInstance Function GetCurrentSessionPlayerCount ***********
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_GetCurrentSessionPlayerCount_Statics
+{
+	struct UIWorldMenuGameInstance_eventGetCurrentSessionPlayerCount_Parms
+	{
+		int32 ReturnValue;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Online" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Players currently in the active named session (0 if none / not in a session). */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Players currently in the active named session (0 if none / not in a session)." },
+#endif
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function GetCurrentSessionPlayerCount constinit property declarations **********
+	static const UECodeGen_Private::FIntPropertyParams NewProp_ReturnValue;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function GetCurrentSessionPlayerCount constinit property declarations ************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function GetCurrentSessionPlayerCount Property Definitions *********************
+const UECodeGen_Private::FIntPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_GetCurrentSessionPlayerCount_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UIWorldMenuGameInstance_eventGetCurrentSessionPlayerCount_Parms, ReturnValue), METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_GetCurrentSessionPlayerCount_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_GetCurrentSessionPlayerCount_Statics::NewProp_ReturnValue,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetCurrentSessionPlayerCount_Statics::PropPointers) < 2048);
+// ********** End Function GetCurrentSessionPlayerCount Property Definitions ***********************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_GetCurrentSessionPlayerCount_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "GetCurrentSessionPlayerCount", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_GetCurrentSessionPlayerCount_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetCurrentSessionPlayerCount_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetCurrentSessionPlayerCount_Statics::UIWorldMenuGameInstance_eventGetCurrentSessionPlayerCount_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x54020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetCurrentSessionPlayerCount_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_GetCurrentSessionPlayerCount_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetCurrentSessionPlayerCount_Statics::UIWorldMenuGameInstance_eventGetCurrentSessionPlayerCount_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_GetCurrentSessionPlayerCount()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_GetCurrentSessionPlayerCount_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execGetCurrentSessionPlayerCount)
+{
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(int32*)Z_Param__Result=P_THIS->GetCurrentSessionPlayerCount();
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function GetCurrentSessionPlayerCount *************
+
+// ********** Begin Class UUIWorldMenuGameInstance Function GetEngineVersionString *****************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_GetEngineVersionString_Statics
+{
+	struct UIWorldMenuGameInstance_eventGetEngineVersionString_Parms
+	{
+		FString ReturnValue;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Info" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Returns a friendly engine identifier, e.g. \"Unreal Engine 5.7.0\".\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Returns a friendly engine identifier, e.g. \"Unreal Engine 5.7.0\"." },
+#endif
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function GetEngineVersionString constinit property declarations ****************
+	static const UECodeGen_Private::FStrPropertyParams NewProp_ReturnValue;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function GetEngineVersionString constinit property declarations ******************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function GetEngineVersionString Property Definitions ***************************
+const UECodeGen_Private::FStrPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_GetEngineVersionString_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UIWorldMenuGameInstance_eventGetEngineVersionString_Parms, ReturnValue), METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_GetEngineVersionString_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_GetEngineVersionString_Statics::NewProp_ReturnValue,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetEngineVersionString_Statics::PropPointers) < 2048);
+// ********** End Function GetEngineVersionString Property Definitions *****************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_GetEngineVersionString_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "GetEngineVersionString", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_GetEngineVersionString_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetEngineVersionString_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetEngineVersionString_Statics::UIWorldMenuGameInstance_eventGetEngineVersionString_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x54020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetEngineVersionString_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_GetEngineVersionString_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetEngineVersionString_Statics::UIWorldMenuGameInstance_eventGetEngineVersionString_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_GetEngineVersionString()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_GetEngineVersionString_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execGetEngineVersionString)
+{
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(FString*)Z_Param__Result=P_THIS->GetEngineVersionString();
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function GetEngineVersionString *******************
+
 // ********** Begin Class UUIWorldMenuGameInstance Function GetLastFoundSessions *******************
 struct Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastFoundSessions_Statics
 {
@@ -943,8 +1246,8 @@ struct Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastFoundSessions_Stati
 };
 
 // ********** Begin Function GetLastFoundSessions Property Definitions *****************************
-const UECodeGen_Private::FStructPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastFoundSessions_Statics::NewProp_ReturnValue_Inner = { "ReturnValue", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult, METADATA_PARAMS(0, nullptr) }; // 3771526265
-const UECodeGen_Private::FArrayPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastFoundSessions_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000008000582, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UIWorldMenuGameInstance_eventGetLastFoundSessions_Parms, ReturnValue), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ReturnValue_MetaData), NewProp_ReturnValue_MetaData) }; // 3771526265
+const UECodeGen_Private::FStructPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastFoundSessions_Statics::NewProp_ReturnValue_Inner = { "ReturnValue", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult, METADATA_PARAMS(0, nullptr) }; // 11846451
+const UECodeGen_Private::FArrayPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastFoundSessions_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000008000582, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UIWorldMenuGameInstance_eventGetLastFoundSessions_Parms, ReturnValue), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ReturnValue_MetaData), NewProp_ReturnValue_MetaData) }; // 11846451
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastFoundSessions_Statics::PropPointers[] = {
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastFoundSessions_Statics::NewProp_ReturnValue_Inner,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastFoundSessions_Statics::NewProp_ReturnValue,
@@ -974,6 +1277,297 @@ DEFINE_FUNCTION(UUIWorldMenuGameInstance::execGetLastFoundSessions)
 }
 // ********** End Class UUIWorldMenuGameInstance Function GetLastFoundSessions *********************
 
+// ********** Begin Class UUIWorldMenuGameInstance Function GetLastOnlineDiagnostic ****************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastOnlineDiagnostic_Statics
+{
+	struct UIWorldMenuGameInstance_eventGetLastOnlineDiagnostic_Parms
+	{
+		FString ReturnValue;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Online" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Human-readable reason when Host/Find/Join failed (empty if last op succeeded). */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Human-readable reason when Host/Find/Join failed (empty if last op succeeded)." },
+#endif
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function GetLastOnlineDiagnostic constinit property declarations ***************
+	static const UECodeGen_Private::FStrPropertyParams NewProp_ReturnValue;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function GetLastOnlineDiagnostic constinit property declarations *****************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function GetLastOnlineDiagnostic Property Definitions **************************
+const UECodeGen_Private::FStrPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastOnlineDiagnostic_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UIWorldMenuGameInstance_eventGetLastOnlineDiagnostic_Parms, ReturnValue), METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastOnlineDiagnostic_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastOnlineDiagnostic_Statics::NewProp_ReturnValue,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastOnlineDiagnostic_Statics::PropPointers) < 2048);
+// ********** End Function GetLastOnlineDiagnostic Property Definitions ****************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastOnlineDiagnostic_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "GetLastOnlineDiagnostic", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastOnlineDiagnostic_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastOnlineDiagnostic_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastOnlineDiagnostic_Statics::UIWorldMenuGameInstance_eventGetLastOnlineDiagnostic_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x54020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastOnlineDiagnostic_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastOnlineDiagnostic_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastOnlineDiagnostic_Statics::UIWorldMenuGameInstance_eventGetLastOnlineDiagnostic_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastOnlineDiagnostic()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastOnlineDiagnostic_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execGetLastOnlineDiagnostic)
+{
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(FString*)Z_Param__Result=P_THIS->GetLastOnlineDiagnostic();
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function GetLastOnlineDiagnostic ******************
+
+// ********** Begin Class UUIWorldMenuGameInstance Function GetOnlinePlayerNickname ****************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlinePlayerNickname_Statics
+{
+	struct UIWorldMenuGameInstance_eventGetOnlinePlayerNickname_Parms
+	{
+		FString ReturnValue;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Online" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Logged-in player's display name (Steam persona, or a local fallback). */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Logged-in player's display name (Steam persona, or a local fallback)." },
+#endif
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function GetOnlinePlayerNickname constinit property declarations ***************
+	static const UECodeGen_Private::FStrPropertyParams NewProp_ReturnValue;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function GetOnlinePlayerNickname constinit property declarations *****************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function GetOnlinePlayerNickname Property Definitions **************************
+const UECodeGen_Private::FStrPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlinePlayerNickname_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UIWorldMenuGameInstance_eventGetOnlinePlayerNickname_Parms, ReturnValue), METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlinePlayerNickname_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlinePlayerNickname_Statics::NewProp_ReturnValue,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlinePlayerNickname_Statics::PropPointers) < 2048);
+// ********** End Function GetOnlinePlayerNickname Property Definitions ****************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlinePlayerNickname_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "GetOnlinePlayerNickname", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlinePlayerNickname_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlinePlayerNickname_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlinePlayerNickname_Statics::UIWorldMenuGameInstance_eventGetOnlinePlayerNickname_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x54020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlinePlayerNickname_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlinePlayerNickname_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlinePlayerNickname_Statics::UIWorldMenuGameInstance_eventGetOnlinePlayerNickname_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlinePlayerNickname()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlinePlayerNickname_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execGetOnlinePlayerNickname)
+{
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(FString*)Z_Param__Result=P_THIS->GetOnlinePlayerNickname();
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function GetOnlinePlayerNickname ******************
+
+// ********** Begin Class UUIWorldMenuGameInstance Function GetOnlineServiceName *******************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlineServiceName_Statics
+{
+	struct UIWorldMenuGameInstance_eventGetOnlineServiceName_Parms
+	{
+		FString ReturnValue;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Online" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Active subsystem name, e.g. \"STEAM\", \"NULL\", or \"None\". */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Active subsystem name, e.g. \"STEAM\", \"NULL\", or \"None\"." },
+#endif
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function GetOnlineServiceName constinit property declarations ******************
+	static const UECodeGen_Private::FStrPropertyParams NewProp_ReturnValue;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function GetOnlineServiceName constinit property declarations ********************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function GetOnlineServiceName Property Definitions *****************************
+const UECodeGen_Private::FStrPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlineServiceName_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UIWorldMenuGameInstance_eventGetOnlineServiceName_Parms, ReturnValue), METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlineServiceName_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlineServiceName_Statics::NewProp_ReturnValue,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlineServiceName_Statics::PropPointers) < 2048);
+// ********** End Function GetOnlineServiceName Property Definitions *******************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlineServiceName_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "GetOnlineServiceName", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlineServiceName_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlineServiceName_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlineServiceName_Statics::UIWorldMenuGameInstance_eventGetOnlineServiceName_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x54020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlineServiceName_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlineServiceName_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlineServiceName_Statics::UIWorldMenuGameInstance_eventGetOnlineServiceName_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlineServiceName()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlineServiceName_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execGetOnlineServiceName)
+{
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(FString*)Z_Param__Result=P_THIS->GetOnlineServiceName();
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function GetOnlineServiceName *********************
+
+// ********** Begin Class UUIWorldMenuGameInstance Function GetUnlockedAchievements ****************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_GetUnlockedAchievements_Statics
+{
+	struct UIWorldMenuGameInstance_eventGetUnlockedAchievements_Parms
+	{
+		TArray<FName> ReturnValue;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Achievements" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** All achievement ids unlocked so far (local record). */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "All achievement ids unlocked so far (local record)." },
+#endif
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function GetUnlockedAchievements constinit property declarations ***************
+	static const UECodeGen_Private::FNamePropertyParams NewProp_ReturnValue_Inner;
+	static const UECodeGen_Private::FArrayPropertyParams NewProp_ReturnValue;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function GetUnlockedAchievements constinit property declarations *****************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function GetUnlockedAchievements Property Definitions **************************
+const UECodeGen_Private::FNamePropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_GetUnlockedAchievements_Statics::NewProp_ReturnValue_Inner = { "ReturnValue", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Name, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FArrayPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_GetUnlockedAchievements_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UIWorldMenuGameInstance_eventGetUnlockedAchievements_Parms, ReturnValue), EArrayPropertyFlags::None, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_GetUnlockedAchievements_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_GetUnlockedAchievements_Statics::NewProp_ReturnValue_Inner,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_GetUnlockedAchievements_Statics::NewProp_ReturnValue,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetUnlockedAchievements_Statics::PropPointers) < 2048);
+// ********** End Function GetUnlockedAchievements Property Definitions ****************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_GetUnlockedAchievements_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "GetUnlockedAchievements", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_GetUnlockedAchievements_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetUnlockedAchievements_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetUnlockedAchievements_Statics::UIWorldMenuGameInstance_eventGetUnlockedAchievements_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x54020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetUnlockedAchievements_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_GetUnlockedAchievements_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_GetUnlockedAchievements_Statics::UIWorldMenuGameInstance_eventGetUnlockedAchievements_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_GetUnlockedAchievements()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_GetUnlockedAchievements_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execGetUnlockedAchievements)
+{
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(TArray<FName>*)Z_Param__Result=P_THIS->GetUnlockedAchievements();
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function GetUnlockedAchievements ******************
+
+// ********** Begin Class UUIWorldMenuGameInstance Function HandleLanguageChanged ******************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_HandleLanguageChanged_Statics
+{
+	struct UIWorldMenuGameInstance_eventHandleLanguageChanged_Parms
+	{
+		EZonefallLanguage NewLanguage;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Rebuilds the currently-shown menu in the newly-selected language (live switch).\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Rebuilds the currently-shown menu in the newly-selected language (live switch)." },
+#endif
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function HandleLanguageChanged constinit property declarations *****************
+	static const UECodeGen_Private::FBytePropertyParams NewProp_NewLanguage_Underlying;
+	static const UECodeGen_Private::FEnumPropertyParams NewProp_NewLanguage;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function HandleLanguageChanged constinit property declarations *******************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function HandleLanguageChanged Property Definitions ****************************
+const UECodeGen_Private::FBytePropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_HandleLanguageChanged_Statics::NewProp_NewLanguage_Underlying = { "UnderlyingType", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Byte, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, nullptr, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FEnumPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_HandleLanguageChanged_Statics::NewProp_NewLanguage = { "NewLanguage", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UIWorldMenuGameInstance_eventHandleLanguageChanged_Parms, NewLanguage), Z_Construct_UEnum_UIWorld_EZonefallLanguage, METADATA_PARAMS(0, nullptr) }; // 1922273304
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_HandleLanguageChanged_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_HandleLanguageChanged_Statics::NewProp_NewLanguage_Underlying,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_HandleLanguageChanged_Statics::NewProp_NewLanguage,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_HandleLanguageChanged_Statics::PropPointers) < 2048);
+// ********** End Function HandleLanguageChanged Property Definitions ******************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_HandleLanguageChanged_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "HandleLanguageChanged", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_HandleLanguageChanged_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_HandleLanguageChanged_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_HandleLanguageChanged_Statics::UIWorldMenuGameInstance_eventHandleLanguageChanged_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x00040401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_HandleLanguageChanged_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_HandleLanguageChanged_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_HandleLanguageChanged_Statics::UIWorldMenuGameInstance_eventHandleLanguageChanged_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_HandleLanguageChanged()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_HandleLanguageChanged_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execHandleLanguageChanged)
+{
+	P_GET_ENUM(EZonefallLanguage,Z_Param_NewLanguage);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	P_THIS->HandleLanguageChanged(EZonefallLanguage(Z_Param_NewLanguage));
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function HandleLanguageChanged ********************
+
 // ********** Begin Class UUIWorldMenuGameInstance Function HostOnlineSession **********************
 struct Z_Construct_UFunction_UUIWorldMenuGameInstance_HostOnlineSession_Statics
 {
@@ -986,7 +1580,7 @@ struct Z_Construct_UFunction_UUIWorldMenuGameInstance_HostOnlineSession_Statics
 #if WITH_METADATA
 	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
 		{ "Category", "UIWorld|Online" },
-		{ "CPP_Default_bLAN", "true" },
+		{ "CPP_Default_bLAN", "false" },
 		{ "CPP_Default_MaxPlayers", "4" },
 		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
 	};
@@ -1046,6 +1640,323 @@ DEFINE_FUNCTION(UUIWorldMenuGameInstance::execHostOnlineSession)
 	P_NATIVE_END;
 }
 // ********** End Class UUIWorldMenuGameInstance Function HostOnlineSession ************************
+
+// ********** Begin Class UUIWorldMenuGameInstance Function IsAchievementUnlocked ******************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_IsAchievementUnlocked_Statics
+{
+	struct UIWorldMenuGameInstance_eventIsAchievementUnlocked_Parms
+	{
+		FName AchievementId;
+		bool ReturnValue;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Achievements" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** True if the achievement has been unlocked (locally recorded). */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "True if the achievement has been unlocked (locally recorded)." },
+#endif
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function IsAchievementUnlocked constinit property declarations *****************
+	static const UECodeGen_Private::FNamePropertyParams NewProp_AchievementId;
+	static void NewProp_ReturnValue_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_ReturnValue;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function IsAchievementUnlocked constinit property declarations *******************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function IsAchievementUnlocked Property Definitions ****************************
+const UECodeGen_Private::FNamePropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_IsAchievementUnlocked_Statics::NewProp_AchievementId = { "AchievementId", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Name, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UIWorldMenuGameInstance_eventIsAchievementUnlocked_Parms, AchievementId), METADATA_PARAMS(0, nullptr) };
+void Z_Construct_UFunction_UUIWorldMenuGameInstance_IsAchievementUnlocked_Statics::NewProp_ReturnValue_SetBit(void* Obj)
+{
+	((UIWorldMenuGameInstance_eventIsAchievementUnlocked_Parms*)Obj)->ReturnValue = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_IsAchievementUnlocked_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UIWorldMenuGameInstance_eventIsAchievementUnlocked_Parms), &Z_Construct_UFunction_UUIWorldMenuGameInstance_IsAchievementUnlocked_Statics::NewProp_ReturnValue_SetBit, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_IsAchievementUnlocked_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_IsAchievementUnlocked_Statics::NewProp_AchievementId,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_IsAchievementUnlocked_Statics::NewProp_ReturnValue,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsAchievementUnlocked_Statics::PropPointers) < 2048);
+// ********** End Function IsAchievementUnlocked Property Definitions ******************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_IsAchievementUnlocked_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "IsAchievementUnlocked", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_IsAchievementUnlocked_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsAchievementUnlocked_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsAchievementUnlocked_Statics::UIWorldMenuGameInstance_eventIsAchievementUnlocked_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x54020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsAchievementUnlocked_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_IsAchievementUnlocked_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsAchievementUnlocked_Statics::UIWorldMenuGameInstance_eventIsAchievementUnlocked_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_IsAchievementUnlocked()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_IsAchievementUnlocked_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execIsAchievementUnlocked)
+{
+	P_GET_PROPERTY(FNameProperty,Z_Param_AchievementId);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(bool*)Z_Param__Result=P_THIS->IsAchievementUnlocked(Z_Param_AchievementId);
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function IsAchievementUnlocked ********************
+
+// ********** Begin Class UUIWorldMenuGameInstance Function IsOnlineAvailable **********************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineAvailable_Statics
+{
+	struct UIWorldMenuGameInstance_eventIsOnlineAvailable_Parms
+	{
+		bool ReturnValue;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Online" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** True if an online subsystem (Steam / Null) is present and initialised. */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "True if an online subsystem (Steam / Null) is present and initialised." },
+#endif
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function IsOnlineAvailable constinit property declarations *********************
+	static void NewProp_ReturnValue_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_ReturnValue;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function IsOnlineAvailable constinit property declarations ***********************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function IsOnlineAvailable Property Definitions ********************************
+void Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineAvailable_Statics::NewProp_ReturnValue_SetBit(void* Obj)
+{
+	((UIWorldMenuGameInstance_eventIsOnlineAvailable_Parms*)Obj)->ReturnValue = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineAvailable_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UIWorldMenuGameInstance_eventIsOnlineAvailable_Parms), &Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineAvailable_Statics::NewProp_ReturnValue_SetBit, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineAvailable_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineAvailable_Statics::NewProp_ReturnValue,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineAvailable_Statics::PropPointers) < 2048);
+// ********** End Function IsOnlineAvailable Property Definitions **********************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineAvailable_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "IsOnlineAvailable", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineAvailable_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineAvailable_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineAvailable_Statics::UIWorldMenuGameInstance_eventIsOnlineAvailable_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x54020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineAvailable_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineAvailable_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineAvailable_Statics::UIWorldMenuGameInstance_eventIsOnlineAvailable_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineAvailable()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineAvailable_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execIsOnlineAvailable)
+{
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(bool*)Z_Param__Result=P_THIS->IsOnlineAvailable();
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function IsOnlineAvailable ************************
+
+// ********** Begin Class UUIWorldMenuGameInstance Function IsOnlineLoggedIn ***********************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineLoggedIn_Statics
+{
+	struct UIWorldMenuGameInstance_eventIsOnlineLoggedIn_Parms
+	{
+		bool ReturnValue;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Online" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** True once the identity interface reports a logged-in user (Steam persona signed in). */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "True once the identity interface reports a logged-in user (Steam persona signed in)." },
+#endif
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function IsOnlineLoggedIn constinit property declarations **********************
+	static void NewProp_ReturnValue_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_ReturnValue;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function IsOnlineLoggedIn constinit property declarations ************************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function IsOnlineLoggedIn Property Definitions *********************************
+void Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineLoggedIn_Statics::NewProp_ReturnValue_SetBit(void* Obj)
+{
+	((UIWorldMenuGameInstance_eventIsOnlineLoggedIn_Parms*)Obj)->ReturnValue = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineLoggedIn_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UIWorldMenuGameInstance_eventIsOnlineLoggedIn_Parms), &Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineLoggedIn_Statics::NewProp_ReturnValue_SetBit, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineLoggedIn_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineLoggedIn_Statics::NewProp_ReturnValue,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineLoggedIn_Statics::PropPointers) < 2048);
+// ********** End Function IsOnlineLoggedIn Property Definitions ***********************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineLoggedIn_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "IsOnlineLoggedIn", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineLoggedIn_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineLoggedIn_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineLoggedIn_Statics::UIWorldMenuGameInstance_eventIsOnlineLoggedIn_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x54020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineLoggedIn_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineLoggedIn_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineLoggedIn_Statics::UIWorldMenuGameInstance_eventIsOnlineLoggedIn_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineLoggedIn()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineLoggedIn_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execIsOnlineLoggedIn)
+{
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(bool*)Z_Param__Result=P_THIS->IsOnlineLoggedIn();
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function IsOnlineLoggedIn *************************
+
+// ********** Begin Class UUIWorldMenuGameInstance Function IsOnlineTravelInProgress ***************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineTravelInProgress_Statics
+{
+	struct UIWorldMenuGameInstance_eventIsOnlineTravelInProgress_Parms
+	{
+		bool ReturnValue;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Online" },
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function IsOnlineTravelInProgress constinit property declarations **************
+	static void NewProp_ReturnValue_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_ReturnValue;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function IsOnlineTravelInProgress constinit property declarations ****************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function IsOnlineTravelInProgress Property Definitions *************************
+void Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineTravelInProgress_Statics::NewProp_ReturnValue_SetBit(void* Obj)
+{
+	((UIWorldMenuGameInstance_eventIsOnlineTravelInProgress_Parms*)Obj)->ReturnValue = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineTravelInProgress_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UIWorldMenuGameInstance_eventIsOnlineTravelInProgress_Parms), &Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineTravelInProgress_Statics::NewProp_ReturnValue_SetBit, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineTravelInProgress_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineTravelInProgress_Statics::NewProp_ReturnValue,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineTravelInProgress_Statics::PropPointers) < 2048);
+// ********** End Function IsOnlineTravelInProgress Property Definitions ***************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineTravelInProgress_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "IsOnlineTravelInProgress", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineTravelInProgress_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineTravelInProgress_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineTravelInProgress_Statics::UIWorldMenuGameInstance_eventIsOnlineTravelInProgress_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x54020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineTravelInProgress_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineTravelInProgress_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineTravelInProgress_Statics::UIWorldMenuGameInstance_eventIsOnlineTravelInProgress_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineTravelInProgress()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineTravelInProgress_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execIsOnlineTravelInProgress)
+{
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(bool*)Z_Param__Result=P_THIS->IsOnlineTravelInProgress();
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function IsOnlineTravelInProgress *****************
+
+// ********** Begin Class UUIWorldMenuGameInstance Function JoinOnlineByAddress ********************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineByAddress_Statics
+{
+	struct UIWorldMenuGameInstance_eventJoinOnlineByAddress_Parms
+	{
+		FString Address;
+		bool ReturnValue;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Online" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Direct-connect by a typed address / ID (e.g. \"192.168.0.10:7777\", \"steam.<id>\", or a bare IP). */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Direct-connect by a typed address / ID (e.g. \"192.168.0.10:7777\", \"steam.<id>\", or a bare IP)." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_Address_MetaData[] = {
+		{ "NativeConst", "" },
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function JoinOnlineByAddress constinit property declarations *******************
+	static const UECodeGen_Private::FStrPropertyParams NewProp_Address;
+	static void NewProp_ReturnValue_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_ReturnValue;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function JoinOnlineByAddress constinit property declarations *********************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function JoinOnlineByAddress Property Definitions ******************************
+const UECodeGen_Private::FStrPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineByAddress_Statics::NewProp_Address = { "Address", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UIWorldMenuGameInstance_eventJoinOnlineByAddress_Parms, Address), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_Address_MetaData), NewProp_Address_MetaData) };
+void Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineByAddress_Statics::NewProp_ReturnValue_SetBit(void* Obj)
+{
+	((UIWorldMenuGameInstance_eventJoinOnlineByAddress_Parms*)Obj)->ReturnValue = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineByAddress_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UIWorldMenuGameInstance_eventJoinOnlineByAddress_Parms), &Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineByAddress_Statics::NewProp_ReturnValue_SetBit, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineByAddress_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineByAddress_Statics::NewProp_Address,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineByAddress_Statics::NewProp_ReturnValue,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineByAddress_Statics::PropPointers) < 2048);
+// ********** End Function JoinOnlineByAddress Property Definitions ********************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineByAddress_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "JoinOnlineByAddress", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineByAddress_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineByAddress_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineByAddress_Statics::UIWorldMenuGameInstance_eventJoinOnlineByAddress_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineByAddress_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineByAddress_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineByAddress_Statics::UIWorldMenuGameInstance_eventJoinOnlineByAddress_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineByAddress()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineByAddress_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execJoinOnlineByAddress)
+{
+	P_GET_PROPERTY(FStrProperty,Z_Param_Address);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(bool*)Z_Param__Result=P_THIS->JoinOnlineByAddress(Z_Param_Address);
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function JoinOnlineByAddress **********************
 
 // ********** Begin Class UUIWorldMenuGameInstance Function JoinOnlineSessionByIndex ***************
 struct Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineSessionByIndex_Statics
@@ -1588,6 +2499,79 @@ DEFINE_FUNCTION(UUIWorldMenuGameInstance::execOpenSettingsPauseMenu)
 }
 // ********** End Class UUIWorldMenuGameInstance Function OpenSettingsPauseMenu ********************
 
+// ********** Begin Class UUIWorldMenuGameInstance Function QuickJoinOnlineSession *****************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession_Statics
+{
+	struct UIWorldMenuGameInstance_eventQuickJoinOnlineSession_Parms
+	{
+		bool bLAN;
+		bool ReturnValue;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Online" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Find the best open session (lowest ping, same build) and join automatically. */" },
+#endif
+		{ "CPP_Default_bLAN", "false" },
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Find the best open session (lowest ping, same build) and join automatically." },
+#endif
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function QuickJoinOnlineSession constinit property declarations ****************
+	static void NewProp_bLAN_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bLAN;
+	static void NewProp_ReturnValue_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_ReturnValue;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function QuickJoinOnlineSession constinit property declarations ******************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function QuickJoinOnlineSession Property Definitions ***************************
+void Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession_Statics::NewProp_bLAN_SetBit(void* Obj)
+{
+	((UIWorldMenuGameInstance_eventQuickJoinOnlineSession_Parms*)Obj)->bLAN = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession_Statics::NewProp_bLAN = { "bLAN", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UIWorldMenuGameInstance_eventQuickJoinOnlineSession_Parms), &Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession_Statics::NewProp_bLAN_SetBit, METADATA_PARAMS(0, nullptr) };
+void Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession_Statics::NewProp_ReturnValue_SetBit(void* Obj)
+{
+	((UIWorldMenuGameInstance_eventQuickJoinOnlineSession_Parms*)Obj)->ReturnValue = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UIWorldMenuGameInstance_eventQuickJoinOnlineSession_Parms), &Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession_Statics::NewProp_ReturnValue_SetBit, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession_Statics::NewProp_bLAN,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession_Statics::NewProp_ReturnValue,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession_Statics::PropPointers) < 2048);
+// ********** End Function QuickJoinOnlineSession Property Definitions *****************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "QuickJoinOnlineSession", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession_Statics::UIWorldMenuGameInstance_eventQuickJoinOnlineSession_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession_Statics::UIWorldMenuGameInstance_eventQuickJoinOnlineSession_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execQuickJoinOnlineSession)
+{
+	P_GET_UBOOL(Z_Param_bLAN);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(bool*)Z_Param__Result=P_THIS->QuickJoinOnlineSession(Z_Param_bLAN);
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function QuickJoinOnlineSession *******************
+
 // ********** Begin Class UUIWorldMenuGameInstance Function QuitGameNow ****************************
 struct Z_Construct_UFunction_UUIWorldMenuGameInstance_QuitGameNow_Statics
 {
@@ -1645,6 +2629,110 @@ DEFINE_FUNCTION(UUIWorldMenuGameInstance::execQuitGameNow)
 	P_NATIVE_END;
 }
 // ********** End Class UUIWorldMenuGameInstance Function QuitGameNow ******************************
+
+// ********** Begin Class UUIWorldMenuGameInstance Function RequestOnlineLogin *********************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_RequestOnlineLogin_Statics
+{
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Online" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Kicks off Steam AutoLogin if not already signed in (safe to call repeatedly). */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Kicks off Steam AutoLogin if not already signed in (safe to call repeatedly)." },
+#endif
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function RequestOnlineLogin constinit property declarations ********************
+// ********** End Function RequestOnlineLogin constinit property declarations **********************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_RequestOnlineLogin_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "RequestOnlineLogin", 	nullptr, 
+	0, 
+0,
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_RequestOnlineLogin_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_RequestOnlineLogin_Statics::Function_MetaDataParams)},  };
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_RequestOnlineLogin()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_RequestOnlineLogin_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execRequestOnlineLogin)
+{
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	P_THIS->RequestOnlineLogin();
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function RequestOnlineLogin ***********************
+
+// ********** Begin Class UUIWorldMenuGameInstance Function SaveGame *******************************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_SaveGame_Statics
+{
+	struct UIWorldMenuGameInstance_eventSaveGame_Parms
+	{
+		bool ReturnValue;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Save" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Saves current level progress and pops the \"saved\" toast. Returns success.\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Saves current level progress and pops the \"saved\" toast. Returns success." },
+#endif
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function SaveGame constinit property declarations ******************************
+	static void NewProp_ReturnValue_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_ReturnValue;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function SaveGame constinit property declarations ********************************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function SaveGame Property Definitions *****************************************
+void Z_Construct_UFunction_UUIWorldMenuGameInstance_SaveGame_Statics::NewProp_ReturnValue_SetBit(void* Obj)
+{
+	((UIWorldMenuGameInstance_eventSaveGame_Parms*)Obj)->ReturnValue = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_SaveGame_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UIWorldMenuGameInstance_eventSaveGame_Parms), &Z_Construct_UFunction_UUIWorldMenuGameInstance_SaveGame_Statics::NewProp_ReturnValue_SetBit, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_SaveGame_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_SaveGame_Statics::NewProp_ReturnValue,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_SaveGame_Statics::PropPointers) < 2048);
+// ********** End Function SaveGame Property Definitions *******************************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_SaveGame_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "SaveGame", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_SaveGame_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_SaveGame_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_SaveGame_Statics::UIWorldMenuGameInstance_eventSaveGame_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_SaveGame_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_SaveGame_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_SaveGame_Statics::UIWorldMenuGameInstance_eventSaveGame_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_SaveGame()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_SaveGame_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execSaveGame)
+{
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	*(bool*)Z_Param__Result=P_THIS->SaveGame();
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function SaveGame *********************************
 
 // ********** Begin Class UUIWorldMenuGameInstance Function ShowMenuFromList ***********************
 struct Z_Construct_UFunction_UUIWorldMenuGameInstance_ShowMenuFromList_Statics
@@ -1719,6 +2807,131 @@ DEFINE_FUNCTION(UUIWorldMenuGameInstance::execShowMenuFromList)
 }
 // ********** End Class UUIWorldMenuGameInstance Function ShowMenuFromList *************************
 
+// ********** Begin Class UUIWorldMenuGameInstance Function ShowSaveToast **************************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_ShowSaveToast_Statics
+{
+	struct UIWorldMenuGameInstance_eventShowSaveToast_Parms
+	{
+		FString Message;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Save" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Pops a GTA-style \"saved\" toast from the side. Safe to call anytime in-game.\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Pops a GTA-style \"saved\" toast from the side. Safe to call anytime in-game." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_Message_MetaData[] = {
+		{ "NativeConst", "" },
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function ShowSaveToast constinit property declarations *************************
+	static const UECodeGen_Private::FStrPropertyParams NewProp_Message;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function ShowSaveToast constinit property declarations ***************************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function ShowSaveToast Property Definitions ************************************
+const UECodeGen_Private::FStrPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_ShowSaveToast_Statics::NewProp_Message = { "Message", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UIWorldMenuGameInstance_eventShowSaveToast_Parms, Message), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_Message_MetaData), NewProp_Message_MetaData) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_ShowSaveToast_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_ShowSaveToast_Statics::NewProp_Message,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_ShowSaveToast_Statics::PropPointers) < 2048);
+// ********** End Function ShowSaveToast Property Definitions **************************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_ShowSaveToast_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "ShowSaveToast", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_ShowSaveToast_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_ShowSaveToast_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_ShowSaveToast_Statics::UIWorldMenuGameInstance_eventShowSaveToast_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_ShowSaveToast_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_ShowSaveToast_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_ShowSaveToast_Statics::UIWorldMenuGameInstance_eventShowSaveToast_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_ShowSaveToast()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_ShowSaveToast_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execShowSaveToast)
+{
+	P_GET_PROPERTY(FStrProperty,Z_Param_Message);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	P_THIS->ShowSaveToast(Z_Param_Message);
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function ShowSaveToast ****************************
+
+// ********** Begin Class UUIWorldMenuGameInstance Function UnlockAchievement **********************
+struct Z_Construct_UFunction_UUIWorldMenuGameInstance_UnlockAchievement_Statics
+{
+	struct UIWorldMenuGameInstance_eventUnlockAchievement_Parms
+	{
+		FName AchievementId;
+		float PercentComplete;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "UIWorld|Achievements" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Unlock (or set progress on) an achievement. Writes to Steam when available and always records locally. */" },
+#endif
+		{ "CPP_Default_PercentComplete", "100.000000" },
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Unlock (or set progress on) an achievement. Writes to Steam when available and always records locally." },
+#endif
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function UnlockAchievement constinit property declarations *********************
+	static const UECodeGen_Private::FNamePropertyParams NewProp_AchievementId;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_PercentComplete;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function UnlockAchievement constinit property declarations ***********************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function UnlockAchievement Property Definitions ********************************
+const UECodeGen_Private::FNamePropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_UnlockAchievement_Statics::NewProp_AchievementId = { "AchievementId", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Name, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UIWorldMenuGameInstance_eventUnlockAchievement_Parms, AchievementId), METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UFunction_UUIWorldMenuGameInstance_UnlockAchievement_Statics::NewProp_PercentComplete = { "PercentComplete", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UIWorldMenuGameInstance_eventUnlockAchievement_Parms, PercentComplete), METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UUIWorldMenuGameInstance_UnlockAchievement_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_UnlockAchievement_Statics::NewProp_AchievementId,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UUIWorldMenuGameInstance_UnlockAchievement_Statics::NewProp_PercentComplete,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_UnlockAchievement_Statics::PropPointers) < 2048);
+// ********** End Function UnlockAchievement Property Definitions **********************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UUIWorldMenuGameInstance_UnlockAchievement_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UUIWorldMenuGameInstance, nullptr, "UnlockAchievement", 	Z_Construct_UFunction_UUIWorldMenuGameInstance_UnlockAchievement_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_UnlockAchievement_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_UnlockAchievement_Statics::UIWorldMenuGameInstance_eventUnlockAchievement_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04020401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UUIWorldMenuGameInstance_UnlockAchievement_Statics::Function_MetaDataParams), Z_Construct_UFunction_UUIWorldMenuGameInstance_UnlockAchievement_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UUIWorldMenuGameInstance_UnlockAchievement_Statics::UIWorldMenuGameInstance_eventUnlockAchievement_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UUIWorldMenuGameInstance_UnlockAchievement()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UUIWorldMenuGameInstance_UnlockAchievement_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UUIWorldMenuGameInstance::execUnlockAchievement)
+{
+	P_GET_PROPERTY(FNameProperty,Z_Param_AchievementId);
+	P_GET_PROPERTY(FFloatProperty,Z_Param_PercentComplete);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	P_THIS->UnlockAchievement(Z_Param_AchievementId,Z_Param_PercentComplete);
+	P_NATIVE_END;
+}
+// ********** End Class UUIWorldMenuGameInstance Function UnlockAchievement ************************
+
 // ********** Begin Class UUIWorldMenuGameInstance *************************************************
 FClassRegistrationInfo Z_Registration_Info_UClass_UUIWorldMenuGameInstance;
 UClass* UUIWorldMenuGameInstance::GetPrivateStaticClass()
@@ -1758,6 +2971,16 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 		{ "IsBlueprintBase", "true" },
 		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
 	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_SaveToastWidgetClass_MetaData[] = {
+		{ "Category", "UIWorld|Save" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Optional widget class for the slide-in \"saved\" toast (falls back to the built-in one).\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Optional widget class for the slide-in \"saved\" toast (falls back to the built-in one)." },
+#endif
+	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_OnHostCompleted_MetaData[] = {
 		{ "Category", "UIWorld|Online" },
 		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
@@ -1773,6 +2996,16 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_OnLeaveCompleted_MetaData[] = {
 		{ "Category", "UIWorld|Online" },
 		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_OnOnlineMatchReady_MetaData[] = {
+		{ "Category", "UIWorld|Online" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Fired when host/join travel finishes and gameplay should start (HUD, input, weapons). */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Fired when host/join travel finishes and gameplay should start (HUD, input, weapons)." },
+#endif
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_OnMenuWidgetChanged_MetaData[] = {
 		{ "Category", "UIWorld|UI" },
@@ -1814,6 +3047,26 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_ShaderLoadingWidgetClass_MetaData[] = {
 		{ "Category", "UIWorld|UI|Startup" },
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_StartupIntroWidgetClass_MetaData[] = {
+		{ "Category", "UIWorld|UI|Startup" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Optional animated game-title splash shown BEFORE shader compilation.\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Optional animated game-title splash shown BEFORE shader compilation." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_bShowStartupIntro_MetaData[] = {
+		{ "Category", "UIWorld|UI|Startup" },
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_StartupIntroDuration_MetaData[] = {
+		{ "Category", "UIWorld|UI|Startup" },
+		{ "ClampMax", "15.0" },
+		{ "ClampMin", "0.5" },
 		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_bAutoShowMenuOnStart_MetaData[] = {
@@ -1865,6 +3118,58 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_OnlineServerName_MetaData[] = {
 		{ "Category", "UIWorld|Online" },
 		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_OnlineLanPort_MetaData[] = {
+		{ "Category", "UIWorld|Online" },
+		{ "ClampMax", "65535" },
+		{ "ClampMin", "1" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Port for LAN ?listen / ClientTravel when using Null (same-PC testing). */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Port for LAN ?listen / ClientTravel when using Null (same-PC testing)." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_OnlineGameBuildId_MetaData[] = {
+		{ "Category", "UIWorld|Online" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Advertised with each session so clients can filter mismatched builds (see DefaultEngine BuildIdOverride). */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Advertised with each session so clients can filter mismatched builds (see DefaultEngine BuildIdOverride)." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_PendingHostPassword_MetaData[] = {
+		{ "Category", "UIWorld|Online" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Set by lobby UI before Host \xe2\x80\x94 empty = open session. */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Set by lobby UI before Host \xe2\x80\x94 empty = open session." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_PendingHostPrivacy_MetaData[] = {
+		{ "Category", "UIWorld|Online" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** 0 = public, 1 = friends/presence only, 2 = invite-only (hidden from browse). */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "0 = public, 1 = friends/presence only, 2 = invite-only (hidden from browse)." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_PendingJoinPassword_MetaData[] = {
+		{ "Category", "UIWorld|Online" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Set by lobby UI before Join \xe2\x80\x94 required when session has SESSION_PASSWORD. */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Set by lobby UI before Join \xe2\x80\x94 required when session has SESSION_PASSWORD." },
+#endif
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_LoadingScreenDelayBeforeOpenLevel_MetaData[] = {
 		{ "Category", "UIWorld|Flow|Loading" },
@@ -1978,6 +3283,10 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 		{ "EditInline", "true" },
 		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
 	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_ActiveStartupIntroWidget_MetaData[] = {
+		{ "EditInline", "true" },
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_bStartupShaderPhaseActive_MetaData[] = {
 		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
 	};
@@ -1996,13 +3305,116 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_LastFoundSessions_MetaData[] = {
 		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
 	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_LastOnlineDiagnostic_MetaData[] = {
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_bPendingFindOnlineSessions_MetaData[] = {
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_PendingFindMaxResults_MetaData[] = {
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_bPendingFindLAN_MetaData[] = {
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_PendingHostMaxPlayers_MetaData[] = {
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_bPendingHostAfterDestroy_MetaData[] = {
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_bPendingQuickJoin_MetaData[] = {
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_PendingJoinSessionIndex_MetaData[] = {
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_PendingJoinConnectSearchIndex_MetaData[] = {
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_JoinConnectRetryAttempts_MetaData[] = {
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_HostedSessionPublishAttempts_MetaData[] = {
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_bLastOnlineQueryWasLAN_MetaData[] = {
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Matches the last Host/Find call (LAN => Null OSS, otherwise Steam). */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Matches the last Host/Find call (LAN => Null OSS, otherwise Steam)." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_UnlockedAchievementIds_MetaData[] = {
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Locally-recorded unlocked achievements (mirrors Steam, and persists offline).\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Locally-recorded unlocked achievements (mirrors Steam, and persists offline)." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_bOnlineTravelInProgress_MetaData[] = {
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// True while a join/connect is in flight, so failure handlers know to react.\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "True while a join/connect is in flight, so failure handlers know to react." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_bOnlineJoinReachedGameMap_MetaData[] = {
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Set when a join ClientTravel successfully lands on a non-menu map. */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Set when a join ClientTravel successfully lands on a non-menu map." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_bOnlineLoadingOverlayActive_MetaData[] = {
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_OnlineTravelStartSeconds_MetaData[] = {
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_OnlineJoinTimeoutSeconds_MetaData[] = {
+		{ "AllowPrivateAccess", "true" },
+		{ "Category", "UIWorld|Online" },
+		{ "ClampMax", "60.0" },
+		{ "ClampMin", "3.0" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Safety timeout for joining a session before we bail back to the menu.\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Safety timeout for joining a session before we bail back to the menu." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_OnlineAbortGraceSeconds_MetaData[] = {
+		{ "AllowPrivateAccess", "true" },
+		{ "Category", "UIWorld|Online" },
+		{ "ClampMax", "10.0" },
+		{ "ClampMin", "0.5" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Wait before treating travel/network errors as a failed join (avoids false kicks while the map loads). */" },
+#endif
+		{ "ModuleRelativePath", "Public/UIWorldMenuGameInstance.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Wait before treating travel/network errors as a failed join (avoids false kicks while the map loads)." },
+#endif
+	};
 #endif // WITH_METADATA
 
 // ********** Begin Class UUIWorldMenuGameInstance constinit property declarations *****************
+	static const UECodeGen_Private::FClassPropertyParams NewProp_SaveToastWidgetClass;
 	static const UECodeGen_Private::FMulticastDelegatePropertyParams NewProp_OnHostCompleted;
 	static const UECodeGen_Private::FMulticastDelegatePropertyParams NewProp_OnSessionsFound;
 	static const UECodeGen_Private::FMulticastDelegatePropertyParams NewProp_OnJoinCompleted;
 	static const UECodeGen_Private::FMulticastDelegatePropertyParams NewProp_OnLeaveCompleted;
+	static const UECodeGen_Private::FMulticastDelegatePropertyParams NewProp_OnOnlineMatchReady;
 	static const UECodeGen_Private::FMulticastDelegatePropertyParams NewProp_OnMenuWidgetChanged;
 	static const UECodeGen_Private::FMulticastDelegatePropertyParams NewProp_OnMenuScreenChanged;
 	static const UECodeGen_Private::FClassPropertyParams NewProp_MainMenuWidgetClass;
@@ -2012,6 +3424,10 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 	static const UECodeGen_Private::FClassPropertyParams NewProp_PauseSettingsMenuWidgetClass;
 	static const UECodeGen_Private::FClassPropertyParams NewProp_LoadingScreenWidgetClass;
 	static const UECodeGen_Private::FClassPropertyParams NewProp_ShaderLoadingWidgetClass;
+	static const UECodeGen_Private::FClassPropertyParams NewProp_StartupIntroWidgetClass;
+	static void NewProp_bShowStartupIntro_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bShowStartupIntro;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_StartupIntroDuration;
 	static void NewProp_bAutoShowMenuOnStart_SetBit(void* Obj);
 	static const UECodeGen_Private::FBoolPropertyParams NewProp_bAutoShowMenuOnStart;
 	static void NewProp_bShowShaderLoadingOnStartup_SetBit(void* Obj);
@@ -2026,6 +3442,11 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 	static const UECodeGen_Private::FNamePropertyParams NewProp_MainMenuLevelName;
 	static const UECodeGen_Private::FNamePropertyParams NewProp_OnlineHostMapName;
 	static const UECodeGen_Private::FStrPropertyParams NewProp_OnlineServerName;
+	static const UECodeGen_Private::FIntPropertyParams NewProp_OnlineLanPort;
+	static const UECodeGen_Private::FStrPropertyParams NewProp_OnlineGameBuildId;
+	static const UECodeGen_Private::FStrPropertyParams NewProp_PendingHostPassword;
+	static const UECodeGen_Private::FIntPropertyParams NewProp_PendingHostPrivacy;
+	static const UECodeGen_Private::FStrPropertyParams NewProp_PendingJoinPassword;
 	static const UECodeGen_Private::FFloatPropertyParams NewProp_LoadingScreenDelayBeforeOpenLevel;
 	static void NewProp_bUseAdaptiveLoadingDelay_SetBit(void* Obj);
 	static const UECodeGen_Private::FBoolPropertyParams NewProp_bUseAdaptiveLoadingDelay;
@@ -2048,6 +3469,7 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_PinnedMenuWidget;
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_ActiveLoadingScreenWidget;
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_ActiveStartupShaderWidget;
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_ActiveStartupIntroWidget;
 	static void NewProp_bStartupShaderPhaseActive_SetBit(void* Obj);
 	static const UECodeGen_Private::FBoolPropertyParams NewProp_bStartupShaderPhaseActive;
 	static void NewProp_bStartupShaderPhaseCompleted_SetBit(void* Obj);
@@ -2059,6 +3481,34 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 	static const UECodeGen_Private::FBoolPropertyParams NewProp_bPendingLevelAbsolute;
 	static const UECodeGen_Private::FStructPropertyParams NewProp_LastFoundSessions_Inner;
 	static const UECodeGen_Private::FArrayPropertyParams NewProp_LastFoundSessions;
+	static const UECodeGen_Private::FStrPropertyParams NewProp_LastOnlineDiagnostic;
+	static void NewProp_bPendingFindOnlineSessions_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bPendingFindOnlineSessions;
+	static const UECodeGen_Private::FIntPropertyParams NewProp_PendingFindMaxResults;
+	static void NewProp_bPendingFindLAN_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bPendingFindLAN;
+	static const UECodeGen_Private::FIntPropertyParams NewProp_PendingHostMaxPlayers;
+	static void NewProp_bPendingHostAfterDestroy_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bPendingHostAfterDestroy;
+	static void NewProp_bPendingQuickJoin_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bPendingQuickJoin;
+	static const UECodeGen_Private::FIntPropertyParams NewProp_PendingJoinSessionIndex;
+	static const UECodeGen_Private::FIntPropertyParams NewProp_PendingJoinConnectSearchIndex;
+	static const UECodeGen_Private::FIntPropertyParams NewProp_JoinConnectRetryAttempts;
+	static const UECodeGen_Private::FIntPropertyParams NewProp_HostedSessionPublishAttempts;
+	static void NewProp_bLastOnlineQueryWasLAN_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bLastOnlineQueryWasLAN;
+	static const UECodeGen_Private::FNamePropertyParams NewProp_UnlockedAchievementIds_Inner;
+	static const UECodeGen_Private::FArrayPropertyParams NewProp_UnlockedAchievementIds;
+	static void NewProp_bOnlineTravelInProgress_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bOnlineTravelInProgress;
+	static void NewProp_bOnlineJoinReachedGameMap_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bOnlineJoinReachedGameMap;
+	static void NewProp_bOnlineLoadingOverlayActive_SetBit(void* Obj);
+	static const UECodeGen_Private::FBoolPropertyParams NewProp_bOnlineLoadingOverlayActive;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_OnlineTravelStartSeconds;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_OnlineJoinTimeoutSeconds;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_OnlineAbortGraceSeconds;
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 // ********** End Class UUIWorldMenuGameInstance constinit property declarations *******************
 	static constexpr UE::CodeGen::FClassNativeFunction Funcs[] = {
@@ -2069,8 +3519,20 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 		{ .NameUTF8 = UTF8TEXT("CloseMenuUI"), .Pointer = &UUIWorldMenuGameInstance::execCloseMenuUI },
 		{ .NameUTF8 = UTF8TEXT("ContinueGame"), .Pointer = &UUIWorldMenuGameInstance::execContinueGame },
 		{ .NameUTF8 = UTF8TEXT("FindOnlineSessions"), .Pointer = &UUIWorldMenuGameInstance::execFindOnlineSessions },
+		{ .NameUTF8 = UTF8TEXT("GetCurrentSessionPlayerCount"), .Pointer = &UUIWorldMenuGameInstance::execGetCurrentSessionPlayerCount },
+		{ .NameUTF8 = UTF8TEXT("GetEngineVersionString"), .Pointer = &UUIWorldMenuGameInstance::execGetEngineVersionString },
 		{ .NameUTF8 = UTF8TEXT("GetLastFoundSessions"), .Pointer = &UUIWorldMenuGameInstance::execGetLastFoundSessions },
+		{ .NameUTF8 = UTF8TEXT("GetLastOnlineDiagnostic"), .Pointer = &UUIWorldMenuGameInstance::execGetLastOnlineDiagnostic },
+		{ .NameUTF8 = UTF8TEXT("GetOnlinePlayerNickname"), .Pointer = &UUIWorldMenuGameInstance::execGetOnlinePlayerNickname },
+		{ .NameUTF8 = UTF8TEXT("GetOnlineServiceName"), .Pointer = &UUIWorldMenuGameInstance::execGetOnlineServiceName },
+		{ .NameUTF8 = UTF8TEXT("GetUnlockedAchievements"), .Pointer = &UUIWorldMenuGameInstance::execGetUnlockedAchievements },
+		{ .NameUTF8 = UTF8TEXT("HandleLanguageChanged"), .Pointer = &UUIWorldMenuGameInstance::execHandleLanguageChanged },
 		{ .NameUTF8 = UTF8TEXT("HostOnlineSession"), .Pointer = &UUIWorldMenuGameInstance::execHostOnlineSession },
+		{ .NameUTF8 = UTF8TEXT("IsAchievementUnlocked"), .Pointer = &UUIWorldMenuGameInstance::execIsAchievementUnlocked },
+		{ .NameUTF8 = UTF8TEXT("IsOnlineAvailable"), .Pointer = &UUIWorldMenuGameInstance::execIsOnlineAvailable },
+		{ .NameUTF8 = UTF8TEXT("IsOnlineLoggedIn"), .Pointer = &UUIWorldMenuGameInstance::execIsOnlineLoggedIn },
+		{ .NameUTF8 = UTF8TEXT("IsOnlineTravelInProgress"), .Pointer = &UUIWorldMenuGameInstance::execIsOnlineTravelInProgress },
+		{ .NameUTF8 = UTF8TEXT("JoinOnlineByAddress"), .Pointer = &UUIWorldMenuGameInstance::execJoinOnlineByAddress },
 		{ .NameUTF8 = UTF8TEXT("JoinOnlineSessionByIndex"), .Pointer = &UUIWorldMenuGameInstance::execJoinOnlineSessionByIndex },
 		{ .NameUTF8 = UTF8TEXT("LeaveOnlineSessionAndReturnToMenu"), .Pointer = &UUIWorldMenuGameInstance::execLeaveOnlineSessionAndReturnToMenu },
 		{ .NameUTF8 = UTF8TEXT("LoadLevelAndFocusGame"), .Pointer = &UUIWorldMenuGameInstance::execLoadLevelAndFocusGame },
@@ -2079,8 +3541,13 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 		{ .NameUTF8 = UTF8TEXT("OpenPauseSettingsMenu"), .Pointer = &UUIWorldMenuGameInstance::execOpenPauseSettingsMenu },
 		{ .NameUTF8 = UTF8TEXT("OpenSettingsMainMenu"), .Pointer = &UUIWorldMenuGameInstance::execOpenSettingsMainMenu },
 		{ .NameUTF8 = UTF8TEXT("OpenSettingsPauseMenu"), .Pointer = &UUIWorldMenuGameInstance::execOpenSettingsPauseMenu },
+		{ .NameUTF8 = UTF8TEXT("QuickJoinOnlineSession"), .Pointer = &UUIWorldMenuGameInstance::execQuickJoinOnlineSession },
 		{ .NameUTF8 = UTF8TEXT("QuitGameNow"), .Pointer = &UUIWorldMenuGameInstance::execQuitGameNow },
+		{ .NameUTF8 = UTF8TEXT("RequestOnlineLogin"), .Pointer = &UUIWorldMenuGameInstance::execRequestOnlineLogin },
+		{ .NameUTF8 = UTF8TEXT("SaveGame"), .Pointer = &UUIWorldMenuGameInstance::execSaveGame },
 		{ .NameUTF8 = UTF8TEXT("ShowMenuFromList"), .Pointer = &UUIWorldMenuGameInstance::execShowMenuFromList },
+		{ .NameUTF8 = UTF8TEXT("ShowSaveToast"), .Pointer = &UUIWorldMenuGameInstance::execShowSaveToast },
+		{ .NameUTF8 = UTF8TEXT("UnlockAchievement"), .Pointer = &UUIWorldMenuGameInstance::execUnlockAchievement },
 	};
 	static UObject* (*const DependentSingletons[])();
 	static constexpr FClassFunctionLinkInfo FuncInfo[] = {
@@ -2091,8 +3558,20 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_CloseMenuUI, "CloseMenuUI" }, // 4140361374
 		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_ContinueGame, "ContinueGame" }, // 2986398575
 		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_FindOnlineSessions, "FindOnlineSessions" }, // 237892866
-		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastFoundSessions, "GetLastFoundSessions" }, // 274377649
-		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_HostOnlineSession, "HostOnlineSession" }, // 4069583228
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_GetCurrentSessionPlayerCount, "GetCurrentSessionPlayerCount" }, // 3015656339
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_GetEngineVersionString, "GetEngineVersionString" }, // 1376501736
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastFoundSessions, "GetLastFoundSessions" }, // 3001774547
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_GetLastOnlineDiagnostic, "GetLastOnlineDiagnostic" }, // 487073974
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlinePlayerNickname, "GetOnlinePlayerNickname" }, // 1791034734
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_GetOnlineServiceName, "GetOnlineServiceName" }, // 1790905096
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_GetUnlockedAchievements, "GetUnlockedAchievements" }, // 3584073858
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_HandleLanguageChanged, "HandleLanguageChanged" }, // 3721995094
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_HostOnlineSession, "HostOnlineSession" }, // 3565285953
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_IsAchievementUnlocked, "IsAchievementUnlocked" }, // 2423752943
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineAvailable, "IsOnlineAvailable" }, // 3854369547
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineLoggedIn, "IsOnlineLoggedIn" }, // 3575875247
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_IsOnlineTravelInProgress, "IsOnlineTravelInProgress" }, // 1200942628
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineByAddress, "JoinOnlineByAddress" }, // 4131912107
 		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_JoinOnlineSessionByIndex, "JoinOnlineSessionByIndex" }, // 1398159433
 		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_LeaveOnlineSessionAndReturnToMenu, "LeaveOnlineSessionAndReturnToMenu" }, // 3209783200
 		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_LoadLevelAndFocusGame, "LoadLevelAndFocusGame" }, // 2825949702
@@ -2101,8 +3580,13 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenPauseSettingsMenu, "OpenPauseSettingsMenu" }, // 3066366101
 		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsMainMenu, "OpenSettingsMainMenu" }, // 1002294087
 		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_OpenSettingsPauseMenu, "OpenSettingsPauseMenu" }, // 3106837854
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_QuickJoinOnlineSession, "QuickJoinOnlineSession" }, // 1868539167
 		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_QuitGameNow, "QuitGameNow" }, // 1203969031
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_RequestOnlineLogin, "RequestOnlineLogin" }, // 770354608
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_SaveGame, "SaveGame" }, // 1374241520
 		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_ShowMenuFromList, "ShowMenuFromList" }, // 1796533634
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_ShowSaveToast, "ShowSaveToast" }, // 2100602574
+		{ &Z_Construct_UFunction_UUIWorldMenuGameInstance_UnlockAchievement, "UnlockAchievement" }, // 2520888677
 	};
 	static_assert(UE_ARRAY_COUNT(FuncInfo) < 2048);
 	static constexpr FCppClassTypeInfoStatic StaticCppClassTypeInfo = {
@@ -2112,10 +3596,12 @@ struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 }; // struct Z_Construct_UClass_UUIWorldMenuGameInstance_Statics
 
 // ********** Begin Class UUIWorldMenuGameInstance Property Definitions ****************************
+const UECodeGen_Private::FClassPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_SaveToastWidgetClass = { "SaveToastWidgetClass", nullptr, (EPropertyFlags)0x0014000000010015, UECodeGen_Private::EPropertyGenFlags::Class, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, SaveToastWidgetClass), Z_Construct_UClass_UClass_NoRegister, Z_Construct_UClass_UUserWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_SaveToastWidgetClass_MetaData), NewProp_SaveToastWidgetClass_MetaData) };
 const UECodeGen_Private::FMulticastDelegatePropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnHostCompleted = { "OnHostCompleted", nullptr, (EPropertyFlags)0x0010000010080000, UECodeGen_Private::EPropertyGenFlags::InlineMulticastDelegate, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, OnHostCompleted), Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineOpCompleted__DelegateSignature, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_OnHostCompleted_MetaData), NewProp_OnHostCompleted_MetaData) }; // 2291936370
-const UECodeGen_Private::FMulticastDelegatePropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnSessionsFound = { "OnSessionsFound", nullptr, (EPropertyFlags)0x0010000010080000, UECodeGen_Private::EPropertyGenFlags::InlineMulticastDelegate, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, OnSessionsFound), Z_Construct_UDelegateFunction_UIWorld_OnUIWorldSessionsFound__DelegateSignature, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_OnSessionsFound_MetaData), NewProp_OnSessionsFound_MetaData) }; // 1354522479
+const UECodeGen_Private::FMulticastDelegatePropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnSessionsFound = { "OnSessionsFound", nullptr, (EPropertyFlags)0x0010000010080000, UECodeGen_Private::EPropertyGenFlags::InlineMulticastDelegate, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, OnSessionsFound), Z_Construct_UDelegateFunction_UIWorld_OnUIWorldSessionsFound__DelegateSignature, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_OnSessionsFound_MetaData), NewProp_OnSessionsFound_MetaData) }; // 3351614096
 const UECodeGen_Private::FMulticastDelegatePropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnJoinCompleted = { "OnJoinCompleted", nullptr, (EPropertyFlags)0x0010000010080000, UECodeGen_Private::EPropertyGenFlags::InlineMulticastDelegate, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, OnJoinCompleted), Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineOpCompleted__DelegateSignature, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_OnJoinCompleted_MetaData), NewProp_OnJoinCompleted_MetaData) }; // 2291936370
 const UECodeGen_Private::FMulticastDelegatePropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnLeaveCompleted = { "OnLeaveCompleted", nullptr, (EPropertyFlags)0x0010000010080000, UECodeGen_Private::EPropertyGenFlags::InlineMulticastDelegate, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, OnLeaveCompleted), Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineOpCompleted__DelegateSignature, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_OnLeaveCompleted_MetaData), NewProp_OnLeaveCompleted_MetaData) }; // 2291936370
+const UECodeGen_Private::FMulticastDelegatePropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnOnlineMatchReady = { "OnOnlineMatchReady", nullptr, (EPropertyFlags)0x0010000010080000, UECodeGen_Private::EPropertyGenFlags::InlineMulticastDelegate, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, OnOnlineMatchReady), Z_Construct_UDelegateFunction_UIWorld_OnUIWorldOnlineMatchReady__DelegateSignature, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_OnOnlineMatchReady_MetaData), NewProp_OnOnlineMatchReady_MetaData) }; // 1029860978
 const UECodeGen_Private::FMulticastDelegatePropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnMenuWidgetChanged = { "OnMenuWidgetChanged", nullptr, (EPropertyFlags)0x0010000010080000, UECodeGen_Private::EPropertyGenFlags::InlineMulticastDelegate, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, OnMenuWidgetChanged), Z_Construct_UDelegateFunction_UIWorld_OnUIWorldMenuWidgetChanged__DelegateSignature, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_OnMenuWidgetChanged_MetaData), NewProp_OnMenuWidgetChanged_MetaData) }; // 2870904578
 const UECodeGen_Private::FMulticastDelegatePropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnMenuScreenChanged = { "OnMenuScreenChanged", nullptr, (EPropertyFlags)0x0010000010080000, UECodeGen_Private::EPropertyGenFlags::InlineMulticastDelegate, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, OnMenuScreenChanged), Z_Construct_UDelegateFunction_UIWorld_OnUIWorldMenuScreenChanged__DelegateSignature, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_OnMenuScreenChanged_MetaData), NewProp_OnMenuScreenChanged_MetaData) }; // 688997098
 const UECodeGen_Private::FClassPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_MainMenuWidgetClass = { "MainMenuWidgetClass", nullptr, (EPropertyFlags)0x0014000000010015, UECodeGen_Private::EPropertyGenFlags::Class, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, MainMenuWidgetClass), Z_Construct_UClass_UClass_NoRegister, Z_Construct_UClass_UUserWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_MainMenuWidgetClass_MetaData), NewProp_MainMenuWidgetClass_MetaData) };
@@ -2125,6 +3611,13 @@ const UECodeGen_Private::FClassPropertyParams Z_Construct_UClass_UUIWorldMenuGam
 const UECodeGen_Private::FClassPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PauseSettingsMenuWidgetClass = { "PauseSettingsMenuWidgetClass", nullptr, (EPropertyFlags)0x0014000000010015, UECodeGen_Private::EPropertyGenFlags::Class, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, PauseSettingsMenuWidgetClass), Z_Construct_UClass_UClass_NoRegister, Z_Construct_UClass_UUserWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_PauseSettingsMenuWidgetClass_MetaData), NewProp_PauseSettingsMenuWidgetClass_MetaData) };
 const UECodeGen_Private::FClassPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_LoadingScreenWidgetClass = { "LoadingScreenWidgetClass", nullptr, (EPropertyFlags)0x0014000000010015, UECodeGen_Private::EPropertyGenFlags::Class, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, LoadingScreenWidgetClass), Z_Construct_UClass_UClass_NoRegister, Z_Construct_UClass_UUserWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_LoadingScreenWidgetClass_MetaData), NewProp_LoadingScreenWidgetClass_MetaData) };
 const UECodeGen_Private::FClassPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_ShaderLoadingWidgetClass = { "ShaderLoadingWidgetClass", nullptr, (EPropertyFlags)0x0014000000010015, UECodeGen_Private::EPropertyGenFlags::Class, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, ShaderLoadingWidgetClass), Z_Construct_UClass_UClass_NoRegister, Z_Construct_UClass_UZonefallShaderLoadingWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ShaderLoadingWidgetClass_MetaData), NewProp_ShaderLoadingWidgetClass_MetaData) };
+const UECodeGen_Private::FClassPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_StartupIntroWidgetClass = { "StartupIntroWidgetClass", nullptr, (EPropertyFlags)0x0014000000010015, UECodeGen_Private::EPropertyGenFlags::Class, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, StartupIntroWidgetClass), Z_Construct_UClass_UClass_NoRegister, Z_Construct_UClass_UUserWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_StartupIntroWidgetClass_MetaData), NewProp_StartupIntroWidgetClass_MetaData) };
+void Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bShowStartupIntro_SetBit(void* Obj)
+{
+	((UUIWorldMenuGameInstance*)Obj)->bShowStartupIntro = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bShowStartupIntro = { "bShowStartupIntro", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UUIWorldMenuGameInstance), &Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bShowStartupIntro_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bShowStartupIntro_MetaData), NewProp_bShowStartupIntro_MetaData) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_StartupIntroDuration = { "StartupIntroDuration", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, StartupIntroDuration), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_StartupIntroDuration_MetaData), NewProp_StartupIntroDuration_MetaData) };
 void Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bAutoShowMenuOnStart_SetBit(void* Obj)
 {
 	((UUIWorldMenuGameInstance*)Obj)->bAutoShowMenuOnStart = 1;
@@ -2151,6 +3644,11 @@ const UECodeGen_Private::FIntPropertyParams Z_Construct_UClass_UUIWorldMenuGameI
 const UECodeGen_Private::FNamePropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_MainMenuLevelName = { "MainMenuLevelName", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Name, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, MainMenuLevelName), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_MainMenuLevelName_MetaData), NewProp_MainMenuLevelName_MetaData) };
 const UECodeGen_Private::FNamePropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnlineHostMapName = { "OnlineHostMapName", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Name, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, OnlineHostMapName), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_OnlineHostMapName_MetaData), NewProp_OnlineHostMapName_MetaData) };
 const UECodeGen_Private::FStrPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnlineServerName = { "OnlineServerName", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, OnlineServerName), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_OnlineServerName_MetaData), NewProp_OnlineServerName_MetaData) };
+const UECodeGen_Private::FIntPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnlineLanPort = { "OnlineLanPort", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, OnlineLanPort), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_OnlineLanPort_MetaData), NewProp_OnlineLanPort_MetaData) };
+const UECodeGen_Private::FStrPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnlineGameBuildId = { "OnlineGameBuildId", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, OnlineGameBuildId), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_OnlineGameBuildId_MetaData), NewProp_OnlineGameBuildId_MetaData) };
+const UECodeGen_Private::FStrPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PendingHostPassword = { "PendingHostPassword", nullptr, (EPropertyFlags)0x0010000000002004, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, PendingHostPassword), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_PendingHostPassword_MetaData), NewProp_PendingHostPassword_MetaData) };
+const UECodeGen_Private::FIntPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PendingHostPrivacy = { "PendingHostPrivacy", nullptr, (EPropertyFlags)0x0010000000002004, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, PendingHostPrivacy), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_PendingHostPrivacy_MetaData), NewProp_PendingHostPrivacy_MetaData) };
+const UECodeGen_Private::FStrPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PendingJoinPassword = { "PendingJoinPassword", nullptr, (EPropertyFlags)0x0010000000002004, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, PendingJoinPassword), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_PendingJoinPassword_MetaData), NewProp_PendingJoinPassword_MetaData) };
 const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_LoadingScreenDelayBeforeOpenLevel = { "LoadingScreenDelayBeforeOpenLevel", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, LoadingScreenDelayBeforeOpenLevel), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_LoadingScreenDelayBeforeOpenLevel_MetaData), NewProp_LoadingScreenDelayBeforeOpenLevel_MetaData) };
 void Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bUseAdaptiveLoadingDelay_SetBit(void* Obj)
 {
@@ -2182,6 +3680,7 @@ const UECodeGen_Private::FMapPropertyParams Z_Construct_UClass_UUIWorldMenuGameI
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PinnedMenuWidget = { "PinnedMenuWidget", nullptr, (EPropertyFlags)0x0144000000082008, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, PinnedMenuWidget), Z_Construct_UClass_UUserWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_PinnedMenuWidget_MetaData), NewProp_PinnedMenuWidget_MetaData) };
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_ActiveLoadingScreenWidget = { "ActiveLoadingScreenWidget", nullptr, (EPropertyFlags)0x0144000000082008, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, ActiveLoadingScreenWidget), Z_Construct_UClass_UUserWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ActiveLoadingScreenWidget_MetaData), NewProp_ActiveLoadingScreenWidget_MetaData) };
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_ActiveStartupShaderWidget = { "ActiveStartupShaderWidget", nullptr, (EPropertyFlags)0x0144000000082008, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, ActiveStartupShaderWidget), Z_Construct_UClass_UZonefallShaderLoadingWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ActiveStartupShaderWidget_MetaData), NewProp_ActiveStartupShaderWidget_MetaData) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_ActiveStartupIntroWidget = { "ActiveStartupIntroWidget", nullptr, (EPropertyFlags)0x0144000000082008, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, ActiveStartupIntroWidget), Z_Construct_UClass_UUserWidget_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ActiveStartupIntroWidget_MetaData), NewProp_ActiveStartupIntroWidget_MetaData) };
 void Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bStartupShaderPhaseActive_SetBit(void* Obj)
 {
 	((UUIWorldMenuGameInstance*)Obj)->bStartupShaderPhaseActive = 1;
@@ -2203,13 +3702,67 @@ void Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingLevelA
 	((UUIWorldMenuGameInstance*)Obj)->bPendingLevelAbsolute = 1;
 }
 const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingLevelAbsolute = { "bPendingLevelAbsolute", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UUIWorldMenuGameInstance), &Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingLevelAbsolute_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bPendingLevelAbsolute_MetaData), NewProp_bPendingLevelAbsolute_MetaData) };
-const UECodeGen_Private::FStructPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_LastFoundSessions_Inner = { "LastFoundSessions", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult, METADATA_PARAMS(0, nullptr) }; // 3771526265
-const UECodeGen_Private::FArrayPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_LastFoundSessions = { "LastFoundSessions", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, LastFoundSessions), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_LastFoundSessions_MetaData), NewProp_LastFoundSessions_MetaData) }; // 3771526265
+const UECodeGen_Private::FStructPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_LastFoundSessions_Inner = { "LastFoundSessions", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult, METADATA_PARAMS(0, nullptr) }; // 11846451
+const UECodeGen_Private::FArrayPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_LastFoundSessions = { "LastFoundSessions", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, LastFoundSessions), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_LastFoundSessions_MetaData), NewProp_LastFoundSessions_MetaData) }; // 11846451
+const UECodeGen_Private::FStrPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_LastOnlineDiagnostic = { "LastOnlineDiagnostic", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, LastOnlineDiagnostic), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_LastOnlineDiagnostic_MetaData), NewProp_LastOnlineDiagnostic_MetaData) };
+void Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingFindOnlineSessions_SetBit(void* Obj)
+{
+	((UUIWorldMenuGameInstance*)Obj)->bPendingFindOnlineSessions = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingFindOnlineSessions = { "bPendingFindOnlineSessions", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UUIWorldMenuGameInstance), &Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingFindOnlineSessions_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bPendingFindOnlineSessions_MetaData), NewProp_bPendingFindOnlineSessions_MetaData) };
+const UECodeGen_Private::FIntPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PendingFindMaxResults = { "PendingFindMaxResults", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, PendingFindMaxResults), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_PendingFindMaxResults_MetaData), NewProp_PendingFindMaxResults_MetaData) };
+void Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingFindLAN_SetBit(void* Obj)
+{
+	((UUIWorldMenuGameInstance*)Obj)->bPendingFindLAN = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingFindLAN = { "bPendingFindLAN", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UUIWorldMenuGameInstance), &Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingFindLAN_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bPendingFindLAN_MetaData), NewProp_bPendingFindLAN_MetaData) };
+const UECodeGen_Private::FIntPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PendingHostMaxPlayers = { "PendingHostMaxPlayers", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, PendingHostMaxPlayers), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_PendingHostMaxPlayers_MetaData), NewProp_PendingHostMaxPlayers_MetaData) };
+void Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingHostAfterDestroy_SetBit(void* Obj)
+{
+	((UUIWorldMenuGameInstance*)Obj)->bPendingHostAfterDestroy = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingHostAfterDestroy = { "bPendingHostAfterDestroy", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UUIWorldMenuGameInstance), &Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingHostAfterDestroy_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bPendingHostAfterDestroy_MetaData), NewProp_bPendingHostAfterDestroy_MetaData) };
+void Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingQuickJoin_SetBit(void* Obj)
+{
+	((UUIWorldMenuGameInstance*)Obj)->bPendingQuickJoin = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingQuickJoin = { "bPendingQuickJoin", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UUIWorldMenuGameInstance), &Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingQuickJoin_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bPendingQuickJoin_MetaData), NewProp_bPendingQuickJoin_MetaData) };
+const UECodeGen_Private::FIntPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PendingJoinSessionIndex = { "PendingJoinSessionIndex", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, PendingJoinSessionIndex), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_PendingJoinSessionIndex_MetaData), NewProp_PendingJoinSessionIndex_MetaData) };
+const UECodeGen_Private::FIntPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PendingJoinConnectSearchIndex = { "PendingJoinConnectSearchIndex", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, PendingJoinConnectSearchIndex), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_PendingJoinConnectSearchIndex_MetaData), NewProp_PendingJoinConnectSearchIndex_MetaData) };
+const UECodeGen_Private::FIntPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_JoinConnectRetryAttempts = { "JoinConnectRetryAttempts", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, JoinConnectRetryAttempts), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_JoinConnectRetryAttempts_MetaData), NewProp_JoinConnectRetryAttempts_MetaData) };
+const UECodeGen_Private::FIntPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_HostedSessionPublishAttempts = { "HostedSessionPublishAttempts", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, HostedSessionPublishAttempts), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_HostedSessionPublishAttempts_MetaData), NewProp_HostedSessionPublishAttempts_MetaData) };
+void Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bLastOnlineQueryWasLAN_SetBit(void* Obj)
+{
+	((UUIWorldMenuGameInstance*)Obj)->bLastOnlineQueryWasLAN = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bLastOnlineQueryWasLAN = { "bLastOnlineQueryWasLAN", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UUIWorldMenuGameInstance), &Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bLastOnlineQueryWasLAN_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bLastOnlineQueryWasLAN_MetaData), NewProp_bLastOnlineQueryWasLAN_MetaData) };
+const UECodeGen_Private::FNamePropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_UnlockedAchievementIds_Inner = { "UnlockedAchievementIds", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Name, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FArrayPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_UnlockedAchievementIds = { "UnlockedAchievementIds", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, UnlockedAchievementIds), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_UnlockedAchievementIds_MetaData), NewProp_UnlockedAchievementIds_MetaData) };
+void Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bOnlineTravelInProgress_SetBit(void* Obj)
+{
+	((UUIWorldMenuGameInstance*)Obj)->bOnlineTravelInProgress = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bOnlineTravelInProgress = { "bOnlineTravelInProgress", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UUIWorldMenuGameInstance), &Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bOnlineTravelInProgress_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bOnlineTravelInProgress_MetaData), NewProp_bOnlineTravelInProgress_MetaData) };
+void Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bOnlineJoinReachedGameMap_SetBit(void* Obj)
+{
+	((UUIWorldMenuGameInstance*)Obj)->bOnlineJoinReachedGameMap = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bOnlineJoinReachedGameMap = { "bOnlineJoinReachedGameMap", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UUIWorldMenuGameInstance), &Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bOnlineJoinReachedGameMap_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bOnlineJoinReachedGameMap_MetaData), NewProp_bOnlineJoinReachedGameMap_MetaData) };
+void Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bOnlineLoadingOverlayActive_SetBit(void* Obj)
+{
+	((UUIWorldMenuGameInstance*)Obj)->bOnlineLoadingOverlayActive = 1;
+}
+const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bOnlineLoadingOverlayActive = { "bOnlineLoadingOverlayActive", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, sizeof(bool), sizeof(UUIWorldMenuGameInstance), &Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bOnlineLoadingOverlayActive_SetBit, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_bOnlineLoadingOverlayActive_MetaData), NewProp_bOnlineLoadingOverlayActive_MetaData) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnlineTravelStartSeconds = { "OnlineTravelStartSeconds", nullptr, (EPropertyFlags)0x0040000000002000, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, OnlineTravelStartSeconds), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_OnlineTravelStartSeconds_MetaData), NewProp_OnlineTravelStartSeconds_MetaData) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnlineJoinTimeoutSeconds = { "OnlineJoinTimeoutSeconds", nullptr, (EPropertyFlags)0x0040000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, OnlineJoinTimeoutSeconds), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_OnlineJoinTimeoutSeconds_MetaData), NewProp_OnlineJoinTimeoutSeconds_MetaData) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnlineAbortGraceSeconds = { "OnlineAbortGraceSeconds", nullptr, (EPropertyFlags)0x0040000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UUIWorldMenuGameInstance, OnlineAbortGraceSeconds), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_OnlineAbortGraceSeconds_MetaData), NewProp_OnlineAbortGraceSeconds_MetaData) };
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_SaveToastWidgetClass,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnHostCompleted,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnSessionsFound,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnJoinCompleted,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnLeaveCompleted,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnOnlineMatchReady,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnMenuWidgetChanged,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnMenuScreenChanged,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_MainMenuWidgetClass,
@@ -2219,6 +3772,9 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UUIWorldM
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PauseSettingsMenuWidgetClass,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_LoadingScreenWidgetClass,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_ShaderLoadingWidgetClass,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_StartupIntroWidgetClass,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bShowStartupIntro,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_StartupIntroDuration,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bAutoShowMenuOnStart,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bShowShaderLoadingOnStartup,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_StartupShaderLoadingDuration,
@@ -2229,6 +3785,11 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UUIWorldM
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_MainMenuLevelName,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnlineHostMapName,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnlineServerName,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnlineLanPort,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnlineGameBuildId,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PendingHostPassword,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PendingHostPrivacy,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PendingJoinPassword,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_LoadingScreenDelayBeforeOpenLevel,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bUseAdaptiveLoadingDelay,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_AdaptiveDelayMinSeconds,
@@ -2248,6 +3809,7 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UUIWorldM
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PinnedMenuWidget,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_ActiveLoadingScreenWidget,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_ActiveStartupShaderWidget,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_ActiveStartupIntroWidget,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bStartupShaderPhaseActive,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bStartupShaderPhaseCompleted,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bApplyGameFocusOnNextMapLoad,
@@ -2255,6 +3817,26 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UUIWorldM
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingLevelAbsolute,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_LastFoundSessions_Inner,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_LastFoundSessions,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_LastOnlineDiagnostic,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingFindOnlineSessions,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PendingFindMaxResults,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingFindLAN,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PendingHostMaxPlayers,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingHostAfterDestroy,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bPendingQuickJoin,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PendingJoinSessionIndex,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_PendingJoinConnectSearchIndex,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_JoinConnectRetryAttempts,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_HostedSessionPublishAttempts,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bLastOnlineQueryWasLAN,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_UnlockedAchievementIds_Inner,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_UnlockedAchievementIds,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bOnlineTravelInProgress,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bOnlineJoinReachedGameMap,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_bOnlineLoadingOverlayActive,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnlineTravelStartSeconds,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnlineJoinTimeoutSeconds,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::NewProp_OnlineAbortGraceSeconds,
 };
 static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_UUIWorldMenuGameInstance_Statics::PropPointers) < 2048);
 // ********** End Class UUIWorldMenuGameInstance Property Definitions ******************************
@@ -2296,23 +3878,24 @@ UUIWorldMenuGameInstance::~UUIWorldMenuGameInstance() {}
 // ********** End Class UUIWorldMenuGameInstance ***************************************************
 
 // ********** Begin Registration *******************************************************************
-struct Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics
+struct Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics
 {
 	static constexpr FEnumRegisterCompiledInInfo EnumInfo[] = {
 		{ EUIWorldMenuScreen_StaticEnum, TEXT("EUIWorldMenuScreen"), &Z_Registration_Info_UEnum_EUIWorldMenuScreen, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 48686507U) },
+		{ EZonefallOnlineTravelPhase_StaticEnum, TEXT("EZonefallOnlineTravelPhase"), &Z_Registration_Info_UEnum_EZonefallOnlineTravelPhase, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 2265657550U) },
 	};
 	static constexpr FStructRegisterCompiledInInfo ScriptStructInfo[] = {
-		{ FUIWorldOnlineSessionResult::StaticStruct, Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewStructOps, TEXT("UIWorldOnlineSessionResult"),&Z_Registration_Info_UScriptStruct_FUIWorldOnlineSessionResult, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FUIWorldOnlineSessionResult), 3771526265U) },
+		{ FUIWorldOnlineSessionResult::StaticStruct, Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult_Statics::NewStructOps, TEXT("UIWorldOnlineSessionResult"),&Z_Registration_Info_UScriptStruct_FUIWorldOnlineSessionResult, CONSTRUCT_RELOAD_VERSION_INFO(FStructReloadVersionInfo, sizeof(FUIWorldOnlineSessionResult), 11846451U) },
 	};
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_UUIWorldMenuGameInstance, UUIWorldMenuGameInstance::StaticClass, TEXT("UUIWorldMenuGameInstance"), &Z_Registration_Info_UClass_UUIWorldMenuGameInstance, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UUIWorldMenuGameInstance), 964902625U) },
+		{ Z_Construct_UClass_UUIWorldMenuGameInstance, UUIWorldMenuGameInstance::StaticClass, TEXT("UUIWorldMenuGameInstance"), &Z_Registration_Info_UClass_UUIWorldMenuGameInstance, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UUIWorldMenuGameInstance), 2155168636U) },
 	};
-}; // Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_2337636416{
+}; // Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics 
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_4182607815{
 	TEXT("/Script/UIWorld"),
-	Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics::ClassInfo),
-	Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics::ScriptStructInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics::ScriptStructInfo),
-	Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics::EnumInfo),
+	Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics::ClassInfo),
+	Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics::ScriptStructInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics::ScriptStructInfo),
+	Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UIWorldMenuGameInstance_h__Script_UIWorld_Statics::EnumInfo),
 };
 // ********** End Registration *********************************************************************
 

@@ -17,21 +17,21 @@
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 
 // ********** Begin Delegate FOnSettingsBackRequested **********************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_15_DELEGATE \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_15_DELEGATE \
 UIWORLD_API void FOnSettingsBackRequested_DelegateWrapper(const FMulticastScriptDelegate& OnSettingsBackRequested);
 
 
 // ********** End Delegate FOnSettingsBackRequested ************************************************
 
 // ********** Begin Delegate FOnSettingsApplied ****************************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_16_DELEGATE \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_16_DELEGATE \
 UIWORLD_API void FOnSettingsApplied_DelegateWrapper(const FMulticastScriptDelegate& OnSettingsApplied);
 
 
 // ********** End Delegate FOnSettingsApplied ******************************************************
 
 // ********** Begin Class UZonefallSettingsMenuWidget **********************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_21_RPC_WRAPPERS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_21_RPC_WRAPPERS_NO_PURE_DECLS \
 	DECLARE_FUNCTION(execHandleBackClicked); \
 	DECLARE_FUNCTION(execHandleResetClicked); \
 	DECLARE_FUNCTION(execHandleApplyClicked); \
@@ -55,7 +55,7 @@ UIWORLD_API void FOnSettingsApplied_DelegateWrapper(const FMulticastScriptDelega
 struct Z_Construct_UClass_UZonefallSettingsMenuWidget_Statics;
 UIWORLD_API UClass* Z_Construct_UClass_UZonefallSettingsMenuWidget_NoRegister();
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_21_INCLASS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_21_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesUZonefallSettingsMenuWidget(); \
 	friend struct ::Z_Construct_UClass_UZonefallSettingsMenuWidget_Statics; \
@@ -66,7 +66,7 @@ public: \
 	DECLARE_SERIALIZER(UZonefallSettingsMenuWidget)
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_21_ENHANCED_CONSTRUCTORS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_21_ENHANCED_CONSTRUCTORS \
 	/** Deleted move- and copy-constructors, should never be used */ \
 	UZonefallSettingsMenuWidget(UZonefallSettingsMenuWidget&&) = delete; \
 	UZonefallSettingsMenuWidget(const UZonefallSettingsMenuWidget&) = delete; \
@@ -76,13 +76,13 @@ public: \
 	NO_API virtual ~UZonefallSettingsMenuWidget();
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_18_PROLOG
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_21_GENERATED_BODY \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_18_PROLOG
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_21_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_21_RPC_WRAPPERS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_21_INCLASS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_21_ENHANCED_CONSTRUCTORS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_21_RPC_WRAPPERS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_21_INCLASS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h_21_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
@@ -92,6 +92,6 @@ class UZonefallSettingsMenuWidget;
 // ********** End Class UZonefallSettingsMenuWidget ************************************************
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h
+#define CURRENT_FILE_ID FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsMenuWidget_h
 
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

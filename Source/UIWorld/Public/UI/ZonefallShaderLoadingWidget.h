@@ -11,6 +11,7 @@ class UTextBlock;
 class UVerticalBox;
 class UTexture2D;
 class UFont;
+class UCircularThrobber;
 
 UCLASS(BlueprintType, Blueprintable)
 class ZONEFALL_API UZonefallShaderLoadingWidget : public UUserWidget
@@ -24,8 +25,13 @@ public:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 
+	// Game title shown large in the center. Edit freely to change the game name.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Startup")
 	FText StartupTitleText;
+
+	// Sub-line under the title (studio / tagline).
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Startup")
+	FText StartupSubtitleText;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Startup")
 	FText ShaderLoadingBaseText;
@@ -41,6 +47,13 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Startup")
 	FText ShaderCacheHintText;
+
+	// Rotating loading tips shown below the hint line. Cycles every TipRotateSeconds.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Startup")
+	TArray<FText> RotatingTips;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Startup", meta = (ClampMin = "1.0", ClampMax = "30.0"))
+	float TipRotateSeconds;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Startup", meta = (ClampMin = "0.0", ClampMax = "100.0"))
 	float ShaderCompileProgressPercent;
@@ -59,6 +72,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Style")
 	FLinearColor BottomPanelTint;
+
+	// Accent color used for the glowing divider, progress bar and title sheen.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Style")
+	FLinearColor AccentColor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Style", meta = (ClampMin = "10", ClampMax = "72"))
 	int32 TitleFontSize;
@@ -112,7 +129,25 @@ protected:
 	TObjectPtr<UBorder> BottomPanel;
 
 	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Startup", meta = (BindWidgetOptional))
+	TObjectPtr<UImage> AccentDivider;
+
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Startup", meta = (BindWidgetOptional))
+	TObjectPtr<UTextBlock> TipText;
+
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Startup", meta = (BindWidgetOptional))
 	TObjectPtr<UTextBlock> TitleText;
+
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Startup", meta = (BindWidgetOptional))
+	TObjectPtr<UTextBlock> SubtitleText;
+
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Startup", meta = (BindWidgetOptional))
+	TObjectPtr<UTextBlock> PercentText;
+
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Startup", meta = (BindWidgetOptional))
+	TObjectPtr<UCircularThrobber> Spinner;
+
+	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Startup", meta = (BindWidgetOptional))
+	TObjectPtr<UImage> TopAccentLine;
 
 	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Startup", meta = (BindWidgetOptional))
 	TObjectPtr<UTextBlock> ShaderText;
@@ -147,5 +182,7 @@ private:
 	bool bEnteredFinalizingState;
 	float SmoothedProgressPercent;
 	float AnimationTimeSeconds;
+	int32 CurrentTipIndex;
+	float TipElapsedSeconds;
 };
 

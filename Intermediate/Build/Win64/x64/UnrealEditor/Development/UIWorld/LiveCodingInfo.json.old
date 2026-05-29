@@ -1,40 +1,67 @@
 {
 	"RemapUnityFiles": 
 	{
-		"Module.UIWorld.cpp.obj": [
+		"Module.UIWorld.1.cpp.obj": [
 			"UIWorld.init.gen.cpp.obj",
 			"UIWorldMainMenuWidget.gen.cpp.obj",
 			"UIWorldMenuGameInstance.gen.cpp.obj",
 			"UIWorldSaveGame.gen.cpp.obj",
 			"UIWorldSaveManager.gen.cpp.obj",
-			"UIWorldSimpleMainMenuWidget.gen.cpp.obj",
+			"UIWorldSimpleMainMenuWidget.gen.cpp.obj"
+		],
+		"Module.UIWorld.2.cpp.obj": [
+			"ZonefallConfirmDialogWidget.gen.cpp.obj",
+			"ZonefallDeadEyeWidget.gen.cpp.obj",
 			"ZonefallFancyMenuWidget.gen.cpp.obj",
-			"ZonefallLoadingScreenWidget.gen.cpp.obj",
+			"ZonefallGameMode.gen.cpp.obj",
+			"ZonefallInventoryComponent.gen.cpp.obj",
+			"ZonefallInventoryWidget.gen.cpp.obj",
+			"ZonefallLoadingScreenWidget.gen.cpp.obj"
+		],
+		"Module.UIWorld.3.cpp.obj": [
+			"ZonefallLocalizationSubsystem.gen.cpp.obj",
+			"ZonefallMainMenuWidget.gen.cpp.obj",
+			"ZonefallMasterSettingsWidget.gen.cpp.obj",
 			"ZonefallModernButtonWidget.gen.cpp.obj",
-			"ZonefallModernComboBoxWidget.gen.cpp.obj",
+			"ZonefallModernComboBoxWidget.gen.cpp.obj"
+		],
+		"Module.UIWorld.4.cpp.obj": [
 			"ZonefallModernProgressBarWidget.gen.cpp.obj",
+			"ZonefallOnlineLobbyWidget.gen.cpp.obj",
 			"ZonefallPauseMenuWidget.gen.cpp.obj",
+			"ZonefallPlayerCharacter.gen.cpp.obj",
+			"ZonefallSaveToastWidget.gen.cpp.obj"
+		],
+		"Module.UIWorld.5.cpp.obj": [
 			"ZonefallSettingsDataObject.gen.cpp.obj",
 			"ZonefallSettingsMenuWidget.gen.cpp.obj",
+			"ZonefallShaderCacheSubsystem.gen.cpp.obj",
 			"ZonefallShaderLoadingWidget.gen.cpp.obj",
 			"ZonefallStartupIntroWidget.gen.cpp.obj",
+			"ZonefallTitleSplashWidget.gen.cpp.obj"
+		],
+		"Module.UIWorld.6.cpp.obj": [
+			"ZonefallWeaponInventoryComponent.gen.cpp.obj",
+			"ZonefallWeaponTypes.gen.cpp.obj",
+			"ZonefallWeaponWheelWidget.gen.cpp.obj",
+			"ZonefallWorldItem.gen.cpp.obj",
 			"PerModuleInline.gen.cpp.obj",
+			"ZonefallPlayerCharacter.cpp.obj",
+			"ZonefallGameMode.cpp.obj",
+			"ZonefallInventoryComponent.cpp.obj",
+			"ZonefallWorldItem.cpp.obj",
+			"ZonefallLocalizationSubsystem.cpp.obj",
 			"UIWorldSaveGame.cpp.obj",
 			"UIWorldSaveManager.cpp.obj",
 			"UIWorldMenuGameInstance.cpp.obj",
 			"UIWorldModule.cpp.obj",
 			"UIWorldMainMenuWidget.cpp.obj",
 			"UIWorldSimpleMainMenuWidget.cpp.obj",
+			"ZonefallConfirmDialogWidget.cpp.obj",
+			"ZonefallDeadEyeWidget.cpp.obj",
 			"ZonefallFancyMenuWidget.cpp.obj",
-			"ZonefallLoadingScreenWidget.cpp.obj",
-			"ZonefallModernButtonWidget.cpp.obj",
-			"ZonefallModernComboBoxWidget.cpp.obj",
-			"ZonefallModernProgressBarWidget.cpp.obj",
-			"ZonefallPauseMenuWidget.cpp.obj",
-			"ZonefallSettingsDataObject.cpp.obj",
-			"ZonefallSettingsMenuWidget.cpp.obj",
-			"ZonefallShaderLoadingWidget.cpp.obj",
-			"ZonefallStartupIntroWidget.cpp.obj"
+			"ZonefallInventoryWidget.cpp.obj",
+			"ZonefallLoadingScreenWidget.cpp.obj"
 		]
 	}
 }

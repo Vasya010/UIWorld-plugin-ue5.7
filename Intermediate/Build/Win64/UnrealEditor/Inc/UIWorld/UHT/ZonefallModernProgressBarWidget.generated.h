@@ -17,14 +17,14 @@
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 
 // ********** Begin Delegate FOnZonefallProgressChanged ********************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h_12_DELEGATE \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h_12_DELEGATE \
 UIWORLD_API void FOnZonefallProgressChanged_DelegateWrapper(const FMulticastScriptDelegate& OnZonefallProgressChanged, float NormalizedValue);
 
 
 // ********** End Delegate FOnZonefallProgressChanged **********************************************
 
 // ********** Begin Class UZonefallModernProgressBarWidget *****************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h_17_RPC_WRAPPERS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h_17_RPC_WRAPPERS_NO_PURE_DECLS \
 	DECLARE_FUNCTION(execHandleAutoProgressTick); \
 	DECLARE_FUNCTION(execGetProgressNormalized); \
 	DECLARE_FUNCTION(execStopAutoProgress); \
@@ -35,7 +35,7 @@ UIWORLD_API void FOnZonefallProgressChanged_DelegateWrapper(const FMulticastScri
 struct Z_Construct_UClass_UZonefallModernProgressBarWidget_Statics;
 UIWORLD_API UClass* Z_Construct_UClass_UZonefallModernProgressBarWidget_NoRegister();
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h_17_INCLASS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h_17_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesUZonefallModernProgressBarWidget(); \
 	friend struct ::Z_Construct_UClass_UZonefallModernProgressBarWidget_Statics; \
@@ -46,7 +46,7 @@ public: \
 	DECLARE_SERIALIZER(UZonefallModernProgressBarWidget)
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h_17_ENHANCED_CONSTRUCTORS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h_17_ENHANCED_CONSTRUCTORS \
 	/** Deleted move- and copy-constructors, should never be used */ \
 	UZonefallModernProgressBarWidget(UZonefallModernProgressBarWidget&&) = delete; \
 	UZonefallModernProgressBarWidget(const UZonefallModernProgressBarWidget&) = delete; \
@@ -56,13 +56,13 @@ public: \
 	NO_API virtual ~UZonefallModernProgressBarWidget();
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h_14_PROLOG
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h_17_GENERATED_BODY \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h_14_PROLOG
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h_17_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h_17_RPC_WRAPPERS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h_17_INCLASS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h_17_ENHANCED_CONSTRUCTORS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h_17_RPC_WRAPPERS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h_17_INCLASS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h_17_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
@@ -72,6 +72,6 @@ class UZonefallModernProgressBarWidget;
 // ********** End Class UZonefallModernProgressBarWidget *******************************************
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h
+#define CURRENT_FILE_ID FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernProgressBarWidget_h
 
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

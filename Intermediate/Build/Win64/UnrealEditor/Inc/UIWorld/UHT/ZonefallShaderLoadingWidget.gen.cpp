@@ -18,6 +18,7 @@ ENGINE_API UClass* Z_Construct_UClass_UTexture2D_NoRegister();
 UIWORLD_API UClass* Z_Construct_UClass_UZonefallShaderLoadingWidget();
 UIWORLD_API UClass* Z_Construct_UClass_UZonefallShaderLoadingWidget_NoRegister();
 UMG_API UClass* Z_Construct_UClass_UBorder_NoRegister();
+UMG_API UClass* Z_Construct_UClass_UCircularThrobber_NoRegister();
 UMG_API UClass* Z_Construct_UClass_UImage_NoRegister();
 UMG_API UClass* Z_Construct_UClass_UProgressBar_NoRegister();
 UMG_API UClass* Z_Construct_UClass_UTextBlock_NoRegister();
@@ -263,7 +264,23 @@ struct Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_StartupTitleText_MetaData[] = {
 		{ "Category", "Zonefall|UI|Startup" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Game title shown large in the center. Edit freely to change the game name.\n" },
+#endif
 		{ "ModuleRelativePath", "Public/UI/ZonefallShaderLoadingWidget.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Game title shown large in the center. Edit freely to change the game name." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_StartupSubtitleText_MetaData[] = {
+		{ "Category", "Zonefall|UI|Startup" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Sub-line under the title (studio / tagline).\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UI/ZonefallShaderLoadingWidget.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Sub-line under the title (studio / tagline)." },
+#endif
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_ShaderLoadingBaseText_MetaData[] = {
 		{ "Category", "Zonefall|UI|Startup" },
@@ -283,6 +300,22 @@ struct Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_ShaderCacheHintText_MetaData[] = {
 		{ "Category", "Zonefall|UI|Startup" },
+		{ "ModuleRelativePath", "Public/UI/ZonefallShaderLoadingWidget.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_RotatingTips_MetaData[] = {
+		{ "Category", "Zonefall|UI|Startup" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Rotating loading tips shown below the hint line. Cycles every TipRotateSeconds.\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UI/ZonefallShaderLoadingWidget.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Rotating loading tips shown below the hint line. Cycles every TipRotateSeconds." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_TipRotateSeconds_MetaData[] = {
+		{ "Category", "Zonefall|UI|Startup" },
+		{ "ClampMax", "30.0" },
+		{ "ClampMin", "1.0" },
 		{ "ModuleRelativePath", "Public/UI/ZonefallShaderLoadingWidget.h" },
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_ShaderCompileProgressPercent_MetaData[] = {
@@ -312,6 +345,16 @@ struct Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_BottomPanelTint_MetaData[] = {
 		{ "Category", "Zonefall|UI|Style" },
 		{ "ModuleRelativePath", "Public/UI/ZonefallShaderLoadingWidget.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_AccentColor_MetaData[] = {
+		{ "Category", "Zonefall|UI|Style" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Accent color used for the glowing divider, progress bar and title sheen.\n" },
+#endif
+		{ "ModuleRelativePath", "Public/UI/ZonefallShaderLoadingWidget.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Accent color used for the glowing divider, progress bar and title sheen." },
+#endif
 	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_TitleFontSize_MetaData[] = {
 		{ "Category", "Zonefall|UI|Style" },
@@ -397,7 +440,43 @@ struct Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics
 		{ "EditInline", "true" },
 		{ "ModuleRelativePath", "Public/UI/ZonefallShaderLoadingWidget.h" },
 	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_AccentDivider_MetaData[] = {
+		{ "BindWidgetOptional", "" },
+		{ "Category", "Zonefall|UI|Startup" },
+		{ "EditInline", "true" },
+		{ "ModuleRelativePath", "Public/UI/ZonefallShaderLoadingWidget.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_TipText_MetaData[] = {
+		{ "BindWidgetOptional", "" },
+		{ "Category", "Zonefall|UI|Startup" },
+		{ "EditInline", "true" },
+		{ "ModuleRelativePath", "Public/UI/ZonefallShaderLoadingWidget.h" },
+	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_TitleText_MetaData[] = {
+		{ "BindWidgetOptional", "" },
+		{ "Category", "Zonefall|UI|Startup" },
+		{ "EditInline", "true" },
+		{ "ModuleRelativePath", "Public/UI/ZonefallShaderLoadingWidget.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_SubtitleText_MetaData[] = {
+		{ "BindWidgetOptional", "" },
+		{ "Category", "Zonefall|UI|Startup" },
+		{ "EditInline", "true" },
+		{ "ModuleRelativePath", "Public/UI/ZonefallShaderLoadingWidget.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_PercentText_MetaData[] = {
+		{ "BindWidgetOptional", "" },
+		{ "Category", "Zonefall|UI|Startup" },
+		{ "EditInline", "true" },
+		{ "ModuleRelativePath", "Public/UI/ZonefallShaderLoadingWidget.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_Spinner_MetaData[] = {
+		{ "BindWidgetOptional", "" },
+		{ "Category", "Zonefall|UI|Startup" },
+		{ "EditInline", "true" },
+		{ "ModuleRelativePath", "Public/UI/ZonefallShaderLoadingWidget.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_TopAccentLine_MetaData[] = {
 		{ "BindWidgetOptional", "" },
 		{ "Category", "Zonefall|UI|Startup" },
 		{ "EditInline", "true" },
@@ -437,11 +516,15 @@ struct Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics
 
 // ********** Begin Class UZonefallShaderLoadingWidget constinit property declarations *************
 	static const UECodeGen_Private::FTextPropertyParams NewProp_StartupTitleText;
+	static const UECodeGen_Private::FTextPropertyParams NewProp_StartupSubtitleText;
 	static const UECodeGen_Private::FTextPropertyParams NewProp_ShaderLoadingBaseText;
 	static const UECodeGen_Private::FTextPropertyParams NewProp_ShaderCheckingCacheText;
 	static const UECodeGen_Private::FTextPropertyParams NewProp_ShaderFinalizingText;
 	static const UECodeGen_Private::FTextPropertyParams NewProp_PleaseWaitText;
 	static const UECodeGen_Private::FTextPropertyParams NewProp_ShaderCacheHintText;
+	static const UECodeGen_Private::FTextPropertyParams NewProp_RotatingTips_Inner;
+	static const UECodeGen_Private::FArrayPropertyParams NewProp_RotatingTips;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_TipRotateSeconds;
 	static const UECodeGen_Private::FFloatPropertyParams NewProp_ShaderCompileProgressPercent;
 	static const UECodeGen_Private::FFloatPropertyParams NewProp_TextAnimInterval;
 	static void NewProp_bUseRealShaderCompilerProgress_SetBit(void* Obj);
@@ -449,6 +532,7 @@ struct Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics
 	static const UECodeGen_Private::FSoftObjectPropertyParams NewProp_BackgroundImageTexture;
 	static const UECodeGen_Private::FStructPropertyParams NewProp_BackgroundImageTint;
 	static const UECodeGen_Private::FStructPropertyParams NewProp_BottomPanelTint;
+	static const UECodeGen_Private::FStructPropertyParams NewProp_AccentColor;
 	static const UECodeGen_Private::FIntPropertyParams NewProp_TitleFontSize;
 	static const UECodeGen_Private::FIntPropertyParams NewProp_BodyFontSize;
 	static const UECodeGen_Private::FFloatPropertyParams NewProp_SmoothProgressSpeed;
@@ -463,7 +547,13 @@ struct Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_BackgroundImageWidget;
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_RootBox;
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_BottomPanel;
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_AccentDivider;
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_TipText;
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_TitleText;
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_SubtitleText;
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_PercentText;
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_Spinner;
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_TopAccentLine;
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_ShaderText;
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_ProgressText;
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_WaitText;
@@ -493,11 +583,15 @@ struct Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics
 
 // ********** Begin Class UZonefallShaderLoadingWidget Property Definitions ************************
 const UECodeGen_Private::FTextPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_StartupTitleText = { "StartupTitleText", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Text, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, StartupTitleText), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_StartupTitleText_MetaData), NewProp_StartupTitleText_MetaData) };
+const UECodeGen_Private::FTextPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_StartupSubtitleText = { "StartupSubtitleText", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Text, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, StartupSubtitleText), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_StartupSubtitleText_MetaData), NewProp_StartupSubtitleText_MetaData) };
 const UECodeGen_Private::FTextPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_ShaderLoadingBaseText = { "ShaderLoadingBaseText", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Text, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, ShaderLoadingBaseText), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ShaderLoadingBaseText_MetaData), NewProp_ShaderLoadingBaseText_MetaData) };
 const UECodeGen_Private::FTextPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_ShaderCheckingCacheText = { "ShaderCheckingCacheText", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Text, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, ShaderCheckingCacheText), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ShaderCheckingCacheText_MetaData), NewProp_ShaderCheckingCacheText_MetaData) };
 const UECodeGen_Private::FTextPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_ShaderFinalizingText = { "ShaderFinalizingText", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Text, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, ShaderFinalizingText), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ShaderFinalizingText_MetaData), NewProp_ShaderFinalizingText_MetaData) };
 const UECodeGen_Private::FTextPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_PleaseWaitText = { "PleaseWaitText", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Text, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, PleaseWaitText), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_PleaseWaitText_MetaData), NewProp_PleaseWaitText_MetaData) };
 const UECodeGen_Private::FTextPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_ShaderCacheHintText = { "ShaderCacheHintText", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Text, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, ShaderCacheHintText), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ShaderCacheHintText_MetaData), NewProp_ShaderCacheHintText_MetaData) };
+const UECodeGen_Private::FTextPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_RotatingTips_Inner = { "RotatingTips", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Text, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FArrayPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_RotatingTips = { "RotatingTips", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, RotatingTips), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_RotatingTips_MetaData), NewProp_RotatingTips_MetaData) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_TipRotateSeconds = { "TipRotateSeconds", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, TipRotateSeconds), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_TipRotateSeconds_MetaData), NewProp_TipRotateSeconds_MetaData) };
 const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_ShaderCompileProgressPercent = { "ShaderCompileProgressPercent", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, ShaderCompileProgressPercent), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ShaderCompileProgressPercent_MetaData), NewProp_ShaderCompileProgressPercent_MetaData) };
 const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_TextAnimInterval = { "TextAnimInterval", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, TextAnimInterval), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_TextAnimInterval_MetaData), NewProp_TextAnimInterval_MetaData) };
 void Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_bUseRealShaderCompilerProgress_SetBit(void* Obj)
@@ -508,6 +602,7 @@ const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_UZonefallShaderL
 const UECodeGen_Private::FSoftObjectPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_BackgroundImageTexture = { "BackgroundImageTexture", nullptr, (EPropertyFlags)0x0014000000000005, UECodeGen_Private::EPropertyGenFlags::SoftObject, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, BackgroundImageTexture), Z_Construct_UClass_UTexture2D_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_BackgroundImageTexture_MetaData), NewProp_BackgroundImageTexture_MetaData) };
 const UECodeGen_Private::FStructPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_BackgroundImageTint = { "BackgroundImageTint", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, BackgroundImageTint), Z_Construct_UScriptStruct_FLinearColor, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_BackgroundImageTint_MetaData), NewProp_BackgroundImageTint_MetaData) };
 const UECodeGen_Private::FStructPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_BottomPanelTint = { "BottomPanelTint", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, BottomPanelTint), Z_Construct_UScriptStruct_FLinearColor, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_BottomPanelTint_MetaData), NewProp_BottomPanelTint_MetaData) };
+const UECodeGen_Private::FStructPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_AccentColor = { "AccentColor", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, AccentColor), Z_Construct_UScriptStruct_FLinearColor, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_AccentColor_MetaData), NewProp_AccentColor_MetaData) };
 const UECodeGen_Private::FIntPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_TitleFontSize = { "TitleFontSize", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, TitleFontSize), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_TitleFontSize_MetaData), NewProp_TitleFontSize_MetaData) };
 const UECodeGen_Private::FIntPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_BodyFontSize = { "BodyFontSize", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, BodyFontSize), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_BodyFontSize_MetaData), NewProp_BodyFontSize_MetaData) };
 const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_SmoothProgressSpeed = { "SmoothProgressSpeed", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, SmoothProgressSpeed), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_SmoothProgressSpeed_MetaData), NewProp_SmoothProgressSpeed_MetaData) };
@@ -525,7 +620,13 @@ const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UZonefallShade
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_BackgroundImageWidget = { "BackgroundImageWidget", nullptr, (EPropertyFlags)0x012408000008201c, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, BackgroundImageWidget), Z_Construct_UClass_UImage_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_BackgroundImageWidget_MetaData), NewProp_BackgroundImageWidget_MetaData) };
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_RootBox = { "RootBox", nullptr, (EPropertyFlags)0x012408000008201c, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, RootBox), Z_Construct_UClass_UVerticalBox_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_RootBox_MetaData), NewProp_RootBox_MetaData) };
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_BottomPanel = { "BottomPanel", nullptr, (EPropertyFlags)0x012408000008201c, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, BottomPanel), Z_Construct_UClass_UBorder_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_BottomPanel_MetaData), NewProp_BottomPanel_MetaData) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_AccentDivider = { "AccentDivider", nullptr, (EPropertyFlags)0x012408000008201c, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, AccentDivider), Z_Construct_UClass_UImage_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_AccentDivider_MetaData), NewProp_AccentDivider_MetaData) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_TipText = { "TipText", nullptr, (EPropertyFlags)0x012408000008201c, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, TipText), Z_Construct_UClass_UTextBlock_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_TipText_MetaData), NewProp_TipText_MetaData) };
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_TitleText = { "TitleText", nullptr, (EPropertyFlags)0x012408000008201c, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, TitleText), Z_Construct_UClass_UTextBlock_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_TitleText_MetaData), NewProp_TitleText_MetaData) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_SubtitleText = { "SubtitleText", nullptr, (EPropertyFlags)0x012408000008201c, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, SubtitleText), Z_Construct_UClass_UTextBlock_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_SubtitleText_MetaData), NewProp_SubtitleText_MetaData) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_PercentText = { "PercentText", nullptr, (EPropertyFlags)0x012408000008201c, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, PercentText), Z_Construct_UClass_UTextBlock_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_PercentText_MetaData), NewProp_PercentText_MetaData) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_Spinner = { "Spinner", nullptr, (EPropertyFlags)0x012408000008201c, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, Spinner), Z_Construct_UClass_UCircularThrobber_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_Spinner_MetaData), NewProp_Spinner_MetaData) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_TopAccentLine = { "TopAccentLine", nullptr, (EPropertyFlags)0x012408000008201c, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, TopAccentLine), Z_Construct_UClass_UImage_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_TopAccentLine_MetaData), NewProp_TopAccentLine_MetaData) };
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_ShaderText = { "ShaderText", nullptr, (EPropertyFlags)0x012408000008201c, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, ShaderText), Z_Construct_UClass_UTextBlock_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ShaderText_MetaData), NewProp_ShaderText_MetaData) };
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_ProgressText = { "ProgressText", nullptr, (EPropertyFlags)0x012408000008201c, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, ProgressText), Z_Construct_UClass_UTextBlock_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_ProgressText_MetaData), NewProp_ProgressText_MetaData) };
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_WaitText = { "WaitText", nullptr, (EPropertyFlags)0x012408000008201c, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, WaitText), Z_Construct_UClass_UTextBlock_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_WaitText_MetaData), NewProp_WaitText_MetaData) };
@@ -533,17 +634,22 @@ const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UZonefallShade
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_CompileProgressBar = { "CompileProgressBar", nullptr, (EPropertyFlags)0x012408000008201c, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UZonefallShaderLoadingWidget, CompileProgressBar), Z_Construct_UClass_UProgressBar_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_CompileProgressBar_MetaData), NewProp_CompileProgressBar_MetaData) };
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::PropPointers[] = {
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_StartupTitleText,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_StartupSubtitleText,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_ShaderLoadingBaseText,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_ShaderCheckingCacheText,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_ShaderFinalizingText,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_PleaseWaitText,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_ShaderCacheHintText,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_RotatingTips_Inner,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_RotatingTips,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_TipRotateSeconds,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_ShaderCompileProgressPercent,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_TextAnimInterval,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_bUseRealShaderCompilerProgress,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_BackgroundImageTexture,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_BackgroundImageTint,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_BottomPanelTint,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_AccentColor,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_TitleFontSize,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_BodyFontSize,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_SmoothProgressSpeed,
@@ -557,7 +663,13 @@ const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UZonefall
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_BackgroundImageWidget,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_RootBox,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_BottomPanel,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_AccentDivider,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_TipText,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_TitleText,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_SubtitleText,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_PercentText,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_Spinner,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_TopAccentLine,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_ShaderText,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_ProgressText,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UZonefallShaderLoadingWidget_Statics::NewProp_WaitText,
@@ -604,15 +716,15 @@ UZonefallShaderLoadingWidget::~UZonefallShaderLoadingWidget() {}
 // ********** End Class UZonefallShaderLoadingWidget ***********************************************
 
 // ********** Begin Registration *******************************************************************
-struct Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h__Script_UIWorld_Statics
+struct Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h__Script_UIWorld_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_UZonefallShaderLoadingWidget, UZonefallShaderLoadingWidget::StaticClass, TEXT("UZonefallShaderLoadingWidget"), &Z_Registration_Info_UClass_UZonefallShaderLoadingWidget, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UZonefallShaderLoadingWidget), 2805734138U) },
+		{ Z_Construct_UClass_UZonefallShaderLoadingWidget, UZonefallShaderLoadingWidget::StaticClass, TEXT("UZonefallShaderLoadingWidget"), &Z_Registration_Info_UClass_UZonefallShaderLoadingWidget, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UZonefallShaderLoadingWidget), 2752814363U) },
 	};
-}; // Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h__Script_UIWorld_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h__Script_UIWorld_3504919951{
+}; // Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h__Script_UIWorld_Statics 
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h__Script_UIWorld_222703839{
 	TEXT("/Script/UIWorld"),
-	Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h__Script_UIWorld_Statics::ClassInfo),
+	Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallShaderLoadingWidget_h__Script_UIWorld_Statics::ClassInfo),
 	nullptr, 0,
 	nullptr, 0,
 };

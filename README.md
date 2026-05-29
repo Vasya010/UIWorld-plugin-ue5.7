@@ -1,90 +1,194 @@
-🌍 UIWorld Plugin for Unreal Engine 5.8
+# UIWorld — плагин UI для Unreal Engine 5.7+
 
-Powerful and modular UI framework for Unreal Engine with ready-to-use menus and game flow system.
+Модульный UI-фреймворк с готовыми меню, загрузочными экранами и **онлайн-лобби** (LAN + Steam). Управление потоком экранов через `UUIWorldMenuGameInstance`.
 
-✨ Overview
+**Разработчик:** Кузьменко Василий
 
-UIWorld — это модульный UI-фреймворк для Unreal Engine 5.8, который предоставляет готовую систему интерфейса для игр.
+---
 
-Плагин помогает быстро собирать полноценный UI-цикл игры:
+## Что уже есть
 
-🎮 Main Menu System
-⏸️ Pause Menu
-⚙️ Settings System
-🔄 Loading / Transition Screens
-🎬 Startup / Intro Flow
+### Меню и поток игры
 
-Разработан для ускорения прототипирования и production UI в играх.
+| Модуль | Описание |
+|--------|----------|
+| **Главное меню** | `ZonefallMainMenuWidget` — переход в одиночную игру, онлайн, настройки |
+| **Пауза** | `ZonefallPauseMenuWidget` — продолжить, настройки, выход |
+| **Настройки** | `ZonefallMasterSettingsWidget` — графика, звук, управление (glass UI) |
+| **Загрузка** | `ZonefallLoadingScreenWidget` — обычная загрузка уровня + **отдельный режим онлайн-travel** |
+| **Старт игры** | Intro + компиляция шейдеров (`ZonefallStartupIntroWidget`, `ZonefallShaderLoadingWidget`) |
+| **Сохранения** | Toast «сохранено», `UIWorldSaveManager` |
+| **Локализация** | `ZonefallLocalizationSubsystem` |
 
-👨‍💻 Developer
+`UUIWorldMenuGameInstance` (или Blueprint-наследник, например `GameinstanceP`) — центр логики: какой экран показать, когда грузить уровень, фокус ввода после загрузки.
 
-Кузьменко Василий
+### Онлайн (реализовано)
 
-🔥 Features
-🧩 Готовая UI архитектура (UMG-based)
-⚡ Быстрая интеграция в любой проект
-🎨 Современная и расширяемая структура UI
-🔌 Поддержка Blueprint + C++
-🧠 GameInstance-driven UI flow
-🚀 Совместимость с Unreal Engine 5.8
-🧱 Модульная система экранов
-📦 Installation
-Клонируй репозиторий:
-git clone https://github.com/Vasya010/UIWorld-plugin-ue5.7.git
-Перемести плагин:
-YourProject/Plugins/UIWorld/
-Открой Unreal Engine 5.8
-Включи плагин:
-Edit → Plugins → UIWorld
-Пересобери проект
-🧠 Usage
+Два **раздельных** режима (не смешиваются драйверы):
 
-После установки доступны базовые UI модули:
+| Режим | OSS | Net Driver | Когда использовать |
+|-------|-----|------------|-------------------|
+| **LOCAL LAN** | `OnlineSubsystemNull` | `LanGameNetDriver` (Ip) | Один ПК (PIE), локальная сеть, **Steam не нужен** |
+| **Steam / Internet** | `OnlineSubsystemSteam` | `GameNetDriver` (SteamSockets) | Друзья через Steam, интернет |
 
-UIWorld GameInstance (flow controller)
-Widget System:
-MainMenuWidget
-PauseMenuWidget
-SettingsMenuWidget
-LoadingScreenWidget
-StartupIntroWidget
+#### Лобби `UZonefallOnlineLobbyWidget`
 
-Подключение возможно через Blueprint или C++.
+Полностью собирается в C++ (Blueprint не обязателен):
 
-📁 Structure
+- **HOST** — имя сервера, карта, 2–32 игрока, LOCAL LAN, приватность (Public / Friends / Invite Only), пароль хоста
+- **QUICK JOIN** — поиск лучшей открытой сессии (минимальный пинг, тот же `BuildId`, без пароля)
+- **BROWSE** — список сессий с пингом, игроками, картой, метками FULL / LOCK / VER
+- **REFRESH**, фильтр **Hide full**, **JOIN**, **LEAVE**, **BACK**
+- **DIRECT CONNECT** — `127.0.0.1:7777`, Steam URL и т.д.
+
+#### `UUIWorldMenuGameInstance` — API онлайн
+
+- `HostOnlineSession`, `FindOnlineSessions`, `JoinOnlineSessionByIndex`, `QuickJoinOnlineSession`
+- `JoinOnlineByAddress`, `LeaveOnlineSessionAndReturnToMenu`
+- `GetLastFoundSessions`, `GetLastOnlineDiagnostic`, `GetOnlinePlayerNickname`
+- События: `OnHostCompleted`, `OnSessionsFound`, `OnJoinCompleted`, `OnOnlineMatchReady`
+- Защита от зависания: таймаут join/host, возврат в меню при `TravelFailure` / `NetworkFailure`
+- Версия билда: `OnlineGameBuildId` + `BUILD_ID` в настройках сессии (фильтр несовместимых клиентов)
+
+#### Конфиг проекта (`DefaultEngine.ini`)
+
+В проекте, который использует плагин, должны быть (пример в Zonefallprotocol):
+
+```ini
+[OnlineSubsystem]
+DefaultPlatformService=Steam
+
+[OnlineSubsystemNull]
+bEnabled=true
+
+[/Script/Engine.GameEngine]
++NetDriverDefinitions=(DefName="LanGameNetDriver",DriverClassName="/Script/OnlineSubsystemUtils.IpNetDriver")
++NetDriverDefinitions=(DefName="GameNetDriver",DriverClassName="/Script/SteamSockets.SteamSocketsNetDriver")
+```
+
+LAN-хост: `?listen&NetDriver=LanGameNetDriver`  
+Steam-хост: `?listen&NetDriver=GameNetDriver`
+
+### Прочее
+
+- Достижения (Steam + локальный fallback)
+- Адаптивные задержки загрузочного экрана
+- Поддержка Blueprint и C++
+
+---
+
+## Быстрый старт
+
+1. Скопировать плагин в `YourProject/Plugins/UIWorld/`
+2. Включить: **Edit → Plugins → UIWorld**
+3. В **Project Settings → Maps & Modes** указать Game Instance на класс, наследующий `UUIWorldMenuGameInstance`
+4. (Опционально) `OnlineMenuWidgetClass` = `UZonefallOnlineLobbyWidget` — если не задан, подставляется по умолчанию
+5. Собрать C++ проект
+
+### PIE: LAN на одном ПК (2 игрока)
+
+1. **Play → Number of Players: 2**, **Net Mode: Play As Listen Server**
+2. **Окно Player 1:** ONLINE → LOCAL LAN → **HOST** → дождаться загрузки карты (`Levelgames`)
+3. **Окно Player 2:** LOCAL LAN → **REFRESH** или **CONNECT** `127.0.0.1:7777`
+
+В логе хоста ожидается: `World->Listen ... OK`, `LAN listen server ready`.
+
+---
+
+## Структура плагина
+
+```
 UIWorld/
-├── Source/
-│   ├── UIWorld/
-│   │   ├── Public/
-│   │   ├── Private/
+├── Source/UIWorld/
+│   ├── Public/
+│   │   ├── UIWorldMenuGameInstance.h
+│   │   └── UI/
+│   │       ├── ZonefallOnlineLobbyWidget.h
+│   │       ├── ZonefallLoadingScreenWidget.h
+│   │       └── ...
+│   └── Private/
+├── Config/          # при необходимости — шаблоны ini
 ├── Resources/
-├── UIWorld.uplugin
-⚙️ Requirements
-Unreal Engine 5.8+
-C++ Project (recommended)
-🚀 Roadmap
- UI Animations System
- Theme System (Dark / Light / Custom)
- Drag & Drop UI Builder
- Multiplayer UI Sync
- Save/Load UI states
-🧪 Status
+└── UIWorld.uplugin
+```
 
-⚠️ Some experimental systems (rendering / plugins integration) may be disabled in current build for stability.
+---
 
-⭐ Contributing
+## Настройки Game Instance (онлайн)
 
-Pull Requests welcome.
-Keep architecture clean and modular.
+| Свойство | Назначение |
+|----------|------------|
+| `OnlineHostMapName` | Карта для хоста (например `Levelgames`) |
+| `OnlineServerName` | Имя в списке сессий |
+| `OnlineLanPort` | Порт LAN (по умолчанию `7777`) |
+| `OnlineGameBuildId` | Должен совпадать с `BuildIdOverride` в ini |
+| `MainMenuLevelName` | Куда возвращаться при ошибке / Leave |
+| `OnlineJoinTimeoutSeconds` | Таймаут подключения |
 
-📜 License
+---
+
+## Roadmap — что добавим позже
+
+Планируется развивать онлайн в сторону **AAA / GTA Online-подобного** опыта. Сейчас это **listen-server** (хост = игрок), не dedicated.
+
+### Онлайн — ближайшие планы
+
+- [ ] Инвайты друзей Steam из лобби (без ручного IP)
+- [ ] Голосовой чат / текстовый чат в лобби
+- [ ] Kick / Ban, передача хоста (host migration)
+- [ ] Ready-check перед стартом матча («все готовы»)
+- [ ] Фильтры браузера: регион, режим, только друзья
+- [ ] Dedicated server (отдельный билд без UI)
+- [ ] Matchmaking / очередь (не только ручной browse)
+- [ ] EOS / кроссплей (если понадобится выход за Steam)
+
+### UI — общие планы
+
+- [ ] Система тем (Dark / Light / кастомные токены)
+- [ ] Расширенные анимации переходов между экранами
+- [ ] Сохранение состояния UI (последняя вкладка настроек и т.д.)
+- [ ] Drag & Drop конструктор раскладки (опционально)
+
+### Уже в roadmap (из старых заметок)
+
+- [ ] UI Animations System
+- [ ] Theme System
+- [ ] Multiplayer UI Sync (синхронизация виджетов между клиентами)
+
+---
+
+## Ограничения текущей версии
+
+- **Нет dedicated server** — только listen-server на машине хоста.
+- **Steam Dev AppId 480** (Spacewar) в dev-сборках — для релиза нужен свой App ID.
+- **PIE:** хост обязательно из окна **Player 1** при «Play As Listen Server»; одиночное окно PIE не заменяет второго клиента.
+- Пароль сессии проверяется на клиенте при join; для production нужна серверная валидация в GameMode.
+- Некоторые интеграции (DLSS / Streamline в UIWorld) могут быть отключены в конкретном проекте ради стабильности сборки.
+
+---
+
+## Требования
+
+- Unreal Engine **5.7+** (в README проекта может быть указана 5.8 — проверьте `UIWorld.uplugin`)
+- C++ проект (рекомендуется)
+- Для Steam-онлайн: Steam client, плагин OnlineSubsystemSteam, SteamSockets
+
+---
+
+## Установка
+
+```bash
+git clone https://github.com/Vasya010/UIWorld-plugin-ue5.7.git
+```
+
+Положить в `YourProject/Plugins/UIWorld/`, включить плагин, пересобрать.
+
+---
+
+## Лицензия
 
 MIT License
 
-💬 Support
+## Поддержка
 
-Create an Issue on GitHub for bugs or feature requests.
-
-❤️ Credits
-
-Inspired by modern UI frameworks in Unreal Engine and AAA game menu systems.
+Issues на GitHub — баги и предложения по функциям из roadmap.

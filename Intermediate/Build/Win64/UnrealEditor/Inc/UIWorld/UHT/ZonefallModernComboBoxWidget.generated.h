@@ -17,14 +17,14 @@
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 
 // ********** Begin Delegate FOnZonefallModernComboSelectionChanged ********************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_12_DELEGATE \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_12_DELEGATE \
 UIWORLD_API void FOnZonefallModernComboSelectionChanged_DelegateWrapper(const FMulticastScriptDelegate& OnZonefallModernComboSelectionChanged, const FString& SelectedItem);
 
 
 // ********** End Delegate FOnZonefallModernComboSelectionChanged **********************************
 
 // ********** Begin Class UZonefallModernComboBoxWidget ********************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_39_RPC_WRAPPERS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_39_RPC_WRAPPERS_NO_PURE_DECLS \
 	DECLARE_FUNCTION(execHandleSelectionChanged); \
 	DECLARE_FUNCTION(execValidateAndBindWidgets); \
 	DECLARE_FUNCTION(execApplyVisualStyle); \
@@ -35,11 +35,11 @@ UIWORLD_API void FOnZonefallModernComboSelectionChanged_DelegateWrapper(const FM
 	DECLARE_FUNCTION(execSetOptions);
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_39_CALLBACK_WRAPPERS
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_39_CALLBACK_WRAPPERS
 struct Z_Construct_UClass_UZonefallModernComboBoxWidget_Statics;
 UIWORLD_API UClass* Z_Construct_UClass_UZonefallModernComboBoxWidget_NoRegister();
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_39_INCLASS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_39_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesUZonefallModernComboBoxWidget(); \
 	friend struct ::Z_Construct_UClass_UZonefallModernComboBoxWidget_Statics; \
@@ -50,7 +50,7 @@ public: \
 	DECLARE_SERIALIZER(UZonefallModernComboBoxWidget)
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_39_ENHANCED_CONSTRUCTORS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_39_ENHANCED_CONSTRUCTORS \
 	/** Deleted move- and copy-constructors, should never be used */ \
 	UZonefallModernComboBoxWidget(UZonefallModernComboBoxWidget&&) = delete; \
 	UZonefallModernComboBoxWidget(const UZonefallModernComboBoxWidget&) = delete; \
@@ -60,14 +60,14 @@ public: \
 	NO_API virtual ~UZonefallModernComboBoxWidget();
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_36_PROLOG
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_39_GENERATED_BODY \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_36_PROLOG
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_39_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_39_RPC_WRAPPERS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_39_CALLBACK_WRAPPERS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_39_INCLASS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_39_ENHANCED_CONSTRUCTORS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_39_RPC_WRAPPERS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_39_CALLBACK_WRAPPERS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_39_INCLASS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h_39_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
@@ -77,7 +77,7 @@ class UZonefallModernComboBoxWidget;
 // ********** End Class UZonefallModernComboBoxWidget **********************************************
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h
+#define CURRENT_FILE_ID FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernComboBoxWidget_h
 
 // ********** Begin Enum EZonefallModernComboTheme *************************************************
 #define FOREACH_ENUM_EZONEFALLMODERNCOMBOTHEME(op) \

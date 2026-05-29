@@ -15,6 +15,7 @@ void EmptyLinkFunctionForGeneratedCodeZonefallLoadingScreenWidget() {}
 ENGINE_API UClass* Z_Construct_UClass_UTexture2D_NoRegister();
 UIWORLD_API UClass* Z_Construct_UClass_UZonefallLoadingScreenWidget();
 UIWORLD_API UClass* Z_Construct_UClass_UZonefallLoadingScreenWidget_NoRegister();
+UIWORLD_API UEnum* Z_Construct_UEnum_UIWorld_EZonefallOnlineTravelPhase();
 UMG_API UClass* Z_Construct_UClass_UBorder_NoRegister();
 UMG_API UClass* Z_Construct_UClass_UProgressBar_NoRegister();
 UMG_API UClass* Z_Construct_UClass_UTextBlock_NoRegister();
@@ -58,6 +59,75 @@ DEFINE_FUNCTION(UZonefallLoadingScreenWidget::execCompleteLoading)
 	P_NATIVE_END;
 }
 // ********** End Class UZonefallLoadingScreenWidget Function CompleteLoading **********************
+
+// ********** Begin Class UZonefallLoadingScreenWidget Function ConfigureOnlineTravelLoading *******
+struct Z_Construct_UFunction_UZonefallLoadingScreenWidget_ConfigureOnlineTravelLoading_Statics
+{
+	struct ZonefallLoadingScreenWidget_eventConfigureOnlineTravelLoading_Parms
+	{
+		EZonefallOnlineTravelPhase Phase;
+		FText StatusHint;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "Zonefall|UI|Loading" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Slower progress + online-specific status lines (host / join / sync). */" },
+#endif
+		{ "ModuleRelativePath", "Public/UI/ZonefallLoadingScreenWidget.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Slower progress + online-specific status lines (host / join / sync)." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_StatusHint_MetaData[] = {
+		{ "NativeConst", "" },
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function ConfigureOnlineTravelLoading constinit property declarations **********
+	static const UECodeGen_Private::FBytePropertyParams NewProp_Phase_Underlying;
+	static const UECodeGen_Private::FEnumPropertyParams NewProp_Phase;
+	static const UECodeGen_Private::FTextPropertyParams NewProp_StatusHint;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function ConfigureOnlineTravelLoading constinit property declarations ************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function ConfigureOnlineTravelLoading Property Definitions *********************
+const UECodeGen_Private::FBytePropertyParams Z_Construct_UFunction_UZonefallLoadingScreenWidget_ConfigureOnlineTravelLoading_Statics::NewProp_Phase_Underlying = { "UnderlyingType", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Byte, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, nullptr, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FEnumPropertyParams Z_Construct_UFunction_UZonefallLoadingScreenWidget_ConfigureOnlineTravelLoading_Statics::NewProp_Phase = { "Phase", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ZonefallLoadingScreenWidget_eventConfigureOnlineTravelLoading_Parms, Phase), Z_Construct_UEnum_UIWorld_EZonefallOnlineTravelPhase, METADATA_PARAMS(0, nullptr) }; // 2265657550
+const UECodeGen_Private::FTextPropertyParams Z_Construct_UFunction_UZonefallLoadingScreenWidget_ConfigureOnlineTravelLoading_Statics::NewProp_StatusHint = { "StatusHint", nullptr, (EPropertyFlags)0x0010000008000182, UECodeGen_Private::EPropertyGenFlags::Text, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ZonefallLoadingScreenWidget_eventConfigureOnlineTravelLoading_Parms, StatusHint), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_StatusHint_MetaData), NewProp_StatusHint_MetaData) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UZonefallLoadingScreenWidget_ConfigureOnlineTravelLoading_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UZonefallLoadingScreenWidget_ConfigureOnlineTravelLoading_Statics::NewProp_Phase_Underlying,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UZonefallLoadingScreenWidget_ConfigureOnlineTravelLoading_Statics::NewProp_Phase,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UZonefallLoadingScreenWidget_ConfigureOnlineTravelLoading_Statics::NewProp_StatusHint,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UZonefallLoadingScreenWidget_ConfigureOnlineTravelLoading_Statics::PropPointers) < 2048);
+// ********** End Function ConfigureOnlineTravelLoading Property Definitions ***********************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UZonefallLoadingScreenWidget_ConfigureOnlineTravelLoading_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UZonefallLoadingScreenWidget, nullptr, "ConfigureOnlineTravelLoading", 	Z_Construct_UFunction_UZonefallLoadingScreenWidget_ConfigureOnlineTravelLoading_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UZonefallLoadingScreenWidget_ConfigureOnlineTravelLoading_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UZonefallLoadingScreenWidget_ConfigureOnlineTravelLoading_Statics::ZonefallLoadingScreenWidget_eventConfigureOnlineTravelLoading_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04420401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UZonefallLoadingScreenWidget_ConfigureOnlineTravelLoading_Statics::Function_MetaDataParams), Z_Construct_UFunction_UZonefallLoadingScreenWidget_ConfigureOnlineTravelLoading_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UZonefallLoadingScreenWidget_ConfigureOnlineTravelLoading_Statics::ZonefallLoadingScreenWidget_eventConfigureOnlineTravelLoading_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UZonefallLoadingScreenWidget_ConfigureOnlineTravelLoading()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UZonefallLoadingScreenWidget_ConfigureOnlineTravelLoading_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UZonefallLoadingScreenWidget::execConfigureOnlineTravelLoading)
+{
+	P_GET_ENUM(EZonefallOnlineTravelPhase,Z_Param_Phase);
+	P_GET_PROPERTY_REF(FTextProperty,Z_Param_Out_StatusHint);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	P_THIS->ConfigureOnlineTravelLoading(EZonefallOnlineTravelPhase(Z_Param_Phase),Z_Param_Out_StatusHint);
+	P_NATIVE_END;
+}
+// ********** End Class UZonefallLoadingScreenWidget Function ConfigureOnlineTravelLoading *********
 
 // ********** Begin Class UZonefallLoadingScreenWidget Function EnterFinalizingPhase ***************
 struct Z_Construct_UFunction_UZonefallLoadingScreenWidget_EnterFinalizingPhase_Statics
@@ -258,6 +328,61 @@ DEFINE_FUNCTION(UZonefallLoadingScreenWidget::execHandleStatusTextTick)
 }
 // ********** End Class UZonefallLoadingScreenWidget Function HandleStatusTextTick *****************
 
+// ********** Begin Class UZonefallLoadingScreenWidget Function SetOnlineTravelStatus **************
+struct Z_Construct_UFunction_UZonefallLoadingScreenWidget_SetOnlineTravelStatus_Statics
+{
+	struct ZonefallLoadingScreenWidget_eventSetOnlineTravelStatus_Parms
+	{
+		FText Status;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "Zonefall|UI|Loading" },
+		{ "ModuleRelativePath", "Public/UI/ZonefallLoadingScreenWidget.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_Status_MetaData[] = {
+		{ "NativeConst", "" },
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function SetOnlineTravelStatus constinit property declarations *****************
+	static const UECodeGen_Private::FTextPropertyParams NewProp_Status;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function SetOnlineTravelStatus constinit property declarations *******************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function SetOnlineTravelStatus Property Definitions ****************************
+const UECodeGen_Private::FTextPropertyParams Z_Construct_UFunction_UZonefallLoadingScreenWidget_SetOnlineTravelStatus_Statics::NewProp_Status = { "Status", nullptr, (EPropertyFlags)0x0010000008000182, UECodeGen_Private::EPropertyGenFlags::Text, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ZonefallLoadingScreenWidget_eventSetOnlineTravelStatus_Parms, Status), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_Status_MetaData), NewProp_Status_MetaData) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UZonefallLoadingScreenWidget_SetOnlineTravelStatus_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UZonefallLoadingScreenWidget_SetOnlineTravelStatus_Statics::NewProp_Status,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UZonefallLoadingScreenWidget_SetOnlineTravelStatus_Statics::PropPointers) < 2048);
+// ********** End Function SetOnlineTravelStatus Property Definitions ******************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UZonefallLoadingScreenWidget_SetOnlineTravelStatus_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UZonefallLoadingScreenWidget, nullptr, "SetOnlineTravelStatus", 	Z_Construct_UFunction_UZonefallLoadingScreenWidget_SetOnlineTravelStatus_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UZonefallLoadingScreenWidget_SetOnlineTravelStatus_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UZonefallLoadingScreenWidget_SetOnlineTravelStatus_Statics::ZonefallLoadingScreenWidget_eventSetOnlineTravelStatus_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04420401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UZonefallLoadingScreenWidget_SetOnlineTravelStatus_Statics::Function_MetaDataParams), Z_Construct_UFunction_UZonefallLoadingScreenWidget_SetOnlineTravelStatus_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UZonefallLoadingScreenWidget_SetOnlineTravelStatus_Statics::ZonefallLoadingScreenWidget_eventSetOnlineTravelStatus_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UZonefallLoadingScreenWidget_SetOnlineTravelStatus()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UZonefallLoadingScreenWidget_SetOnlineTravelStatus_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UZonefallLoadingScreenWidget::execSetOnlineTravelStatus)
+{
+	P_GET_PROPERTY_REF(FTextProperty,Z_Param_Out_Status);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	P_THIS->SetOnlineTravelStatus(Z_Param_Out_Status);
+	P_NATIVE_END;
+}
+// ********** End Class UZonefallLoadingScreenWidget Function SetOnlineTravelStatus ****************
+
 // ********** Begin Class UZonefallLoadingScreenWidget Function StartImageRotation *****************
 struct Z_Construct_UFunction_UZonefallLoadingScreenWidget_StartImageRotation_Statics
 {
@@ -329,6 +454,67 @@ DEFINE_FUNCTION(UZonefallLoadingScreenWidget::execStartLoading)
 	P_NATIVE_END;
 }
 // ********** End Class UZonefallLoadingScreenWidget Function StartLoading *************************
+
+// ********** Begin Class UZonefallLoadingScreenWidget Function StartOnlineTravelLoading ***********
+struct Z_Construct_UFunction_UZonefallLoadingScreenWidget_StartOnlineTravelLoading_Statics
+{
+	struct ZonefallLoadingScreenWidget_eventStartOnlineTravelLoading_Parms
+	{
+		FText Subtitle;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "Zonefall|UI|Loading" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/** Legacy entry \xe2\x80\x94 prefer ConfigureOnlineTravelLoading for host/join. */" },
+#endif
+		{ "ModuleRelativePath", "Public/UI/ZonefallLoadingScreenWidget.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Legacy entry \xe2\x80\x94 prefer ConfigureOnlineTravelLoading for host/join." },
+#endif
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_Subtitle_MetaData[] = {
+		{ "NativeConst", "" },
+	};
+#endif // WITH_METADATA
+
+// ********** Begin Function StartOnlineTravelLoading constinit property declarations **************
+	static const UECodeGen_Private::FTextPropertyParams NewProp_Subtitle;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+// ********** End Function StartOnlineTravelLoading constinit property declarations ****************
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+
+// ********** Begin Function StartOnlineTravelLoading Property Definitions *************************
+const UECodeGen_Private::FTextPropertyParams Z_Construct_UFunction_UZonefallLoadingScreenWidget_StartOnlineTravelLoading_Statics::NewProp_Subtitle = { "Subtitle", nullptr, (EPropertyFlags)0x0010000008000182, UECodeGen_Private::EPropertyGenFlags::Text, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ZonefallLoadingScreenWidget_eventStartOnlineTravelLoading_Parms, Subtitle), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_Subtitle_MetaData), NewProp_Subtitle_MetaData) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UZonefallLoadingScreenWidget_StartOnlineTravelLoading_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UZonefallLoadingScreenWidget_StartOnlineTravelLoading_Statics::NewProp_Subtitle,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UZonefallLoadingScreenWidget_StartOnlineTravelLoading_Statics::PropPointers) < 2048);
+// ********** End Function StartOnlineTravelLoading Property Definitions ***************************
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UZonefallLoadingScreenWidget_StartOnlineTravelLoading_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UZonefallLoadingScreenWidget, nullptr, "StartOnlineTravelLoading", 	Z_Construct_UFunction_UZonefallLoadingScreenWidget_StartOnlineTravelLoading_Statics::PropPointers, 
+	UE_ARRAY_COUNT(Z_Construct_UFunction_UZonefallLoadingScreenWidget_StartOnlineTravelLoading_Statics::PropPointers), 
+sizeof(Z_Construct_UFunction_UZonefallLoadingScreenWidget_StartOnlineTravelLoading_Statics::ZonefallLoadingScreenWidget_eventStartOnlineTravelLoading_Parms),
+RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04420401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UZonefallLoadingScreenWidget_StartOnlineTravelLoading_Statics::Function_MetaDataParams), Z_Construct_UFunction_UZonefallLoadingScreenWidget_StartOnlineTravelLoading_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UZonefallLoadingScreenWidget_StartOnlineTravelLoading_Statics::ZonefallLoadingScreenWidget_eventStartOnlineTravelLoading_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UZonefallLoadingScreenWidget_StartOnlineTravelLoading()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UZonefallLoadingScreenWidget_StartOnlineTravelLoading_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UZonefallLoadingScreenWidget::execStartOnlineTravelLoading)
+{
+	P_GET_PROPERTY_REF(FTextProperty,Z_Param_Out_Subtitle);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	P_THIS->StartOnlineTravelLoading(Z_Param_Out_Subtitle);
+	P_NATIVE_END;
+}
+// ********** End Class UZonefallLoadingScreenWidget Function StartOnlineTravelLoading *************
 
 // ********** Begin Class UZonefallLoadingScreenWidget Function StopImageRotation ******************
 struct Z_Construct_UFunction_UZonefallLoadingScreenWidget_StopImageRotation_Statics
@@ -608,25 +794,31 @@ struct Z_Construct_UClass_UZonefallLoadingScreenWidget_Statics
 // ********** End Class UZonefallLoadingScreenWidget constinit property declarations ***************
 	static constexpr UE::CodeGen::FClassNativeFunction Funcs[] = {
 		{ .NameUTF8 = UTF8TEXT("CompleteLoading"), .Pointer = &UZonefallLoadingScreenWidget::execCompleteLoading },
+		{ .NameUTF8 = UTF8TEXT("ConfigureOnlineTravelLoading"), .Pointer = &UZonefallLoadingScreenWidget::execConfigureOnlineTravelLoading },
 		{ .NameUTF8 = UTF8TEXT("EnterFinalizingPhase"), .Pointer = &UZonefallLoadingScreenWidget::execEnterFinalizingPhase },
 		{ .NameUTF8 = UTF8TEXT("HandleImageRotateTick"), .Pointer = &UZonefallLoadingScreenWidget::execHandleImageRotateTick },
 		{ .NameUTF8 = UTF8TEXT("HandleLoadingTextTick"), .Pointer = &UZonefallLoadingScreenWidget::execHandleLoadingTextTick },
 		{ .NameUTF8 = UTF8TEXT("HandleProgressTick"), .Pointer = &UZonefallLoadingScreenWidget::execHandleProgressTick },
 		{ .NameUTF8 = UTF8TEXT("HandleStatusTextTick"), .Pointer = &UZonefallLoadingScreenWidget::execHandleStatusTextTick },
+		{ .NameUTF8 = UTF8TEXT("SetOnlineTravelStatus"), .Pointer = &UZonefallLoadingScreenWidget::execSetOnlineTravelStatus },
 		{ .NameUTF8 = UTF8TEXT("StartImageRotation"), .Pointer = &UZonefallLoadingScreenWidget::execStartImageRotation },
 		{ .NameUTF8 = UTF8TEXT("StartLoading"), .Pointer = &UZonefallLoadingScreenWidget::execStartLoading },
+		{ .NameUTF8 = UTF8TEXT("StartOnlineTravelLoading"), .Pointer = &UZonefallLoadingScreenWidget::execStartOnlineTravelLoading },
 		{ .NameUTF8 = UTF8TEXT("StopImageRotation"), .Pointer = &UZonefallLoadingScreenWidget::execStopImageRotation },
 	};
 	static UObject* (*const DependentSingletons[])();
 	static constexpr FClassFunctionLinkInfo FuncInfo[] = {
 		{ &Z_Construct_UFunction_UZonefallLoadingScreenWidget_CompleteLoading, "CompleteLoading" }, // 3504810493
+		{ &Z_Construct_UFunction_UZonefallLoadingScreenWidget_ConfigureOnlineTravelLoading, "ConfigureOnlineTravelLoading" }, // 2874787263
 		{ &Z_Construct_UFunction_UZonefallLoadingScreenWidget_EnterFinalizingPhase, "EnterFinalizingPhase" }, // 3247486932
 		{ &Z_Construct_UFunction_UZonefallLoadingScreenWidget_HandleImageRotateTick, "HandleImageRotateTick" }, // 2078912124
 		{ &Z_Construct_UFunction_UZonefallLoadingScreenWidget_HandleLoadingTextTick, "HandleLoadingTextTick" }, // 1437709618
 		{ &Z_Construct_UFunction_UZonefallLoadingScreenWidget_HandleProgressTick, "HandleProgressTick" }, // 2691102459
 		{ &Z_Construct_UFunction_UZonefallLoadingScreenWidget_HandleStatusTextTick, "HandleStatusTextTick" }, // 108088006
+		{ &Z_Construct_UFunction_UZonefallLoadingScreenWidget_SetOnlineTravelStatus, "SetOnlineTravelStatus" }, // 4081691537
 		{ &Z_Construct_UFunction_UZonefallLoadingScreenWidget_StartImageRotation, "StartImageRotation" }, // 3661667335
 		{ &Z_Construct_UFunction_UZonefallLoadingScreenWidget_StartLoading, "StartLoading" }, // 3888394451
+		{ &Z_Construct_UFunction_UZonefallLoadingScreenWidget_StartOnlineTravelLoading, "StartOnlineTravelLoading" }, // 4185946530
 		{ &Z_Construct_UFunction_UZonefallLoadingScreenWidget_StopImageRotation, "StopImageRotation" }, // 3463983822
 	};
 	static_assert(UE_ARRAY_COUNT(FuncInfo) < 2048);
@@ -769,15 +961,15 @@ UZonefallLoadingScreenWidget::~UZonefallLoadingScreenWidget() {}
 // ********** End Class UZonefallLoadingScreenWidget ***********************************************
 
 // ********** Begin Registration *******************************************************************
-struct Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h__Script_UIWorld_Statics
+struct Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h__Script_UIWorld_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_UZonefallLoadingScreenWidget, UZonefallLoadingScreenWidget::StaticClass, TEXT("UZonefallLoadingScreenWidget"), &Z_Registration_Info_UClass_UZonefallLoadingScreenWidget, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UZonefallLoadingScreenWidget), 1742541392U) },
+		{ Z_Construct_UClass_UZonefallLoadingScreenWidget, UZonefallLoadingScreenWidget::StaticClass, TEXT("UZonefallLoadingScreenWidget"), &Z_Registration_Info_UClass_UZonefallLoadingScreenWidget, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UZonefallLoadingScreenWidget), 2511806037U) },
 	};
-}; // Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h__Script_UIWorld_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h__Script_UIWorld_3167666396{
+}; // Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h__Script_UIWorld_Statics 
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h__Script_UIWorld_2668666485{
 	TEXT("/Script/UIWorld"),
-	Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h__Script_UIWorld_Statics::ClassInfo),
+	Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallLoadingScreenWidget_h__Script_UIWorld_Statics::ClassInfo),
 	nullptr, 0,
 	nullptr, 0,
 };

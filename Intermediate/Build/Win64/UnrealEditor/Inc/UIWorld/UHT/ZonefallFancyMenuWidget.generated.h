@@ -18,49 +18,49 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 struct FUIWorldOnlineSessionResult;
 
 // ********** Begin Delegate FOnZonefallMainButtonClicked ******************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_18_DELEGATE \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_18_DELEGATE \
 UIWORLD_API void FOnZonefallMainButtonClicked_DelegateWrapper(const FMulticastScriptDelegate& OnZonefallMainButtonClicked);
 
 
 // ********** End Delegate FOnZonefallMainButtonClicked ********************************************
 
 // ********** Begin Delegate FOnZonefallContinueButtonClicked **************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_19_DELEGATE \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_19_DELEGATE \
 UIWORLD_API void FOnZonefallContinueButtonClicked_DelegateWrapper(const FMulticastScriptDelegate& OnZonefallContinueButtonClicked);
 
 
 // ********** End Delegate FOnZonefallContinueButtonClicked ****************************************
 
 // ********** Begin Delegate FOnZonefallOnlineHostClicked ******************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_20_DELEGATE \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_20_DELEGATE \
 UIWORLD_API void FOnZonefallOnlineHostClicked_DelegateWrapper(const FMulticastScriptDelegate& OnZonefallOnlineHostClicked);
 
 
 // ********** End Delegate FOnZonefallOnlineHostClicked ********************************************
 
 // ********** Begin Delegate FOnZonefallOnlineFindClicked ******************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_21_DELEGATE \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_21_DELEGATE \
 UIWORLD_API void FOnZonefallOnlineFindClicked_DelegateWrapper(const FMulticastScriptDelegate& OnZonefallOnlineFindClicked);
 
 
 // ********** End Delegate FOnZonefallOnlineFindClicked ********************************************
 
 // ********** Begin Delegate FOnZonefallOnlineJoinClicked ******************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_22_DELEGATE \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_22_DELEGATE \
 UIWORLD_API void FOnZonefallOnlineJoinClicked_DelegateWrapper(const FMulticastScriptDelegate& OnZonefallOnlineJoinClicked, int32 SessionIndex);
 
 
 // ********** End Delegate FOnZonefallOnlineJoinClicked ********************************************
 
 // ********** Begin Delegate FOnZonefallOnlineLeaveClicked *****************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_23_DELEGATE \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_23_DELEGATE \
 UIWORLD_API void FOnZonefallOnlineLeaveClicked_DelegateWrapper(const FMulticastScriptDelegate& OnZonefallOnlineLeaveClicked);
 
 
 // ********** End Delegate FOnZonefallOnlineLeaveClicked *******************************************
 
 // ********** Begin Class UZonefallFancyMenuWidget *************************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_35_RPC_WRAPPERS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_35_RPC_WRAPPERS_NO_PURE_DECLS \
 	DECLARE_FUNCTION(execHandleBackToMainMenuClicked); \
 	DECLARE_FUNCTION(execHandleOpenOnlineClicked); \
 	DECLARE_FUNCTION(execHandleSessionSelectionChanged); \
@@ -95,7 +95,7 @@ UIWORLD_API void FOnZonefallOnlineLeaveClicked_DelegateWrapper(const FMulticastS
 struct Z_Construct_UClass_UZonefallFancyMenuWidget_Statics;
 UIWORLD_API UClass* Z_Construct_UClass_UZonefallFancyMenuWidget_NoRegister();
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_35_INCLASS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_35_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesUZonefallFancyMenuWidget(); \
 	friend struct ::Z_Construct_UClass_UZonefallFancyMenuWidget_Statics; \
@@ -106,7 +106,7 @@ public: \
 	DECLARE_SERIALIZER(UZonefallFancyMenuWidget)
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_35_ENHANCED_CONSTRUCTORS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_35_ENHANCED_CONSTRUCTORS \
 	/** Deleted move- and copy-constructors, should never be used */ \
 	UZonefallFancyMenuWidget(UZonefallFancyMenuWidget&&) = delete; \
 	UZonefallFancyMenuWidget(const UZonefallFancyMenuWidget&) = delete; \
@@ -116,13 +116,13 @@ public: \
 	NO_API virtual ~UZonefallFancyMenuWidget();
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_32_PROLOG
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_35_GENERATED_BODY \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_32_PROLOG
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_35_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_35_RPC_WRAPPERS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_35_INCLASS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_35_ENHANCED_CONSTRUCTORS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_35_RPC_WRAPPERS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_35_INCLASS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h_35_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
@@ -132,7 +132,7 @@ class UZonefallFancyMenuWidget;
 // ********** End Class UZonefallFancyMenuWidget ***************************************************
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h
+#define CURRENT_FILE_ID FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h
 
 // ********** Begin Enum EZonefallMenuMoodPreset ***************************************************
 #define FOREACH_ENUM_EZONEFALLMENUMOODPRESET(op) \

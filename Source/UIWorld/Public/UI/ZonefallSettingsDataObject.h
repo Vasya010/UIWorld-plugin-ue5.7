@@ -9,7 +9,9 @@ enum class EZonefallGraphicsPreset : uint8
 {
 	Competitive UMETA(DisplayName = "Competitive"),
 	Balanced UMETA(DisplayName = "Balanced"),
-	Quality UMETA(DisplayName = "Quality")
+	Quality UMETA(DisplayName = "Quality"),
+	Ultra UMETA(DisplayName = "Ultra"),
+	AutoDetect UMETA(DisplayName = "Auto Detect")
 };
 
 UCLASS(BlueprintType, Blueprintable)
@@ -35,6 +37,25 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|Settings")
 	FString Lumen;
+
+	// "DirectX 12" / "DirectX 11" — applied on next launch (RHI can't switch at runtime).
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|Settings")
+	FString DirectXVersion;
+
+	// "On" / "Off" — hardware ray tracing (RTX). Runtime RT features toggle immediately;
+	// fully enabling/disabling RT applies on next launch.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|Settings")
+	FString RayTracing;
+
+	// "Off" / "Low" / "High" / "Epic" — volumetric clouds quality (applies live via CVars).
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|Settings")
+	FString VolumetricClouds;
+
+	// Per-group quality overrides (group name -> "Low"/"Medium"/"High"/"Epic").
+	// Groups: ViewDistance, Shadows, GlobalIllumination, Reflections, PostProcess,
+	// Textures, Effects, Foliage, Shading, AntiAliasing.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|Settings|Advanced")
+	TMap<FName, FString> AdvancedQuality;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|Settings")
 	FString DLSSMode;
@@ -63,6 +84,27 @@ public:
 	// Selected screen resolution in format "1920x1080".
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|Settings")
 	FString ScreenResolution;
+
+	// Brightness (gamma), 0.5..2.0. 1.0 == default.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|Settings", meta = (ClampMin = "0.5", ClampMax = "2.0"))
+	float Brightness = 1.0f;
+
+	// Field of view in degrees for the player camera. Game must apply it from a delegate.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|Settings", meta = (ClampMin = "60.0", ClampMax = "120.0"))
+	float FieldOfView = 90.0f;
+
+	// Master / SFX / Music / Voice volumes (0..1).
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|Settings|Audio", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+	float MasterVolume = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|Settings|Audio", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+	float SfxVolume = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|Settings|Audio", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+	float MusicVolume = 0.8f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|Settings|Audio", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+	float VoiceVolume = 1.0f;
 
 	UFUNCTION(BlueprintCallable, Category = "Zonefall|Settings")
 	void LoadFromSystem();
@@ -95,6 +137,10 @@ public:
 	// Applies a tuned profile and keeps values valid for current hardware support.
 	UFUNCTION(BlueprintCallable, Category = "Zonefall|Settings")
 	void ApplyGraphicsPreset(EZonefallGraphicsPreset Preset);
+
+	// Inspects the current GPU/CPU/RAM and picks the most appropriate preset.
+	UFUNCTION(BlueprintCallable, Category = "Zonefall|Settings")
+	EZonefallGraphicsPreset DetectRecommendedPreset() const;
 
 	/**
 	 * Loads persisted upscaler settings (FSR/DLSS/FrameGen) from per-user config (GameUserSettings.ini).

@@ -18,21 +18,21 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 enum class EZonefallModernButtonTheme : uint8;
 
 // ********** Begin Delegate FOnZonefallModernButtonClicked ****************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_13_DELEGATE \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_13_DELEGATE \
 UIWORLD_API void FOnZonefallModernButtonClicked_DelegateWrapper(const FMulticastScriptDelegate& OnZonefallModernButtonClicked);
 
 
 // ********** End Delegate FOnZonefallModernButtonClicked ******************************************
 
 // ********** Begin Delegate FOnZonefallStartGameRequested *****************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_14_DELEGATE \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_14_DELEGATE \
 UIWORLD_API void FOnZonefallStartGameRequested_DelegateWrapper(const FMulticastScriptDelegate& OnZonefallStartGameRequested);
 
 
 // ********** End Delegate FOnZonefallStartGameRequested *******************************************
 
 // ********** Begin Class UZonefallModernButtonWidget **********************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_26_RPC_WRAPPERS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_26_RPC_WRAPPERS_NO_PURE_DECLS \
 	DECLARE_FUNCTION(execHandleReleased); \
 	DECLARE_FUNCTION(execHandlePressed); \
 	DECLARE_FUNCTION(execHandleUnhovered); \
@@ -45,11 +45,11 @@ UIWORLD_API void FOnZonefallStartGameRequested_DelegateWrapper(const FMulticastS
 	DECLARE_FUNCTION(execSetLabel);
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_26_CALLBACK_WRAPPERS
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_26_CALLBACK_WRAPPERS
 struct Z_Construct_UClass_UZonefallModernButtonWidget_Statics;
 UIWORLD_API UClass* Z_Construct_UClass_UZonefallModernButtonWidget_NoRegister();
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_26_INCLASS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_26_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesUZonefallModernButtonWidget(); \
 	friend struct ::Z_Construct_UClass_UZonefallModernButtonWidget_Statics; \
@@ -60,7 +60,7 @@ public: \
 	DECLARE_SERIALIZER(UZonefallModernButtonWidget)
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_26_ENHANCED_CONSTRUCTORS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_26_ENHANCED_CONSTRUCTORS \
 	/** Deleted move- and copy-constructors, should never be used */ \
 	UZonefallModernButtonWidget(UZonefallModernButtonWidget&&) = delete; \
 	UZonefallModernButtonWidget(const UZonefallModernButtonWidget&) = delete; \
@@ -70,14 +70,14 @@ public: \
 	NO_API virtual ~UZonefallModernButtonWidget();
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_23_PROLOG
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_26_GENERATED_BODY \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_23_PROLOG
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_26_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_26_RPC_WRAPPERS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_26_CALLBACK_WRAPPERS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_26_INCLASS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_26_ENHANCED_CONSTRUCTORS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_26_RPC_WRAPPERS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_26_CALLBACK_WRAPPERS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_26_INCLASS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h_26_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
@@ -87,7 +87,7 @@ class UZonefallModernButtonWidget;
 // ********** End Class UZonefallModernButtonWidget ************************************************
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h
+#define CURRENT_FILE_ID FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallModernButtonWidget_h
 
 // ********** Begin Enum EZonefallModernButtonTheme ************************************************
 #define FOREACH_ENUM_EZONEFALLMODERNBUTTONTHEME(op) \

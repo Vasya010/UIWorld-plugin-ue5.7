@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Button.h"
 #include "ZonefallPauseMenuWidget.generated.h"
 
 class UBorder;
@@ -11,10 +12,38 @@ class UTextBlock;
 class UVerticalBox;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPauseResumeRequested);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPauseSaveRequested);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPauseSettingsRequested);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPauseMainMenuRequested);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPauseQuitRequested);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPauseItemClicked, int32, ItemId);
+
+/** Menu button that remembers its row id and re-broadcasts clicks with it. */
+UCLASS()
+class UIWORLD_API UZonefallPauseItemButton : public UButton
+{
+	GENERATED_BODY()
+
+public:
+	UZonefallPauseItemButton();
+
+	UPROPERTY(Transient)
+	int32 ItemId = INDEX_NONE;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnPauseItemClicked OnItemClicked;
+
+private:
+	UFUNCTION()
+	void HandleInternalClicked();
+};
+
+/**
+ * Fully self-assembling pause menu (no Blueprint required): dim backdrop, animated panel,
+ * Resume / Save / Settings / Main Menu / Quit. All actions route through the game instance
+ * with safe fallbacks, so it works out of the box. Esc resumes.
+ */
 UCLASS(BlueprintType, Blueprintable)
 class UIWORLD_API UZonefallPauseMenuWidget : public UUserWidget
 {
@@ -23,169 +52,39 @@ class UIWORLD_API UZonefallPauseMenuWidget : public UUserWidget
 public:
 	UZonefallPauseMenuWidget(const FObjectInitializer& ObjectInitializer);
 
+	virtual TSharedRef<SWidget> RebuildWidget() override;
 	virtual void NativeConstruct() override;
-	virtual void NativeDestruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 
-	UPROPERTY(BlueprintAssignable, Category = "Zonefall|UI|Pause")
-	FOnPauseResumeRequested OnResumeRequested;
+	UPROPERTY(BlueprintAssignable, Category = "Zonefall|Pause") FOnPauseResumeRequested OnResumeRequested;
+	UPROPERTY(BlueprintAssignable, Category = "Zonefall|Pause") FOnPauseSaveRequested OnSaveRequested;
+	UPROPERTY(BlueprintAssignable, Category = "Zonefall|Pause") FOnPauseSettingsRequested OnSettingsRequested;
+	UPROPERTY(BlueprintAssignable, Category = "Zonefall|Pause") FOnPauseMainMenuRequested OnMainMenuRequested;
+	UPROPERTY(BlueprintAssignable, Category = "Zonefall|Pause") FOnPauseQuitRequested OnQuitRequested;
 
-	UPROPERTY(BlueprintAssignable, Category = "Zonefall|UI|Pause")
-	FOnPauseSettingsRequested OnSettingsRequested;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|Pause|Text") FText TitleText = FText::FromString(TEXT("PAUSED"));
 
-	UPROPERTY(BlueprintAssignable, Category = "Zonefall|UI|Pause")
-	FOnPauseMainMenuRequested OnMainMenuRequested;
-
-	UPROPERTY(BlueprintAssignable, Category = "Zonefall|UI|Pause")
-	FOnPauseQuitRequested OnQuitRequested;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Text")
-	FText TitleText;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Text")
-	FText ResumeText;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Text")
-	FText SettingsText;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Text")
-	FText MainMenuText;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Text")
-	FText QuitText;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Text")
-	FText SessionInfoPrefixText;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Designer")
-	FName ResumeButtonName;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Designer")
-	FName SettingsButtonName;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Designer")
-	FName MainMenuButtonName;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Designer")
-	FName QuitButtonName;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Style")
-	FLinearColor TextNormalColor;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Style")
-	FLinearColor TextHoverColor;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Style")
-	FLinearColor PanelTint;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Style")
-	FLinearColor AccentColor;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Style")
-	FLinearColor BackdropTint;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Style", meta = (ClampMin = "320.0", ClampMax = "1200.0"))
-	float PanelWidth;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Style")
-	bool bEnableBackdropFilmGrain;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|Style", meta = (ClampMin = "0.0", ClampMax = "1.0"))
-	float FilmGrainOpacity;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|FX")
-	bool bEnableSubtlePulse;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|FX")
-	bool bEnableIntroAnimation;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|FX", meta = (ClampMin = "0.1", ClampMax = "3.0"))
-	float IntroDuration;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|UI|Pause|FX", meta = (ClampMin = "0.0", ClampMax = "120.0"))
-	float IntroSlideDistance;
-
-protected:
-	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Pause")
-	TObjectPtr<UBorder> RootBorder;
-
-	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Pause")
-	TObjectPtr<UBorder> BackdropBorder;
-
-	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Pause")
-	TObjectPtr<UBorder> MainPanelBorder;
-
-	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Pause")
-	TObjectPtr<UBorder> AccentLineBorder;
-
-	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Pause")
-	TObjectPtr<UImage> AccentGlowImage;
-
-	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Pause")
-	TObjectPtr<UVerticalBox> RootMenuBox;
-
-	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Pause")
-	TObjectPtr<UTextBlock> TitleLabel;
-
-	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Pause")
-	TObjectPtr<UTextBlock> SessionInfoLabel;
-
-	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Pause")
-	TObjectPtr<UTextBlock> SessionDateLabel;
-
-	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Pause")
-	TObjectPtr<UButton> ResumeButton;
-
-	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Pause")
-	TObjectPtr<UButton> SettingsButton;
-
-	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Pause")
-	TObjectPtr<UButton> MainMenuButton;
-
-	UPROPERTY(Transient, BlueprintReadOnly, Category = "Zonefall|UI|Pause")
-	TObjectPtr<UButton> QuitButton;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|Pause|Style") FLinearColor BackdropTint = FLinearColor(0.0f, 0.0f, 0.0f, 0.7f);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|Pause|Style") FLinearColor PanelTint = FLinearColor(0.05f, 0.08f, 0.12f, 0.97f);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|Pause|Style") FLinearColor AccentColor = FLinearColor(0.27f, 0.85f, 0.96f, 1.0f);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|Pause|Style") int32 TitleFontSize = 36;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zonefall|Pause|Style") int32 BodyFontSize = 18;
 
 private:
-	void BuildLayoutIfNeeded();
-	void ResolveDesignerWidgetsIfNeeded();
-	void ApplyVisualStyle();
-	void BindButtonEvents();
-	void SetButtonText(UButton* Button, const FText& Text);
-	void UpdateButtonTextColor(UButton* Button, const FLinearColor& Color);
-	void UpdateButtonScale(UButton* Button, float Scale);
-	void AnimateButtonTransforms(float InDeltaTime);
-	void UpdateSessionInfoText();
-	UButton* GetPrimaryButtonToFocus() const;
+	void BuildLayout();
+	UZonefallPauseItemButton* AddMenuButton(UVerticalBox* Parent, int32 ItemId, const FText& Label);
+	void SetStatus(const FText& Text);
+	class UUIWorldMenuGameInstance* ResolveGameInstance() const;
 
-	UFUNCTION()
-	void HandleResumeClicked();
-	UFUNCTION()
-	void HandleSettingsClicked();
-	UFUNCTION()
-	void HandleMainMenuClicked();
-	UFUNCTION()
-	void HandleQuitClicked();
+	UFUNCTION() void HandleItemClicked(int32 ItemId);
 
-	UFUNCTION()
-	void HandleResumeHovered();
-	UFUNCTION()
-	void HandleSettingsHovered();
-	UFUNCTION()
-	void HandleMainMenuHovered();
-	UFUNCTION()
-	void HandleQuitHovered();
+	UPROPERTY(Transient) TObjectPtr<UBorder> Backdrop;
+	UPROPERTY(Transient) TObjectPtr<UBorder> Panel;
+	UPROPERTY(Transient) TObjectPtr<UImage> AccentLine;
+	UPROPERTY(Transient) TObjectPtr<UTextBlock> TitleLabel;
+	UPROPERTY(Transient) TObjectPtr<UTextBlock> StatusLabel;
+	UPROPERTY(Transient) TArray<TObjectPtr<UZonefallPauseItemButton>> MenuButtons;
 
-	UFUNCTION()
-	void HandleAnyUnhovered();
-
-	UFUNCTION()
-	void ResetActionInProgress();
-
-	float PulseTime;
-	float IntroProgress;
-	bool bActionInProgress;
-	FDateTime SessionStartTimeUtc;
-	TWeakObjectPtr<UButton> HoveredButton;
+	float IntroTime = 0.0f;
 };
-

@@ -1233,8 +1233,8 @@ struct Z_Construct_UFunction_UZonefallFancyMenuWidget_HandleSessionsFound_Static
 };
 
 // ********** Begin Function HandleSessionsFound Property Definitions ******************************
-const UECodeGen_Private::FStructPropertyParams Z_Construct_UFunction_UZonefallFancyMenuWidget_HandleSessionsFound_Statics::NewProp_Results_Inner = { "Results", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult, METADATA_PARAMS(0, nullptr) }; // 3771526265
-const UECodeGen_Private::FArrayPropertyParams Z_Construct_UFunction_UZonefallFancyMenuWidget_HandleSessionsFound_Statics::NewProp_Results = { "Results", nullptr, (EPropertyFlags)0x0010000008000182, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ZonefallFancyMenuWidget_eventHandleSessionsFound_Parms, Results), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_Results_MetaData), NewProp_Results_MetaData) }; // 3771526265
+const UECodeGen_Private::FStructPropertyParams Z_Construct_UFunction_UZonefallFancyMenuWidget_HandleSessionsFound_Statics::NewProp_Results_Inner = { "Results", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UScriptStruct_FUIWorldOnlineSessionResult, METADATA_PARAMS(0, nullptr) }; // 11846451
+const UECodeGen_Private::FArrayPropertyParams Z_Construct_UFunction_UZonefallFancyMenuWidget_HandleSessionsFound_Statics::NewProp_Results = { "Results", nullptr, (EPropertyFlags)0x0010000008000182, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ZonefallFancyMenuWidget_eventHandleSessionsFound_Parms, Results), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_Results_MetaData), NewProp_Results_MetaData) }; // 11846451
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UZonefallFancyMenuWidget_HandleSessionsFound_Statics::PropPointers[] = {
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UZonefallFancyMenuWidget_HandleSessionsFound_Statics::NewProp_Results_Inner,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UZonefallFancyMenuWidget_HandleSessionsFound_Statics::NewProp_Results,
@@ -2142,7 +2142,7 @@ struct Z_Construct_UClass_UZonefallFancyMenuWidget_Statics
 		{ &Z_Construct_UFunction_UZonefallFancyMenuWidget_HandleMainButtonUnhovered, "HandleMainButtonUnhovered" }, // 1870308729
 		{ &Z_Construct_UFunction_UZonefallFancyMenuWidget_HandleOpenOnlineClicked, "HandleOpenOnlineClicked" }, // 3340732272
 		{ &Z_Construct_UFunction_UZonefallFancyMenuWidget_HandleSessionSelectionChanged, "HandleSessionSelectionChanged" }, // 1425753008
-		{ &Z_Construct_UFunction_UZonefallFancyMenuWidget_HandleSessionsFound, "HandleSessionsFound" }, // 3420389876
+		{ &Z_Construct_UFunction_UZonefallFancyMenuWidget_HandleSessionsFound, "HandleSessionsFound" }, // 613891055
 		{ &Z_Construct_UFunction_UZonefallFancyMenuWidget_OpenOnlinePanel, "OpenOnlinePanel" }, // 665735554
 		{ &Z_Construct_UFunction_UZonefallFancyMenuWidget_RefreshOnlineSessionsUI, "RefreshOnlineSessionsUI" }, // 1216485549
 		{ &Z_Construct_UFunction_UZonefallFancyMenuWidget_SetButtonLabel, "SetButtonLabel" }, // 4196827728
@@ -2382,20 +2382,20 @@ UZonefallFancyMenuWidget::~UZonefallFancyMenuWidget() {}
 // ********** End Class UZonefallFancyMenuWidget ***************************************************
 
 // ********** Begin Registration *******************************************************************
-struct Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h__Script_UIWorld_Statics
+struct Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h__Script_UIWorld_Statics
 {
 	static constexpr FEnumRegisterCompiledInInfo EnumInfo[] = {
 		{ EZonefallMenuMoodPreset_StaticEnum, TEXT("EZonefallMenuMoodPreset"), &Z_Registration_Info_UEnum_EZonefallMenuMoodPreset, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 3729275293U) },
 	};
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_UZonefallFancyMenuWidget, UZonefallFancyMenuWidget::StaticClass, TEXT("UZonefallFancyMenuWidget"), &Z_Registration_Info_UClass_UZonefallFancyMenuWidget, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UZonefallFancyMenuWidget), 657124116U) },
+		{ Z_Construct_UClass_UZonefallFancyMenuWidget, UZonefallFancyMenuWidget::StaticClass, TEXT("UZonefallFancyMenuWidget"), &Z_Registration_Info_UClass_UZonefallFancyMenuWidget, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UZonefallFancyMenuWidget), 174431022U) },
 	};
-}; // Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h__Script_UIWorld_Statics 
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h__Script_UIWorld_2691692751{
+}; // Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h__Script_UIWorld_Statics 
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h__Script_UIWorld_1302462636{
 	TEXT("/Script/UIWorld"),
-	Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h__Script_UIWorld_Statics::ClassInfo),
+	Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h__Script_UIWorld_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h__Script_UIWorld_Statics::ClassInfo),
 	nullptr, 0,
-	Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h__Script_UIWorld_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h__Script_UIWorld_Statics::EnumInfo),
+	Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h__Script_UIWorld_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallFancyMenuWidget_h__Script_UIWorld_Statics::EnumInfo),
 };
 // ********** End Registration *********************************************************************
 

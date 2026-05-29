@@ -2,32 +2,52 @@
 
 #include "Blueprint/UserWidget.h"
 #include "Engine/Engine.h"
+#include "GameFramework/GameModeBase.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/PlayerState.h"
+#include "Interfaces/OnlineIdentityInterface.h"
 #include "Interfaces/OnlineSessionInterface.h"
+#include "Interfaces/OnlineIdentityInterface.h"
+#include "Interfaces/OnlineAchievementsInterface.h"
+#include "OnlineStats.h"
+#include "OnlineSubsystemTypes.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Misc/EngineVersion.h"
 #include "MoviePlayer.h"
+#include "Save/UIWorldSaveManager.h"
+#include "Localization/ZonefallLocalizationSubsystem.h"
+#include "UI/ZonefallSaveToastWidget.h"
+#include "Online/OnlineSessionNames.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
 #include "SocketSubsystem.h"
 #include "UI/ZonefallLoadingScreenWidget.h"
+#include "UI/ZonefallMasterSettingsWidget.h"
+#include "UI/ZonefallOnlineLobbyWidget.h"
 #include "UI/ZonefallPauseMenuWidget.h"
 #include "UI/ZonefallSettingsDataObject.h"
 #include "UI/ZonefallShaderLoadingWidget.h"
 #include "HAL/FileManager.h"
 #include "HAL/PlatformFileManager.h"
 #include "Misc/FileHelper.h"
+#include "Misc/ConfigCacheIni.h"
+#include "HAL/PlatformProcess.h"
 #include "Misc/PackageName.h"
 #include "Misc/Paths.h"
 #include "Misc/App.h"
 #include "UObject/Package.h"
 #include "ShaderCompiler.h"
+#include "Engine/NetDriver.h"
+#include "Engine/GameEngine.h"
+#include "Engine/World.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogUIWorldStartupFlow, Log, All);
 
 UUIWorldMenuGameInstance::UUIWorldMenuGameInstance()
-	: bAutoShowMenuOnStart(true)
+	: bShowStartupIntro(true)
+	, StartupIntroDuration(3.0f)
+	, bAutoShowMenuOnStart(true)
 	, bShowShaderLoadingOnStartup(true)
 	, StartupShaderLoadingDuration(3.5f)
 	, bUseAdaptiveStartupShaderDelay(true)
@@ -35,7 +55,11 @@ UUIWorldMenuGameInstance::UUIWorldMenuGameInstance()
 	, bCacheWidgetsByScreen(true)
 	, MenuZOrder(100)
 	, MainMenuLevelName(TEXT("Menu"))
-	, OnlineHostMapName(TEXT("Menu"))
+	// Host into the actual gameplay level — NOT the menu. If the host stays on the
+	// "Menu" map, a joining client also lands on a map literally named "Menu", and the
+	// abort/safety logic mistakes the successful join for "never left the menu" and
+	// kicks the client back. Hosting a real level is what makes online actually play.
+	, OnlineHostMapName(TEXT("Levelgames"))
 	, OnlineServerName(TEXT("UIWorld Server"))
 	, LoadingScreenDelayBeforeOpenLevel(0.12f)
 	, bUseAdaptiveLoadingDelay(true)
@@ -62,27 +86,201 @@ UUIWorldMenuGameInstance::UUIWorldMenuGameInstance()
 
 namespace
 {
-	static IOnlineSessionPtr UIWorldGetSessionInterface()
+	static TSharedPtr<const FUniqueNetId> UIWorldGetOrCreateLanUserId(UWorld* World, bool bLAN);
+
+	/** LAN = local network only (NULL). Steam = internet (never mix the two). */
+	static IOnlineSubsystem* UIWorldGetOnlineSubsystem(bool bPreferLAN)
 	{
-		if (IOnlineSubsystem* OSS = IOnlineSubsystem::Get())
+		if (bPreferLAN)
+		{
+			return IOnlineSubsystem::Get(FName(TEXT("NULL")));
+		}
+		return IOnlineSubsystem::Get(FName(TEXT("STEAM")));
+	}
+
+	static IOnlineSessionPtr UIWorldGetSessionInterface(bool bPreferLAN = false)
+	{
+		if (IOnlineSubsystem* OSS = UIWorldGetOnlineSubsystem(bPreferLAN))
 		{
 			return OSS->GetSessionInterface();
 		}
 		return nullptr;
 	}
 
-	static TSharedPtr<const FUniqueNetId> UIWorldGetLocalUserId(UWorld* World)
+	/** Both host and client must use LanGameNetDriver (Ip) — not SteamSockets + Ip mixed. */
+	static FString UIWorldAppendLanNetDriverOption(FString Url)
+	{
+		if (Url.Contains(TEXT("NetDriver="), ESearchCase::IgnoreCase))
+		{
+			return Url;
+		}
+
+		// ClientTravel "host:port?Opt" mis-parses the port; engine then uses GameNetDriver (SteamSockets) and crashes/fails in PIE.
+		if (!Url.Contains(TEXT("/")) && Url.Contains(TEXT(":")))
+		{
+			const int32 QueryIdx = Url.Find(TEXT("?"));
+			if (QueryIdx != INDEX_NONE)
+			{
+				Url = Url.Left(QueryIdx) + TEXT("/") + Url.Mid(QueryIdx);
+			}
+			else
+			{
+				Url += TEXT("/");
+			}
+		}
+
+		Url += Url.Contains(TEXT("?")) ? TEXT("&NetDriver=LanGameNetDriver") : TEXT("?NetDriver=LanGameNetDriver");
+		return Url;
+	}
+
+	static void UIWorldShutdownWorldNetDriver(UWorld* World)
+	{
+		if (!World || !GEngine)
+		{
+			return;
+		}
+		if (UNetDriver* Driver = World->GetNetDriver())
+		{
+			GEngine->DestroyNamedNetDriver(World, Driver->NetDriverName);
+		}
+	}
+
+	/** Tear down Steam listen driver in menu before LAN host/join uses Ip only. */
+	static void UIWorldActivateLanNetworking(UWorld* World)
+	{
+		UIWorldShutdownWorldNetDriver(World);
+	}
+
+	static void UIWorldActivateSteamNetworking(UWorld* World)
+	{
+		UIWorldShutdownWorldNetDriver(World);
+	}
+
+	/** PIE often loads ?listen maps as Standalone — force a listen socket so LAN/NULL beacons work. */
+	static bool UIWorldTryStartListenServer(UWorld* World, bool bLAN, int32 LanPort)
+	{
+		if (!World || !GEngine)
+		{
+			return false;
+		}
+
+		const ENetMode NetMode = World->GetNetMode();
+		if (NetMode == NM_ListenServer || NetMode == NM_DedicatedServer)
+		{
+			return true;
+		}
+		if (NetMode != NM_Standalone)
+		{
+			return false;
+		}
+
+		if (World->GetNetDriver())
+		{
+			return true;
+		}
+
+		if (bLAN)
+		{
+			UIWorldActivateLanNetworking(World);
+		}
+		else
+		{
+			UIWorldActivateSteamNetworking(World);
+		}
+
+		FURL ListenURL;
+		ListenURL.Port = FMath::Clamp(LanPort, 1, 65535);
+		ListenURL.AddOption(TEXT("Listen"));
+		ListenURL.AddOption(bLAN ? TEXT("NetDriver=LanGameNetDriver") : TEXT("NetDriver=GameNetDriver"));
+
+		const bool bListenOk = World->Listen(ListenURL);
+		UE_LOG(
+			LogUIWorldStartupFlow,
+			Log,
+			TEXT("[Online] World->Listen port=%d LAN=%d -> %s (NetMode=%d, driver=%s)"),
+			ListenURL.Port,
+			bLAN ? 1 : 0,
+			bListenOk ? TEXT("OK") : TEXT("FAIL"),
+			(int32)World->GetNetMode(),
+			World->GetNetDriver() ? *World->GetNetDriver()->GetClass()->GetName() : TEXT("none"));
+		return bListenOk && World->GetNetDriver() != nullptr;
+	}
+
+	static TSharedPtr<const FUniqueNetId> UIWorldGetLocalUserId(UWorld* World, bool bPreferLAN = false)
 	{
 		if (!World)
 		{
 			return nullptr;
 		}
-		APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
-		if (!PC || !PC->PlayerState)
+
+		if (bPreferLAN)
 		{
-			return nullptr;
+			return UIWorldGetOrCreateLanUserId(World, true);
 		}
-		return PC->PlayerState->GetUniqueId().GetUniqueNetId();
+
+		if (IOnlineSubsystem* OSS = IOnlineSubsystem::Get(FName(TEXT("STEAM"))))
+		{
+			if (IOnlineIdentityPtr Identity = OSS->GetIdentityInterface())
+			{
+				if (TSharedPtr<const FUniqueNetId> NetId = Identity->GetUniquePlayerId(0); NetId.IsValid())
+				{
+					return NetId;
+				}
+			}
+		}
+
+		if (const ULocalPlayer* LocalPlayer = World->GetFirstLocalPlayerFromController())
+		{
+			const FUniqueNetIdRepl& PreferredId = LocalPlayer->GetPreferredUniqueNetId();
+			if (PreferredId.IsValid())
+			{
+				return PreferredId.GetUniqueNetId();
+			}
+		}
+
+		// Fallback: PlayerState id (often empty in the main menu before OSS login).
+		if (APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0))
+		{
+			if (PC->PlayerState)
+			{
+				const FUniqueNetIdRepl& Repl = PC->PlayerState->GetUniqueId();
+				if (Repl.IsValid())
+				{
+					return Repl.GetUniqueNetId();
+				}
+			}
+		}
+
+		return nullptr;
+	}
+
+	static FString UIWorldDescribeActiveOnlineSubsystem(bool bPreferLAN = false)
+	{
+		if (const IOnlineSubsystem* OSS = UIWorldGetOnlineSubsystem(bPreferLAN))
+		{
+			return OSS->GetSubsystemName().ToString();
+		}
+		return TEXT("None");
+	}
+
+	static FString UIWorldDescribeJoinResult(EOnJoinSessionCompleteResult::Type JoinResult)
+	{
+		switch (JoinResult)
+		{
+		case EOnJoinSessionCompleteResult::Success:
+			return FString();
+		case EOnJoinSessionCompleteResult::SessionIsFull:
+			return TEXT("session is full");
+		case EOnJoinSessionCompleteResult::SessionDoesNotExist:
+			return TEXT("session no longer exists");
+		case EOnJoinSessionCompleteResult::CouldNotRetrieveAddress:
+			return TEXT("host address not ready — wait until the host is in the map");
+		case EOnJoinSessionCompleteResult::AlreadyInSession:
+			return TEXT("already in a session — press Leave, then Join again");
+		case EOnJoinSessionCompleteResult::UnknownError:
+		default:
+			return TEXT("join rejected (stale session? press Leave, then Join)");
+		}
 	}
 
 	static FString UIWorldResolveLocalLanIp()
@@ -98,15 +296,241 @@ namespace
 		return LocalAddr->IsValid() ? LocalAddr->ToString(false) : TEXT("Unknown");
 	}
 
-	static FUIWorldOnlineSessionResult UIWorldConvertSearchResult(const FOnlineSessionSearchResult& Result)
+	static FString UIWorldStripPieMapPrefix(FString MapName)
+	{
+		TArray<FString> Parts;
+		MapName.ParseIntoArray(Parts, TEXT("_"), true);
+		if (Parts.Num() >= 3 && Parts[0].Equals(TEXT("UEDPIE"), ESearchCase::IgnoreCase))
+		{
+			Parts.RemoveAt(0, 2);
+			MapName = FString::Join(Parts, TEXT("_"));
+		}
+		return MapName;
+	}
+
+	static bool UIWorldBuildLanConnectString(
+		const UUIWorldMenuGameInstance* GI,
+		const FOnlineSessionSearchResult* SearchResult,
+		FString& OutConnectString)
+	{
+		if (!GI)
+		{
+			return false;
+		}
+
+		int32 Port = FMath::Clamp(GI->OnlineLanPort, 1, 65535);
+		FString HostIp = TEXT("127.0.0.1");
+
+		if (SearchResult)
+		{
+			int32 SessionPort = 0;
+			if (SearchResult->Session.SessionSettings.Get(FName(TEXT("LAN_PORT")), SessionPort) && SessionPort > 0)
+			{
+				Port = SessionPort;
+			}
+
+			FString SessionHost;
+			if (SearchResult->Session.SessionSettings.Get(FName(TEXT("LAN_HOST")), SessionHost) && !SessionHost.IsEmpty())
+			{
+				HostIp = SessionHost;
+			}
+		}
+
+		// Same-machine / PIE: always loopback — Wi-Fi IP often fails between two editor instances.
+		if (GIsEditor || FPlatformProperties::RequiresCookedData() == false)
+		{
+			HostIp = TEXT("127.0.0.1");
+		}
+		else if (HostIp.Equals(TEXT("Unknown")))
+		{
+			const FString LanIp = UIWorldResolveLocalLanIp();
+			HostIp = LanIp.Equals(TEXT("Unknown")) ? TEXT("127.0.0.1") : LanIp;
+		}
+
+		// ClientTravel expects "host:port" — the listen server assigns the map after connect.
+		OutConnectString = FString::Printf(TEXT("%s:%d"), *HostIp, Port);
+		return true;
+	}
+
+	static TSharedPtr<const FUniqueNetId> UIWorldGetOrCreateLanUserId(UWorld* World, bool bLAN)
+	{
+		if (!World || !bLAN)
+		{
+			return nullptr;
+		}
+
+		if (IOnlineSubsystem* OSS = UIWorldGetOnlineSubsystem(true))
+		{
+			if (IOnlineIdentityPtr Identity = OSS->GetIdentityInterface())
+			{
+				if (TSharedPtr<const FUniqueNetId> Id = Identity->GetUniquePlayerId(0); Id.IsValid())
+				{
+					return Id;
+				}
+				return Identity->CreateUniquePlayerId(TEXT("UIWorldLAN"));
+			}
+		}
+
+		return nullptr;
+	}
+
+	static bool UIWorldIsLanJoinForIndex(
+		const TSharedPtr<FOnlineSessionSearch>& Search,
+		int32 ResultIndex,
+		bool bLastQueryWasLAN)
+	{
+		if (bLastQueryWasLAN)
+		{
+			return true;
+		}
+		if (!Search.IsValid())
+		{
+			return false;
+		}
+		if (Search->bIsLanQuery)
+		{
+			return true;
+		}
+		if (Search->SearchResults.IsValidIndex(ResultIndex))
+		{
+			return Search->SearchResults[ResultIndex].Session.SessionSettings.bIsLANMatch;
+		}
+		return false;
+	}
+
+	static void UIWorldNormalizeConnectStringForPIE(FString& ConnectString)
+	{
+		if (!GIsEditor || ConnectString.IsEmpty())
+		{
+			return;
+		}
+
+		// steam:// and 127.0.0.1 are fine; LAN beacon often advertises Wi-Fi IP (192.168.x.x) which
+		// fails between two PIE windows on the same PC (see Zonefallprotocol_2.log ConnectionTimeout).
+		if (ConnectString.StartsWith(TEXT("steam.")))
+		{
+			return;
+		}
+
+		FString HostPart;
+		FString PathPart;
+		ConnectString.Split(TEXT("/"), &HostPart, &PathPart);
+		if (HostPart.IsEmpty())
+		{
+			HostPart = ConnectString;
+		}
+
+		FString Address;
+		FString PortStr;
+		if (!HostPart.Split(TEXT(":"), &Address, &PortStr))
+		{
+			return;
+		}
+
+		if (Address.StartsWith(TEXT("127.")) || Address.Equals(TEXT("localhost"), ESearchCase::IgnoreCase))
+		{
+			return;
+		}
+
+		const int32 Port = PortStr.IsEmpty() ? 7777 : FCString::Atoi(*PortStr);
+		ConnectString = FString::Printf(TEXT("127.0.0.1:%d"), FMath::Clamp(Port, 1, 65535));
+		UE_LOG(
+			LogUIWorldStartupFlow,
+			Log,
+			TEXT("[Online] PIE: rewrote LAN connect %s:%s -> %s"),
+			*Address,
+			*PortStr,
+			*ConnectString);
+	}
+
+	static bool UIWorldResolveSessionConnectString(
+		const UUIWorldMenuGameInstance* GI,
+		const IOnlineSessionPtr& Sessions,
+		FName SessionName,
+		const FOnlineSessionSearchResult* SearchResult,
+		bool bPreferLAN,
+		FString& OutConnectString)
+	{
+		const bool bLanSession = bPreferLAN || (SearchResult && SearchResult->Session.SessionSettings.bIsLANMatch);
+
+		// LAN / same-PC: never trust OSS beacon IP (192.168.x.x) before our loopback builder.
+		if (bLanSession)
+		{
+			if (UIWorldBuildLanConnectString(GI, SearchResult, OutConnectString))
+			{
+				UIWorldNormalizeConnectStringForPIE(OutConnectString);
+				return true;
+			}
+		}
+
+		if (Sessions.IsValid())
+		{
+			if (Sessions->GetResolvedConnectString(SessionName, OutConnectString) && !OutConnectString.IsEmpty())
+			{
+				UIWorldNormalizeConnectStringForPIE(OutConnectString);
+				return true;
+			}
+
+			if (SearchResult && Sessions->GetResolvedConnectString(*SearchResult, NAME_GamePort, OutConnectString) && !OutConnectString.IsEmpty())
+			{
+				UIWorldNormalizeConnectStringForPIE(OutConnectString);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	static FString UIWorldGetProjectBuildId(const UUIWorldMenuGameInstance* GI)
+	{
+		if (GI && !GI->OnlineGameBuildId.IsEmpty())
+		{
+			return GI->OnlineGameBuildId;
+		}
+		return TEXT("1");
+	}
+
+	static FString UIWorldShortMapLabel(const FString& MapPath)
+	{
+		if (MapPath.IsEmpty())
+		{
+			return TEXT("Unknown map");
+		}
+		FString Label = MapPath;
+		Label.ReplaceInline(TEXT("/Game/"), TEXT(""));
+		Label.ReplaceInline(TEXT("Levels/"), TEXT(""));
+		Label.ReplaceInline(TEXT("levels/"), TEXT(""));
+		const int32 Slash = Label.Find(TEXT("/"), ESearchCase::IgnoreCase, ESearchDir::FromEnd);
+		if (Slash != INDEX_NONE)
+		{
+			Label = Label.Mid(Slash + 1);
+		}
+		return Label;
+	}
+
+	static FUIWorldOnlineSessionResult UIWorldConvertSearchResult(
+		const UUIWorldMenuGameInstance* GI,
+		const FOnlineSessionSearchResult& Result,
+		int32 SearchIndex)
 	{
 		FUIWorldOnlineSessionResult Out;
+		Out.SearchResultIndex = SearchIndex;
 		Out.SessionId = Result.GetSessionIdStr();
 		Out.OwningUserName = Result.Session.OwningUserName;
 		Out.PingMs = Result.PingInMs;
-		Out.MaxPlayers = Result.Session.SessionSettings.NumPublicConnections;
-		Out.CurrentPlayers = FMath::Max(0, Out.MaxPlayers - Result.Session.NumOpenPublicConnections);
 		Out.bIsLAN = Result.Session.SessionSettings.bIsLANMatch;
+
+		// NumOpenPublicConnections = free slots; NumPublicConnections = max seats (Steam may send 0).
+		const int32 OpenPublic = Result.Session.NumOpenPublicConnections;
+		Out.MaxPlayers = FMath::Max(1, Result.Session.SessionSettings.NumPublicConnections);
+		if (Out.MaxPlayers <= 1 && OpenPublic > 0)
+		{
+			Out.MaxPlayers = OpenPublic + 1;
+		}
+		Out.CurrentPlayers = (OpenPublic >= 0)
+			? FMath::Clamp(Out.MaxPlayers - OpenPublic, 0, Out.MaxPlayers)
+			: 1;
+		Out.bIsFull = OpenPublic <= 0;
 
 		FString ServerName;
 		if (Result.Session.SessionSettings.Get(FName(TEXT("SERVER_NAME")), ServerName))
@@ -117,7 +541,73 @@ namespace
 		{
 			Out.ServerName = Out.OwningUserName.IsEmpty() ? TEXT("Session") : Out.OwningUserName;
 		}
+
+		FString MapName;
+		if (Result.Session.SessionSettings.Get(FName(TEXT("MAP_NAME")), MapName))
+		{
+			Out.MapDisplayName = UIWorldShortMapLabel(MapName);
+		}
+
+		FString SessionPassword;
+		if (Result.Session.SessionSettings.Get(FName(TEXT("SESSION_PASSWORD")), SessionPassword)
+			&& !SessionPassword.IsEmpty())
+		{
+			Out.bPasswordProtected = true;
+		}
+
+		FString HostBuild;
+		if (Result.Session.SessionSettings.Get(FName(TEXT("BUILD_ID")), HostBuild))
+		{
+			Out.BuildId = HostBuild;
+			Out.bBuildCompatible = HostBuild.Equals(UIWorldGetProjectBuildId(GI), ESearchCase::IgnoreCase);
+		}
+		else
+		{
+			Out.bBuildCompatible = true;
+		}
+
 		return Out;
+	}
+
+	static bool UIWorldValidateSessionJoin(
+		const UUIWorldMenuGameInstance* GI,
+		const FOnlineSessionSearchResult* SearchResult,
+		FString& OutError)
+	{
+		if (!SearchResult)
+		{
+			OutError = TEXT("Join failed: invalid session");
+			return false;
+		}
+
+		const FUIWorldOnlineSessionResult View = UIWorldConvertSearchResult(GI, *SearchResult, 0);
+		if (View.bIsFull)
+		{
+			OutError = TEXT("Join failed: session is full");
+			return false;
+		}
+		if (!View.bBuildCompatible)
+		{
+			OutError = FString::Printf(
+				TEXT("Join failed: game version mismatch (host %s, you %s)"),
+				*View.BuildId,
+				*UIWorldGetProjectBuildId(GI));
+			return false;
+		}
+
+		FString SessionPassword;
+		if (SearchResult->Session.SessionSettings.Get(FName(TEXT("SESSION_PASSWORD")), SessionPassword)
+			&& !SessionPassword.IsEmpty())
+		{
+			const FString Attempt = GI ? GI->PendingJoinPassword : FString();
+			if (!SessionPassword.Equals(Attempt, ESearchCase::CaseSensitive))
+			{
+				OutError = TEXT("Join failed: wrong session password");
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/** Short names like "1" or "Menu" work in PIE but often fail in packaged builds; resolve to a full /Game/... map package when possible. */
@@ -170,6 +660,8 @@ namespace
 			TEXT("/Game/"),
 			TEXT("/Game/Maps/"),
 			TEXT("/Game/Levels/"),
+			TEXT("/Game/levels/"),
+			TEXT("/Game/ThirdPerson/"),
 		};
 
 		for (const TCHAR* Prefix : Prefixes)
@@ -211,6 +703,48 @@ void UUIWorldMenuGameInstance::Init()
 {
 	Super::Init();
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UUIWorldMenuGameInstance::HandlePostLoadMap);
+
+	// Recover from failed online travel/connection instead of leaving a loading screen up forever.
+	if (GEngine)
+	{
+		TravelFailureDelegateHandle = GEngine->OnTravelFailure().AddUObject(this, &UUIWorldMenuGameInstance::HandleTravelFailure);
+		NetworkFailureDelegateHandle = GEngine->OnNetworkFailure().AddUObject(this, &UUIWorldMenuGameInstance::HandleNetworkFailure);
+	}
+
+	LoadLocalAchievements();
+	EnsureOnlineAutoLogin();
+
+	// Live language switching: when the player changes language, rebuild the active menu
+	// so its self-assembling text reappears in the new language immediately.
+	if (UZonefallLocalizationSubsystem* Loc = GetSubsystem<UZonefallLocalizationSubsystem>())
+	{
+		Loc->OnLanguageChanged.AddDynamic(this, &UUIWorldMenuGameInstance::HandleLanguageChanged);
+	}
+}
+
+void UUIWorldMenuGameInstance::HandleLanguageChanged(EZonefallLanguage /*NewLanguage*/)
+{
+	if (!PinnedMenuWidget)
+	{
+		return;
+	}
+
+	// Defer to next tick: this fires from inside a combo-box selection callback on the very
+	// widget we're about to destroy/rebuild, so rebuilding synchronously would be a
+	// use-after-free. Next tick the Slate callback has fully unwound.
+	if (UWorld* World = GetWorld())
+	{
+		const EUIWorldMenuScreen ScreenToRebuild = CurrentMenuScreen;
+		World->GetTimerManager().SetTimerForNextTick([WeakThis = TWeakObjectPtr<UUIWorldMenuGameInstance>(this), ScreenToRebuild]()
+		{
+			if (UUIWorldMenuGameInstance* Self = WeakThis.Get())
+			{
+				Self->MenuWidgetCache.Empty();
+				Self->PinnedMenuWidget = nullptr;
+				Self->ShowMenuFromList(ScreenToRebuild, /*bForceRebuild*/ true);
+			}
+		});
+	}
 }
 
 void UUIWorldMenuGameInstance::OnStart()
@@ -238,6 +772,13 @@ void UUIWorldMenuGameInstance::OnStart()
 		bAutoShowMenuOnStart
 	);
 
+	// Animated game-title splash plays first, then chains into the shader phase / menu.
+	if (bShowStartupIntro && StartupIntroWidgetClass)
+	{
+		BeginStartupIntroPhase();
+		return;
+	}
+
 	if (bShowShaderLoadingOnStartup && ShaderLoadingWidgetClass)
 	{
 		BeginStartupShaderPhase();
@@ -250,19 +791,139 @@ void UUIWorldMenuGameInstance::OnStart()
 	}
 }
 
+void UUIWorldMenuGameInstance::BeginStartupIntroPhase()
+{
+	UWorld* World = GetWorld();
+	if (!World || !StartupIntroWidgetClass)
+	{
+		BeginStartupShaderPhase();
+		return;
+	}
+
+	APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
+	if (!PC)
+	{
+		BeginStartupShaderPhase();
+		return;
+	}
+
+	ActiveStartupIntroWidget = CreateWidget<UUserWidget>(PC, StartupIntroWidgetClass);
+	if (!ActiveStartupIntroWidget)
+	{
+		BeginStartupShaderPhase();
+		return;
+	}
+
+	ActiveStartupIntroWidget->AddToViewport(MenuZOrder + 1300);
+	UE_LOG(LogUIWorldStartupFlow, Log, TEXT("BeginStartupIntroPhase: showing title splash for %.1fs"), StartupIntroDuration);
+
+	World->GetTimerManager().ClearTimer(StartupIntroTimerHandle);
+	World->GetTimerManager().SetTimer(
+		StartupIntroTimerHandle, this, &UUIWorldMenuGameInstance::FinishStartupIntroPhase,
+		FMath::Clamp(StartupIntroDuration, 0.5f, 15.0f), false);
+}
+
+void UUIWorldMenuGameInstance::FinishStartupIntroPhase()
+{
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(StartupIntroTimerHandle);
+	}
+	if (ActiveStartupIntroWidget)
+	{
+		ActiveStartupIntroWidget->RemoveFromParent();
+		ActiveStartupIntroWidget = nullptr;
+	}
+
+	// Continue the normal startup chain.
+	if (bShowShaderLoadingOnStartup && ShaderLoadingWidgetClass)
+	{
+		BeginStartupShaderPhase();
+		return;
+	}
+	if (bAutoShowMenuOnStart)
+	{
+		ShowMenuFromList(EUIWorldMenuScreen::MainMenu, false);
+	}
+}
+
 void UUIWorldMenuGameInstance::Shutdown()
 {
 	if (UWorld* World = GetWorld())
 	{
 		World->GetTimerManager().ClearTimer(StartupShaderTimerHandle);
+		World->GetTimerManager().ClearTimer(StartupIntroTimerHandle);
 	}
 	if (ActiveStartupShaderWidget)
 	{
 		ActiveStartupShaderWidget->RemoveFromParent();
 		ActiveStartupShaderWidget = nullptr;
 	}
+	if (ActiveStartupIntroWidget)
+	{
+		ActiveStartupIntroWidget->RemoveFromParent();
+		ActiveStartupIntroWidget = nullptr;
+	}
+
+	if (IOnlineSubsystem* OSS = IOnlineSubsystem::Get())
+	{
+		if (IOnlineIdentityPtr Identity = OSS->GetIdentityInterface())
+		{
+			if (OnlineLoginDelegateHandle.IsValid())
+			{
+				Identity->ClearOnLoginCompleteDelegate_Handle(0, OnlineLoginDelegateHandle);
+				OnlineLoginDelegateHandle.Reset();
+			}
+		}
+	}
+
+	// Unbind any outstanding online-session listeners so they can't fire into a torn-down instance.
+	if (IOnlineSessionPtr Sessions = UIWorldGetSessionInterface())
+	{
+		if (CreateSessionDelegateHandle.IsValid())
+		{
+			Sessions->ClearOnCreateSessionCompleteDelegate_Handle(CreateSessionDelegateHandle);
+			CreateSessionDelegateHandle.Reset();
+		}
+		if (FindSessionsDelegateHandle.IsValid())
+		{
+			Sessions->ClearOnFindSessionsCompleteDelegate_Handle(FindSessionsDelegateHandle);
+			FindSessionsDelegateHandle.Reset();
+		}
+		if (JoinSessionDelegateHandle.IsValid())
+		{
+			Sessions->ClearOnJoinSessionCompleteDelegate_Handle(JoinSessionDelegateHandle);
+			JoinSessionDelegateHandle.Reset();
+		}
+		if (DestroySessionDelegateHandle.IsValid())
+		{
+			Sessions->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionDelegateHandle);
+			DestroySessionDelegateHandle.Reset();
+		}
+	}
 
 	FCoreUObjectDelegates::PostLoadMapWithWorld.RemoveAll(this);
+
+	if (GEngine)
+	{
+		if (TravelFailureDelegateHandle.IsValid())
+		{
+			GEngine->OnTravelFailure().Remove(TravelFailureDelegateHandle);
+			TravelFailureDelegateHandle.Reset();
+		}
+		if (NetworkFailureDelegateHandle.IsValid())
+		{
+			GEngine->OnNetworkFailure().Remove(NetworkFailureDelegateHandle);
+			NetworkFailureDelegateHandle.Reset();
+		}
+	}
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(OnlineJoinTimeoutHandle);
+		World->GetTimerManager().ClearTimer(HostedSessionRefreshTimerHandle);
+		World->GetTimerManager().ClearTimer(JoinConnectRetryTimerHandle);
+	}
+
 	Super::Shutdown();
 }
 
@@ -274,8 +935,9 @@ TSubclassOf<UUserWidget> UUIWorldMenuGameInstance::ResolveMenuClass(EUIWorldMenu
 		UE_LOG(LogUIWorldStartupFlow, Verbose, TEXT("[MenuFlow] ResolveMenuClass -> MainMenu (%s)"), *GetNameSafe(MainMenuWidgetClass.Get()));
 		return MainMenuWidgetClass;
 	case EUIWorldMenuScreen::OnlineMenu:
-		UE_LOG(LogUIWorldStartupFlow, Verbose, TEXT("[MenuFlow] ResolveMenuClass -> OnlineMenu (%s)"), *GetNameSafe((OnlineMenuWidgetClass ? OnlineMenuWidgetClass : MainMenuWidgetClass).Get()));
-		return OnlineMenuWidgetClass ? OnlineMenuWidgetClass : MainMenuWidgetClass;
+		return OnlineMenuWidgetClass
+			? OnlineMenuWidgetClass
+			: TSubclassOf<UUserWidget>(UZonefallOnlineLobbyWidget::StaticClass());
 	case EUIWorldMenuScreen::PauseMenu:
 		if (PauseMenuWidgetClass)
 		{
@@ -285,13 +947,18 @@ TSubclassOf<UUserWidget> UUIWorldMenuGameInstance::ResolveMenuClass(EUIWorldMenu
 		UE_LOG(LogUIWorldStartupFlow, Warning, TEXT("ResolveMenuClass(PauseMenu): PauseMenuWidgetClass is null, using UZonefallPauseMenuWidget fallback."));
 		return UZonefallPauseMenuWidget::StaticClass();
 	case EUIWorldMenuScreen::SettingsMenu:
+		// Same full settings whether opened from the main menu or from pause.
+		// Prefer pause-specific class (from pause), then the general settings class,
+		// then the built-in master settings widget so it always works out of the box.
 		if (LastNonSettingsMenuScreen == EUIWorldMenuScreen::PauseMenu && PauseSettingsMenuWidgetClass)
 		{
-			UE_LOG(LogUIWorldStartupFlow, Verbose, TEXT("[MenuFlow] ResolveMenuClass -> PauseSettingsMenu (%s)"), *GetNameSafe(PauseSettingsMenuWidgetClass.Get()));
 			return PauseSettingsMenuWidgetClass;
 		}
-		UE_LOG(LogUIWorldStartupFlow, Verbose, TEXT("[MenuFlow] ResolveMenuClass -> SettingsMenu (%s)"), *GetNameSafe((SettingsMenuWidgetClass ? SettingsMenuWidgetClass : MainMenuWidgetClass).Get()));
-		return SettingsMenuWidgetClass ? SettingsMenuWidgetClass : MainMenuWidgetClass;
+		if (SettingsMenuWidgetClass)
+		{
+			return SettingsMenuWidgetClass;
+		}
+		return TSubclassOf<UUserWidget>(UZonefallMasterSettingsWidget::StaticClass());
 	default:
 		UE_LOG(LogUIWorldStartupFlow, Warning, TEXT("[MenuFlow] ResolveMenuClass -> Default fallback to MainMenu (%s)"), *GetNameSafe(MainMenuWidgetClass.Get()));
 		return MainMenuWidgetClass;
@@ -795,6 +1462,56 @@ void UUIWorldMenuGameInstance::QuitGameNow(bool bIgnorePlatformRestrictions)
 	}
 }
 
+FString UUIWorldMenuGameInstance::GetEngineVersionString() const
+{
+	return FString::Printf(TEXT("Unreal Engine %s"), *FEngineVersion::Current().ToString(EVersionComponent::Patch));
+}
+
+bool UUIWorldMenuGameInstance::SaveGame()
+{
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return false;
+	}
+
+	UUIWorldSaveManager* SaveManager = NewObject<UUIWorldSaveManager>(this);
+	const FString LevelName = UWorld::RemovePIEPrefix(World->GetMapName());
+	const bool bSaved = SaveManager->SaveLevelProgress(LevelName);
+
+	ShowSaveToast(bSaved
+		? FString::Printf(TEXT("%s"), *LevelName)
+		: TEXT("Save failed"));
+	return bSaved;
+}
+
+void UUIWorldMenuGameInstance::ShowSaveToast(const FString& Message)
+{
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+	APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
+	if (!PC)
+	{
+		return;
+	}
+
+	const TSubclassOf<UUserWidget> ToastClass = SaveToastWidgetClass
+		? SaveToastWidgetClass
+		: TSubclassOf<UUserWidget>(UZonefallSaveToastWidget::StaticClass());
+
+	if (UUserWidget* W = CreateWidget<UUserWidget>(PC, ToastClass))
+	{
+		W->AddToViewport(MenuZOrder + 500);
+		if (UZonefallSaveToastWidget* Toast = Cast<UZonefallSaveToastWidget>(W))
+		{
+			Toast->ShowToast(FText::GetEmpty(), FText::FromString(Message));
+		}
+	}
+}
+
 void UUIWorldMenuGameInstance::ShowSimpleTravelLoadingScreen()
 {
 	UWorld* World = GetWorld();
@@ -836,143 +1553,934 @@ void UUIWorldMenuGameInstance::HideSimpleTravelLoadingScreen()
 	if (ActiveLoadingScreenWidget)
 	{
 		ActiveLoadingScreenWidget->RemoveFromParent();
+		ActiveLoadingScreenWidget = nullptr;
 	}
 }
 
-bool UUIWorldMenuGameInstance::HostOnlineSession(int32 MaxPlayers, bool bLAN)
+void UUIWorldMenuGameInstance::BeginOnlineTravel()
+{
+	BeginOnlineTravelWithPhase(EZonefallOnlineTravelPhase::Joining, FText::GetEmpty());
+}
+
+void UUIWorldMenuGameInstance::BeginOnlineTravelWithPhase(EZonefallOnlineTravelPhase Phase, const FText& StatusHint)
+{
+	bOnlineTravelInProgress = true;
+	bOnlineJoinReachedGameMap = false;
+	bOnlineLoadingOverlayActive = true;
+	ActiveOnlineTravelPhase = Phase;
+
+	if (UWorld* World = GetWorld())
+	{
+		OnlineTravelStartSeconds = World->GetTimeSeconds();
+		World->GetTimerManager().ClearTimer(OnlineAbortDeferHandle);
+		World->GetTimerManager().ClearTimer(OnlineJoinTimeoutHandle);
+		World->GetTimerManager().ClearTimer(OnlineLoadingStatusTimerHandle);
+		World->GetTimerManager().SetTimer(
+			OnlineJoinTimeoutHandle,
+			this,
+			&UUIWorldMenuGameInstance::HandleOnlineJoinTimeout,
+			FMath::Clamp(OnlineJoinTimeoutSeconds, 15.0f, 120.0f),
+			false);
+		World->GetTimerManager().SetTimer(
+			OnlineLoadingStatusTimerHandle,
+			this,
+			&UUIWorldMenuGameInstance::HandleOnlineLoadingStatusTick,
+			2.2f,
+			true);
+	}
+
+	ShowOnlineTravelLoadingScreen(Phase, StatusHint);
+}
+
+void UUIWorldMenuGameInstance::ShowOnlineTravelLoadingScreen(EZonefallOnlineTravelPhase Phase, const FText& StatusHint)
 {
 	UWorld* World = GetWorld();
 	if (!World)
 	{
-		OnHostCompleted.Broadcast(false, TEXT("World is null"));
-		return false;
+		return;
 	}
 
-	IOnlineSessionPtr Sessions = UIWorldGetSessionInterface();
+	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(World, 0))
+	{
+		if (!ActiveLoadingScreenWidget && LoadingScreenWidgetClass)
+		{
+			ActiveLoadingScreenWidget = CreateWidget<UUserWidget>(PlayerController, LoadingScreenWidgetClass);
+		}
+		if (ActiveLoadingScreenWidget && !ActiveLoadingScreenWidget->IsInViewport())
+		{
+			ActiveLoadingScreenWidget->AddToViewport(MenuZOrder + 900);
+		}
+		if (UZonefallLoadingScreenWidget* TypedLoading = Cast<UZonefallLoadingScreenWidget>(ActiveLoadingScreenWidget))
+		{
+			TypedLoading->ConfigureOnlineTravelLoading(Phase, StatusHint);
+		}
+
+		// Do not steal game input during ClientTravel — only show the overlay.
+		FInputModeGameOnly InputMode;
+		PlayerController->SetInputMode(InputMode);
+		PlayerController->SetShowMouseCursor(false);
+	}
+}
+
+void UUIWorldMenuGameInstance::UpdateOnlineTravelLoadingStatus(const FText& Status)
+{
+	if (UZonefallLoadingScreenWidget* TypedLoading = Cast<UZonefallLoadingScreenWidget>(ActiveLoadingScreenWidget))
+	{
+		TypedLoading->SetOnlineTravelStatus(Status);
+	}
+}
+
+void UUIWorldMenuGameInstance::HandleOnlineLoadingStatusTick()
+{
+	if (!bOnlineTravelInProgress)
+	{
+		return;
+	}
+
+	static const FText HostPhrases[] = {
+		NSLOCTEXT("ZonefallUI", "OnlineHost1", "Creating your public session..."),
+		NSLOCTEXT("ZonefallUI", "OnlineHost2", "Opening player slots..."),
+		NSLOCTEXT("ZonefallUI", "OnlineHost3", "Loading the shared world..."),
+		NSLOCTEXT("ZonefallUI", "OnlineHost4", "Waiting for players to join...")
+	};
+	static const FText JoinPhrases[] = {
+		NSLOCTEXT("ZonefallUI", "OnlineJoin1", "Finding the best host..."),
+		NSLOCTEXT("ZonefallUI", "OnlineJoin2", "Connecting to the session..."),
+		NSLOCTEXT("ZonefallUI", "OnlineJoin3", "Loading the open world..."),
+		NSLOCTEXT("ZonefallUI", "OnlineJoin4", "Spawning into the match...")
+	};
+
+	const FText* Phrases = (ActiveOnlineTravelPhase == EZonefallOnlineTravelPhase::Hosting) ? HostPhrases : JoinPhrases;
+	const int32 Count = (ActiveOnlineTravelPhase == EZonefallOnlineTravelPhase::Hosting)
+		? UE_ARRAY_COUNT(HostPhrases)
+		: UE_ARRAY_COUNT(JoinPhrases);
+	OnlineLoadingStatusPhraseIndex = (OnlineLoadingStatusPhraseIndex + 1) % Count;
+	UpdateOnlineTravelLoadingStatus(Phrases[OnlineLoadingStatusPhraseIndex]);
+}
+
+void UUIWorldMenuGameInstance::HideOnlineTravelLoadingScreen()
+{
+	bOnlineLoadingOverlayActive = false;
+	HideSimpleTravelLoadingScreen();
+}
+
+void UUIWorldMenuGameInstance::CancelOnlineTravelLoading()
+{
+	bOnlineTravelInProgress = false;
+	bOnlineLoadingOverlayActive = false;
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(OnlineJoinTimeoutHandle);
+		World->GetTimerManager().ClearTimer(OnlineAbortDeferHandle);
+		World->GetTimerManager().ClearTimer(OnlineLoadingStatusTimerHandle);
+	}
+	HideOnlineTravelLoadingScreen();
+}
+
+void UUIWorldMenuGameInstance::RegisterLocalPlayerInActiveSession(UWorld* World)
+{
+	if (!World)
+	{
+		return;
+	}
+
+	IOnlineSessionPtr Sessions = UIWorldGetSessionInterface(bLastOnlineQueryWasLAN);
 	if (!Sessions.IsValid())
 	{
-		OnHostCompleted.Broadcast(false, TEXT("SessionInterface missing"));
+		return;
+	}
+
+	if (Sessions->GetNamedSession(NAME_GameSession) == nullptr)
+	{
+		return;
+	}
+
+	if (const TSharedPtr<const FUniqueNetId> UserId = UIWorldGetOrCreateLanUserId(World, bLastOnlineQueryWasLAN))
+	{
+		Sessions->RegisterPlayer(NAME_GameSession, *UserId, false);
+	}
+}
+
+void UUIWorldMenuGameInstance::FinalizeOnlineTravelSuccess(UWorld* LoadedWorld)
+{
+	if (!LoadedWorld)
+	{
+		return;
+	}
+
+	bOnlineJoinReachedGameMap = true;
+	bOnlineTravelInProgress = false;
+	bOnlineLoadingOverlayActive = false;
+
+	LoadedWorld->GetTimerManager().ClearTimer(OnlineJoinTimeoutHandle);
+	LoadedWorld->GetTimerManager().ClearTimer(OnlineAbortDeferHandle);
+
+	HideOnlineTravelLoadingScreen();
+	CloseMenuUI(true);
+
+	RegisterLocalPlayerInActiveSession(LoadedWorld);
+	PublishHostedOnlineSession(LoadedWorld);
+	ScheduleHostedOnlineSessionRefresh(LoadedWorld);
+
+	OnOnlineMatchReady.Broadcast(LoadedWorld);
+
+	if (bApplyGameFocusOnNextMapLoad)
+	{
+		ApplyGameFocusInput(LoadedWorld);
+		bApplyGameFocusOnNextMapLoad = false;
+	}
+
+	UE_LOG(
+		LogUIWorldStartupFlow,
+		Log,
+		TEXT("[Online] Match ready on %s (NetMode=%d LAN=%d)"),
+		*LoadedWorld->GetMapName(),
+		(int32)LoadedWorld->GetNetMode(),
+		bLastOnlineQueryWasLAN ? 1 : 0);
+}
+
+void UUIWorldMenuGameInstance::EnsureOnlineAutoLogin()
+{
+	IOnlineSubsystem* OSS = IOnlineSubsystem::Get();
+	if (!OSS)
+	{
+		return;
+	}
+
+	IOnlineIdentityPtr Identity = OSS->GetIdentityInterface();
+	if (!Identity.IsValid())
+	{
+		return;
+	}
+
+	if (Identity->GetLoginStatus(0) == ELoginStatus::LoggedIn)
+	{
+		return;
+	}
+
+	if (!OnlineLoginDelegateHandle.IsValid())
+	{
+		OnlineLoginDelegateHandle = Identity->AddOnLoginCompleteDelegate_Handle(
+			0, FOnLoginCompleteDelegate::CreateUObject(this, &UUIWorldMenuGameInstance::HandleOnlineIdentityLoginComplete));
+	}
+
+	if (!Identity->AutoLogin(0))
+	{
+		UE_LOG(LogUIWorldStartupFlow, Warning, TEXT("[Online] AutoLogin did not start (OSS=%s). Is Steam running?"), *UIWorldDescribeActiveOnlineSubsystem());
+	}
+}
+
+void UUIWorldMenuGameInstance::HandleOnlineIdentityLoginComplete(
+	int32 LocalUserNum, bool bWasSuccessful, const FUniqueNetId& UserId, const FString& Error)
+{
+	if (IOnlineSubsystem* OSS = IOnlineSubsystem::Get())
+	{
+		if (IOnlineIdentityPtr Identity = OSS->GetIdentityInterface())
+		{
+			if (OnlineLoginDelegateHandle.IsValid())
+			{
+				Identity->ClearOnLoginCompleteDelegate_Handle(LocalUserNum, OnlineLoginDelegateHandle);
+				OnlineLoginDelegateHandle.Reset();
+			}
+		}
+	}
+
+	if (bWasSuccessful)
+	{
+		UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[Online] Logged in via %s"), *UIWorldDescribeActiveOnlineSubsystem());
+		LastOnlineDiagnostic.Reset();
+		FlushPendingFindOnlineSessions();
+	}
+	else
+	{
+		LastOnlineDiagnostic = FString::Printf(
+			TEXT("Online login failed (%s): %s"),
+			*UIWorldDescribeActiveOnlineSubsystem(),
+			Error.IsEmpty() ? TEXT("unknown error") : *Error);
+		UE_LOG(LogUIWorldStartupFlow, Warning, TEXT("[Online] %s"), *LastOnlineDiagnostic);
+		if (bPendingFindOnlineSessions)
+		{
+			bPendingFindOnlineSessions = false;
+			OnSessionsFound.Broadcast(TArray<FUIWorldOnlineSessionResult>());
+		}
+	}
+}
+
+void UUIWorldMenuGameInstance::FlushPendingFindOnlineSessions()
+{
+	if (!bPendingFindOnlineSessions)
+	{
+		return;
+	}
+	const int32 MaxResults = PendingFindMaxResults;
+	const bool bLAN = bPendingFindLAN;
+	bPendingFindOnlineSessions = false;
+	FindOnlineSessions(MaxResults, bLAN);
+}
+
+bool UUIWorldMenuGameInstance::TravelToListenHostMap(UWorld* World, const FString& MapPackagePath, bool bLAN)
+{
+	if (!IsValid(World) || MapPackagePath.IsEmpty())
+	{
 		return false;
 	}
 
-	const TSharedPtr<const FUniqueNetId> UserId = UIWorldGetLocalUserId(World);
+	if (World->GetNetMode() == NM_Client)
+	{
+		LastOnlineDiagnostic = TEXT("Host from Player 1 window (Listen Server), not the client PIE window");
+		UE_LOG(LogUIWorldStartupFlow, Warning, TEXT("[Online] %s"), *LastOnlineDiagnostic);
+		return false;
+	}
+
+	if (bLAN)
+	{
+		UIWorldActivateLanNetworking(World);
+	}
+	else
+	{
+		UIWorldActivateSteamNetworking(World);
+	}
+
+	const FString TravelOptions = bLAN
+		? TEXT("listen&NetDriver=LanGameNetDriver")
+		: TEXT("listen&NetDriver=GameNetDriver");
+
+	if (AGameModeBase* GameMode = World->GetAuthGameMode())
+	{
+		GameMode->bUseSeamlessTravel = false;
+	}
+
+	const FName MapPackage = FName(*MapPackagePath);
+	if (World->GetNetMode() == NM_Standalone)
+	{
+		UE_LOG(
+			LogUIWorldStartupFlow,
+			Log,
+			TEXT("[Online] Host OpenLevel -> %s?%s (PIE standalone -> listen)"),
+			*MapPackagePath,
+			*TravelOptions);
+		UGameplayStatics::OpenLevel(World, MapPackage, true, TravelOptions);
+		return true;
+	}
+
+	const FString ListenURL = FString::Printf(TEXT("%s?%s"), *MapPackagePath, *TravelOptions);
+	UE_LOG(
+		LogUIWorldStartupFlow,
+		Log,
+		TEXT("[Online] Host ServerTravel -> %s (mode=%s OSS=%s)"),
+		*ListenURL,
+		bLAN ? TEXT("LAN/NULL") : TEXT("Steam"),
+		*UIWorldDescribeActiveOnlineSubsystem(bLAN));
+	World->ServerTravel(ListenURL, true);
+	return true;
+}
+
+void UUIWorldMenuGameInstance::TryActivateListenServerAfterHostLoad(UWorld* LoadedWorld)
+{
+	if (!IsValid(LoadedWorld) || !bOnlineTravelInProgress
+		|| ActiveOnlineTravelPhase != EZonefallOnlineTravelPhase::Hosting)
+	{
+		return;
+	}
+
+	if (IsMenuMapWorld(LoadedWorld))
+	{
+		return;
+	}
+
+	if (!UIWorldTryStartListenServer(LoadedWorld, bLastOnlineQueryWasLAN, OnlineLanPort))
+	{
+		return;
+	}
+
+	if (bLastOnlineQueryWasLAN)
+	{
+		if (IOnlineSessionPtr LanSessions = UIWorldGetSessionInterface(true))
+		{
+			if (LanSessions->GetNamedSession(NAME_GameSession))
+			{
+				LanSessions->StartSession(NAME_GameSession);
+			}
+		}
+	}
+
+	if (LoadedWorld->GetNetMode() == NM_ListenServer || LoadedWorld->GetNetDriver())
+	{
+		FinalizeOnlineTravelSuccess(LoadedWorld);
+	}
+}
+
+void UUIWorldMenuGameInstance::OnHostCreateSessionComplete(FName /*SessionName*/, bool bWasSuccessful)
+{
+	const bool bLAN = bLastOnlineQueryWasLAN;
+	if (IOnlineSessionPtr LocalSessions = UIWorldGetSessionInterface(bLAN))
+	{
+		if (CreateSessionDelegateHandle.IsValid())
+		{
+			LocalSessions->ClearOnCreateSessionCompleteDelegate_Handle(CreateSessionDelegateHandle);
+			CreateSessionDelegateHandle.Reset();
+		}
+	}
+
+	if (!IsValid(this))
+	{
+		return;
+	}
+
+	if (!bWasSuccessful)
+	{
+		CancelOnlineTravelLoading();
+		OnHostCompleted.Broadcast(false, TEXT("CreateSession failed"));
+		return;
+	}
+
+	UWorld* World = GetWorld();
+	if (!IsValid(World))
+	{
+		CancelOnlineTravelLoading();
+		OnHostCompleted.Broadcast(false, TEXT("Host aborted: world no longer available"));
+		return;
+	}
+
+	const FName ResolvedHostMap = UIWorldResolveLevelNameForOpen(
+		World,
+		OnlineHostMapName.IsNone() ? FName(TEXT("Menu")) : OnlineHostMapName);
+	const FString MapToOpen = ResolvedHostMap.IsNone() ? TEXT("Menu") : ResolvedHostMap.ToString();
+
+	if (IOnlineSessionPtr LocalSessions = UIWorldGetSessionInterface(bLAN))
+	{
+		if (FNamedOnlineSession* ActiveSession = LocalSessions->GetNamedSession(NAME_GameSession))
+		{
+				ActiveSession->SessionSettings.Set(
+					FName(TEXT("MAP_NAME")), MapToOpen, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+				ActiveSession->SessionSettings.Set(
+					FName(TEXT("BUILD_ID")),
+					UIWorldGetProjectBuildId(this),
+					EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+				if (!PendingHostPassword.IsEmpty())
+				{
+					ActiveSession->SessionSettings.Set(
+						FName(TEXT("SESSION_PASSWORD")),
+						PendingHostPassword,
+						EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+				}
+				if (bLAN)
+				{
+					ActiveSession->SessionSettings.Set(
+						FName(TEXT("LAN_HOST")),
+						FString(TEXT("127.0.0.1")),
+						EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+					ActiveSession->SessionSettings.Set(
+						FName(TEXT("LAN_PORT")),
+						FMath::Clamp(OnlineLanPort, 1, 65535),
+						EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+					LocalSessions->UpdateSession(NAME_GameSession, ActiveSession->SessionSettings, true);
+				}
+				else
+				{
+					LocalSessions->UpdateSession(NAME_GameSession, ActiveSession->SessionSettings, true);
+				}
+		}
+	}
+
+	if (!TravelToListenHostMap(World, MapToOpen, bLAN))
+	{
+		CancelOnlineTravelLoading();
+		OnHostCompleted.Broadcast(false, LastOnlineDiagnostic.IsEmpty() ? TEXT("Host travel failed") : LastOnlineDiagnostic);
+		return;
+	}
+
+	bApplyGameFocusOnNextMapLoad = true;
+	CloseMenuUI(false);
+	OnHostCompleted.Broadcast(
+		true,
+		bLAN
+			? FString::Printf(TEXT("LAN hosted | %s | connect 127.0.0.1:%d"), *MapToOpen, OnlineLanPort)
+			: FString::Printf(TEXT("Steam hosted | %s"), *MapToOpen));
+}
+
+void UUIWorldMenuGameInstance::OnDestroySessionBeforeHost(FName /*SessionName*/, bool bWasDestroyed)
+{
+	const bool bLAN = bLastOnlineQueryWasLAN;
+	bPendingHostAfterDestroy = false;
+	const int32 MaxPlayers = PendingHostMaxPlayers;
+	PendingHostMaxPlayers = 4;
+
+	if (IOnlineSessionPtr LocalSessions = UIWorldGetSessionInterface(bLAN))
+	{
+		if (DestroySessionDelegateHandle.IsValid())
+		{
+			LocalSessions->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionDelegateHandle);
+			DestroySessionDelegateHandle.Reset();
+		}
+	}
+
+	if (!IsValid(this))
+	{
+		return;
+	}
+
+	if (!bWasDestroyed)
+	{
+		CancelOnlineTravelLoading();
+		OnHostCompleted.Broadcast(false, TEXT("Host failed: could not clear old session"));
+		return;
+	}
+
+	BeginHostCreateSession(MaxPlayers, bLAN);
+}
+
+bool UUIWorldMenuGameInstance::BeginHostCreateSession(int32 MaxPlayers, bool bLAN)
+{
+	UWorld* World = GetWorld();
+	if (!IsValid(World))
+	{
+		LastOnlineDiagnostic = TEXT("World is null");
+		OnHostCompleted.Broadcast(false, LastOnlineDiagnostic);
+		return false;
+	}
+
+	IOnlineSessionPtr Sessions = UIWorldGetSessionInterface(bLAN);
+	if (!Sessions.IsValid())
+	{
+		LastOnlineDiagnostic = FString::Printf(
+			TEXT("SessionInterface missing (LAN=%d OSS=%s)"),
+			bLAN ? 1 : 0,
+			*UIWorldDescribeActiveOnlineSubsystem(bLAN));
+		OnHostCompleted.Broadcast(false, LastOnlineDiagnostic);
+		return false;
+	}
+
+	const TSharedPtr<const FUniqueNetId> UserId = bLAN
+		? UIWorldGetOrCreateLanUserId(World, true)
+		: UIWorldGetLocalUserId(World, false);
 	if (!UserId.IsValid())
 	{
-		OnHostCompleted.Broadcast(false, TEXT("Local UniqueNetId missing"));
+		if (!bLAN)
+		{
+			EnsureOnlineAutoLogin();
+			LastOnlineDiagnostic = FString::Printf(
+				TEXT("Not logged in yet (%s). Start Steam, wait a moment, then try Host again."),
+				*UIWorldDescribeActiveOnlineSubsystem());
+		}
+		else
+		{
+			LastOnlineDiagnostic = TEXT("LAN host: could not create local player id");
+		}
+		OnHostCompleted.Broadcast(false, LastOnlineDiagnostic);
+		return false;
+	}
+
+	FOnlineSessionSettings Settings;
+	Settings.bIsLANMatch = bLAN;
+	Settings.bUsesPresence = !bLAN;
+	Settings.NumPublicConnections = FMath::Clamp(MaxPlayers, 1, 64);
+	Settings.bAllowJoinInProgress = true;
+	Settings.bAllowJoinViaPresence = !bLAN;
+	Settings.bShouldAdvertise = true;
+	Settings.bUseLobbiesIfAvailable = !bLAN;
+	Settings.Set(FName(TEXT("SERVER_NAME")), OnlineServerName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	Settings.Set(
+		FName(TEXT("BUILD_ID")),
+		UIWorldGetProjectBuildId(this),
+		EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+
+	const int32 Privacy = FMath::Clamp(PendingHostPrivacy, 0, 2);
+	if (!bLAN)
+	{
+		Settings.bShouldAdvertise = Privacy == 0;
+		Settings.bAllowJoinViaPresence = Privacy <= 1;
+		Settings.bUsesPresence = Privacy <= 1;
+	}
+	if (!PendingHostPassword.IsEmpty())
+	{
+		Settings.Set(
+			FName(TEXT("SESSION_PASSWORD")),
+			PendingHostPassword,
+			EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	}
+	Settings.Set(FName(TEXT("SESSION_PRIVACY")), Privacy, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+
+	if (CreateSessionDelegateHandle.IsValid())
+	{
+		Sessions->ClearOnCreateSessionCompleteDelegate_Handle(CreateSessionDelegateHandle);
+		CreateSessionDelegateHandle.Reset();
+	}
+
+	FOnCreateSessionCompleteDelegate CreateDelegate;
+	CreateDelegate.BindUObject(this, &UUIWorldMenuGameInstance::OnHostCreateSessionComplete);
+	CreateSessionDelegateHandle = Sessions->AddOnCreateSessionCompleteDelegate_Handle(CreateDelegate);
+
+	BeginOnlineTravelWithPhase(
+		EZonefallOnlineTravelPhase::Hosting,
+		NSLOCTEXT("ZonefallUI", "OnlineHostStart", "Creating session and loading map..."));
+
+	const bool bStarted = Sessions->CreateSession(*UserId, NAME_GameSession, Settings);
+	if (!bStarted)
+	{
+		if (CreateSessionDelegateHandle.IsValid())
+		{
+			Sessions->ClearOnCreateSessionCompleteDelegate_Handle(CreateSessionDelegateHandle);
+			CreateSessionDelegateHandle.Reset();
+		}
+		CancelOnlineTravelLoading();
+		OnHostCompleted.Broadcast(false, TEXT("CreateSession did not start"));
+	}
+	return bStarted;
+}
+
+bool UUIWorldMenuGameInstance::HostOnlineSession(int32 MaxPlayers, bool bLAN)
+{
+	bLastOnlineQueryWasLAN = bLAN;
+	LastOnlineDiagnostic.Reset();
+	PendingHostMaxPlayers = FMath::Clamp(MaxPlayers, 1, 64);
+
+	UWorld* World = GetWorld();
+	if (!IsValid(World))
+	{
+		LastOnlineDiagnostic = TEXT("World is null");
+		OnHostCompleted.Broadcast(false, LastOnlineDiagnostic);
+		return false;
+	}
+
+	IOnlineSessionPtr Sessions = UIWorldGetSessionInterface(bLAN);
+	if (!Sessions.IsValid())
+	{
+		LastOnlineDiagnostic = FString::Printf(
+			TEXT("SessionInterface missing (LAN=%d OSS=%s)"),
+			bLAN ? 1 : 0,
+			*UIWorldDescribeActiveOnlineSubsystem(bLAN));
+		OnHostCompleted.Broadcast(false, LastOnlineDiagnostic);
 		return false;
 	}
 
 	const FName SessionName(NAME_GameSession);
 	if (Sessions->GetNamedSession(SessionName) != nullptr)
 	{
-		Sessions->DestroySession(SessionName);
-	}
-
-	FOnlineSessionSettings Settings;
-	Settings.bIsLANMatch = bLAN;
-	Settings.bUsesPresence = true;
-	Settings.NumPublicConnections = FMath::Clamp(MaxPlayers, 1, 64);
-	Settings.bAllowJoinInProgress = true;
-	Settings.bAllowJoinViaPresence = true;
-	Settings.bShouldAdvertise = true;
-	Settings.bUseLobbiesIfAvailable = true;
-	Settings.Set(FName(TEXT("SERVER_NAME")), OnlineServerName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
-
-	FOnCreateSessionCompleteDelegate CreateDelegate;
-	CreateDelegate.BindWeakLambda(this, [this, World](FName InName, bool bWasSuccessful)
-	{
-		if (!bWasSuccessful)
+		if (DestroySessionDelegateHandle.IsValid())
 		{
-			HideSimpleTravelLoadingScreen();
-			OnHostCompleted.Broadcast(false, TEXT("CreateSession failed"));
-			return;
+			Sessions->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionDelegateHandle);
+			DestroySessionDelegateHandle.Reset();
 		}
 
-		const FString MapToOpen = OnlineHostMapName.IsNone() ? TEXT("Menu") : OnlineHostMapName.ToString();
-		const FString ListenURL = FString::Printf(TEXT("%s?listen"), *MapToOpen);
-		const FString LocalIp = UIWorldResolveLocalLanIp();
-		bApplyGameFocusOnNextMapLoad = true;
-		CloseMenuUI(false);
-		OnHostCompleted.Broadcast(true, FString::Printf(TEXT("Session hosted | LAN IP: %s"), *LocalIp));
-		World->ServerTravel(ListenURL);
-	});
+		FOnDestroySessionCompleteDelegate DestroyDelegate;
+		DestroyDelegate.BindUObject(this, &UUIWorldMenuGameInstance::OnDestroySessionBeforeHost);
+		DestroySessionDelegateHandle = Sessions->AddOnDestroySessionCompleteDelegate_Handle(DestroyDelegate);
+		bPendingHostAfterDestroy = true;
 
-	Sessions->AddOnCreateSessionCompleteDelegate_Handle(CreateDelegate);
-	ShowSimpleTravelLoadingScreen();
-	const bool bStarted = Sessions->CreateSession(*UserId, SessionName, Settings);
-	if (!bStarted)
-	{
-		HideSimpleTravelLoadingScreen();
-		OnHostCompleted.Broadcast(false, TEXT("CreateSession did not start"));
+		const bool bDestroyStarted = Sessions->DestroySession(SessionName);
+		if (!bDestroyStarted)
+		{
+			bPendingHostAfterDestroy = false;
+			if (DestroySessionDelegateHandle.IsValid())
+			{
+				Sessions->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionDelegateHandle);
+				DestroySessionDelegateHandle.Reset();
+			}
+			return BeginHostCreateSession(PendingHostMaxPlayers, bLAN);
+		}
+		return true;
 	}
-	return bStarted;
+
+	return BeginHostCreateSession(PendingHostMaxPlayers, bLAN);
+}
+
+void UUIWorldMenuGameInstance::SortAndPublishFoundSessions(bool bWasSuccessful)
+{
+	if (bWasSuccessful && LastSessionSearchNative.IsValid())
+	{
+		LastFoundSessions.Reset();
+		for (int32 Index = 0; Index < LastSessionSearchNative->SearchResults.Num(); ++Index)
+		{
+			LastFoundSessions.Add(
+				UIWorldConvertSearchResult(this, LastSessionSearchNative->SearchResults[Index], Index));
+		}
+
+		LastFoundSessions.Sort([](const FUIWorldOnlineSessionResult& A, const FUIWorldOnlineSessionResult& B)
+		{
+			if (A.bIsFull != B.bIsFull)
+			{
+				return !A.bIsFull;
+			}
+			if (A.bBuildCompatible != B.bBuildCompatible)
+			{
+				return A.bBuildCompatible;
+			}
+			const int32 PingA = A.PingMs >= 0 ? A.PingMs : 99999;
+			const int32 PingB = B.PingMs >= 0 ? B.PingMs : 99999;
+			return PingA < PingB;
+		});
+	}
+	else if (!bWasSuccessful)
+	{
+		LastFoundSessions.Reset();
+	}
+}
+
+int32 UUIWorldMenuGameInstance::FindBestQuickJoinIndex() const
+{
+	int32 BestIndex = INDEX_NONE;
+	int32 BestPing = MAX_int32;
+
+	for (const FUIWorldOnlineSessionResult& Session : LastFoundSessions)
+	{
+		if (Session.bIsFull || !Session.bBuildCompatible || Session.bPasswordProtected)
+		{
+			continue;
+		}
+
+		const int32 Ping = Session.PingMs >= 0 ? Session.PingMs : 9999;
+		if (Ping < BestPing && Session.SearchResultIndex != INDEX_NONE)
+		{
+			BestPing = Ping;
+			BestIndex = Session.SearchResultIndex;
+		}
+	}
+	return BestIndex;
+}
+
+bool UUIWorldMenuGameInstance::TryExecuteQuickJoin()
+{
+	bPendingQuickJoin = false;
+	const int32 BestIndex = FindBestQuickJoinIndex();
+	if (BestIndex == INDEX_NONE)
+	{
+		LastOnlineDiagnostic = TEXT("Quick Join: no open compatible sessions. Host a match or try REFRESH.");
+		OnJoinCompleted.Broadcast(false, LastOnlineDiagnostic);
+		return false;
+	}
+
+	for (const FUIWorldOnlineSessionResult& Session : LastFoundSessions)
+	{
+		if (Session.SearchResultIndex == BestIndex)
+		{
+			UE_LOG(
+				LogUIWorldStartupFlow,
+				Log,
+				TEXT("[Online] Quick Join -> \"%s\" ping=%d players=%d/%d"),
+				*Session.ServerName,
+				Session.PingMs,
+				Session.CurrentPlayers,
+				Session.MaxPlayers);
+			break;
+		}
+	}
+
+	BeginOnlineTravelWithPhase(
+		EZonefallOnlineTravelPhase::Joining,
+		NSLOCTEXT("ZonefallUI", "OnlineQuickJoin", "Finding the best session..."));
+	return JoinOnlineSessionByIndex(BestIndex);
+}
+
+bool UUIWorldMenuGameInstance::QuickJoinOnlineSession(bool bLAN)
+{
+	bLastOnlineQueryWasLAN = bLAN;
+	bPendingQuickJoin = true;
+	LastOnlineDiagnostic.Reset();
+
+	if (LastSessionSearchNative.IsValid() && LastFoundSessions.Num() > 0)
+	{
+		return TryExecuteQuickJoin();
+	}
+
+	return FindOnlineSessions(100, bLAN);
 }
 
 bool UUIWorldMenuGameInstance::FindOnlineSessions(int32 MaxResults, bool bLAN)
 {
+	bLastOnlineQueryWasLAN = bLAN;
+	LastOnlineDiagnostic.Reset();
 	UWorld* World = GetWorld();
 	if (!World)
 	{
+		LastOnlineDiagnostic = TEXT("World is null");
 		OnSessionsFound.Broadcast(TArray<FUIWorldOnlineSessionResult>());
 		return false;
 	}
 
-	IOnlineSessionPtr Sessions = UIWorldGetSessionInterface();
+	IOnlineSessionPtr Sessions = UIWorldGetSessionInterface(bLAN);
 	if (!Sessions.IsValid())
 	{
+		LastOnlineDiagnostic = FString::Printf(
+			TEXT("SessionInterface missing (LAN=%d OSS=%s)"),
+			bLAN ? 1 : 0,
+			*UIWorldDescribeActiveOnlineSubsystem());
 		OnSessionsFound.Broadcast(TArray<FUIWorldOnlineSessionResult>());
 		return false;
 	}
 
-	const TSharedPtr<const FUniqueNetId> UserId = UIWorldGetLocalUserId(World);
-	if (!UserId.IsValid())
+	const TSharedPtr<const FUniqueNetId> UserId = bLAN
+		? UIWorldGetOrCreateLanUserId(World, true)
+		: UIWorldGetLocalUserId(World, false);
+	if (!UserId.IsValid() && !bLAN)
 	{
-		OnSessionsFound.Broadcast(TArray<FUIWorldOnlineSessionResult>());
+		bPendingFindOnlineSessions = true;
+		PendingFindMaxResults = MaxResults;
+		bPendingFindLAN = bLAN;
+		EnsureOnlineAutoLogin();
+		LastOnlineDiagnostic = FString::Printf(
+			TEXT("Waiting for %s login... (Steam must be running; LAN mode must match the host)"),
+			*UIWorldDescribeActiveOnlineSubsystem());
+		UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[Online] %s"), *LastOnlineDiagnostic);
+		// Do not broadcast an empty result yet — login completion will retry FindSessions.
 		return false;
 	}
-
 	LastSessionSearchNative = MakeShared<FOnlineSessionSearch>();
 	LastSessionSearchNative->bIsLanQuery = bLAN;
 	LastSessionSearchNative->MaxSearchResults = FMath::Clamp(MaxResults, 1, 500);
 
+	// Steam lobby search needs an explicit lobby query when not on LAN.
+	if (!bLAN)
+	{
+		LastSessionSearchNative->QuerySettings.Set(SEARCH_LOBBIES, true, EOnlineComparisonOp::Equals);
+	}
+
+	if (FindSessionsDelegateHandle.IsValid())
+	{
+		Sessions->ClearOnFindSessionsCompleteDelegate_Handle(FindSessionsDelegateHandle);
+		FindSessionsDelegateHandle.Reset();
+	}
+
 	FOnFindSessionsCompleteDelegate FindDelegate;
 	FindDelegate.BindWeakLambda(this, [this](bool bWasSuccessful)
 	{
-		LastFoundSessions.Reset();
-		if (bWasSuccessful && LastSessionSearchNative.IsValid())
+		if (IOnlineSessionPtr LocalSessions = UIWorldGetSessionInterface(bLastOnlineQueryWasLAN))
 		{
-			for (const FOnlineSessionSearchResult& R : LastSessionSearchNative->SearchResults)
+			if (FindSessionsDelegateHandle.IsValid())
 			{
-				LastFoundSessions.Add(UIWorldConvertSearchResult(R));
+				LocalSessions->ClearOnFindSessionsCompleteDelegate_Handle(FindSessionsDelegateHandle);
+				FindSessionsDelegateHandle.Reset();
 			}
 		}
+
+		SortAndPublishFoundSessions(bWasSuccessful);
+		if (!bWasSuccessful)
+		{
+			LastOnlineDiagnostic = bLastOnlineQueryWasLAN
+				? FString::Printf(
+					TEXT("LAN search failed (OSS=%s). Enable LAN on host and client."),
+					*UIWorldDescribeActiveOnlineSubsystem(true))
+				: FString::Printf(
+					TEXT("Steam search failed (OSS=%s). Is Steam running? Same BuildId on both PCs."),
+					*UIWorldDescribeActiveOnlineSubsystem(false));
+		}
+		else if (LastFoundSessions.Num() == 0)
+		{
+			LastOnlineDiagnostic = bLastOnlineQueryWasLAN
+				? FString::Printf(
+					TEXT("No LAN sessions (OSS=%s). PIE: 2 players, Player 1 HOST, wait for map, then REFRESH on Player 2. Or CONNECT 127.0.0.1:%d"),
+					*UIWorldDescribeActiveOnlineSubsystem(true),
+					FMath::Clamp(OnlineLanPort, 1, 65535))
+				: FString::Printf(
+					TEXT("No Steam sessions (OSS=%s). Host with LAN off; both need Steam."),
+					*UIWorldDescribeActiveOnlineSubsystem(false));
+		}
+		UE_LOG(
+			LogUIWorldStartupFlow,
+			Log,
+			TEXT("[Online] FindSessions complete: success=%d count=%d mode=%s OSS=%s"),
+			bWasSuccessful,
+			LastFoundSessions.Num(),
+			bLastOnlineQueryWasLAN ? TEXT("LAN") : TEXT("Steam"),
+			*UIWorldDescribeActiveOnlineSubsystem(bLastOnlineQueryWasLAN));
+
+		if (bPendingQuickJoin)
+		{
+			if (!TryExecuteQuickJoin())
+			{
+				OnSessionsFound.Broadcast(LastFoundSessions);
+			}
+			return;
+		}
+
 		OnSessionsFound.Broadcast(LastFoundSessions);
 	});
 
-	Sessions->AddOnFindSessionsCompleteDelegate_Handle(FindDelegate);
-	return Sessions->FindSessions(*UserId, LastSessionSearchNative.ToSharedRef());
+	FindSessionsDelegateHandle = Sessions->AddOnFindSessionsCompleteDelegate_Handle(FindDelegate);
+	const bool bStarted = Sessions->FindSessions(*UserId, LastSessionSearchNative.ToSharedRef());
+	if (!bStarted)
+	{
+		LastOnlineDiagnostic = TEXT("FindSessions did not start");
+		OnSessionsFound.Broadcast(TArray<FUIWorldOnlineSessionResult>());
+	}
+	return bStarted;
 }
 
-bool UUIWorldMenuGameInstance::JoinOnlineSessionByIndex(int32 ResultIndex)
+bool UUIWorldMenuGameInstance::DestroyExistingSessionThenJoin(int32 ResultIndex)
 {
-	UWorld* World = GetWorld();
-	if (!World)
-	{
-		OnJoinCompleted.Broadcast(false, TEXT("World is null"));
-		return false;
-	}
-
-	IOnlineSessionPtr Sessions = UIWorldGetSessionInterface();
+	const bool bLan = UIWorldIsLanJoinForIndex(LastSessionSearchNative, ResultIndex, bLastOnlineQueryWasLAN);
+	bLastOnlineQueryWasLAN = bLan;
+	IOnlineSessionPtr Sessions = UIWorldGetSessionInterface(bLan);
 	if (!Sessions.IsValid())
 	{
 		OnJoinCompleted.Broadcast(false, TEXT("SessionInterface missing"));
 		return false;
 	}
 
-	const TSharedPtr<const FUniqueNetId> UserId = UIWorldGetLocalUserId(World);
-	if (!UserId.IsValid())
+	PendingJoinSessionIndex = ResultIndex;
+
+	if (DestroySessionDelegateHandle.IsValid())
 	{
-		OnJoinCompleted.Broadcast(false, TEXT("Local UniqueNetId missing"));
+		Sessions->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionDelegateHandle);
+		DestroySessionDelegateHandle.Reset();
+	}
+
+	FOnDestroySessionCompleteDelegate DestroyDelegate;
+	DestroyDelegate.BindWeakLambda(this, [this](FName /*Name*/, bool bDestroyed)
+	{
+		const bool bLanDestroy = bLastOnlineQueryWasLAN;
+		if (IOnlineSessionPtr LocalSessions = UIWorldGetSessionInterface(bLanDestroy))
+		{
+			if (DestroySessionDelegateHandle.IsValid())
+			{
+				LocalSessions->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionDelegateHandle);
+				DestroySessionDelegateHandle.Reset();
+			}
+		}
+
+		const int32 IndexToJoin = PendingJoinSessionIndex;
+		PendingJoinSessionIndex = INDEX_NONE;
+
+		if (!bDestroyed || IndexToJoin == INDEX_NONE)
+		{
+			CancelOnlineTravelLoading();
+			OnJoinCompleted.Broadcast(false, TEXT("Join failed: could not clear old session"));
+			return;
+		}
+
+		if (bLanDestroy)
+		{
+			JoinLanSessionDirect(IndexToJoin);
+		}
+		else
+		{
+			ExecuteJoinOnlineSession(IndexToJoin);
+		}
+	});
+	DestroySessionDelegateHandle = Sessions->AddOnDestroySessionCompleteDelegate_Handle(DestroyDelegate);
+
+	const bool bStarted = Sessions->DestroySession(NAME_GameSession);
+	if (!bStarted)
+	{
+		if (DestroySessionDelegateHandle.IsValid())
+		{
+			Sessions->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionDelegateHandle);
+			DestroySessionDelegateHandle.Reset();
+		}
+		PendingJoinSessionIndex = INDEX_NONE;
+		return bLastOnlineQueryWasLAN
+			? JoinLanSessionDirect(ResultIndex)
+			: ExecuteJoinOnlineSession(ResultIndex);
+	}
+	return true;
+}
+
+bool UUIWorldMenuGameInstance::ExecuteJoinOnlineSession(int32 ResultIndex)
+{
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		OnJoinCompleted.Broadcast(false, TEXT("World is null"));
 		return false;
 	}
 
@@ -982,76 +2490,984 @@ bool UUIWorldMenuGameInstance::JoinOnlineSessionByIndex(int32 ResultIndex)
 		return false;
 	}
 
-	FOnJoinSessionCompleteDelegate JoinDelegate;
-	JoinDelegate.BindWeakLambda(this, [this, World, Sessions](FName Name, EOnJoinSessionCompleteResult::Type JoinResult)
+	const bool bLan = UIWorldIsLanJoinForIndex(LastSessionSearchNative, ResultIndex, bLastOnlineQueryWasLAN);
+	bLastOnlineQueryWasLAN = bLan;
+
+	// LAN always uses direct IP ClientTravel — JoinSession returns Wi-Fi beacon IP and times out in PIE.
+	if (bLan)
 	{
-		FString ConnectString;
-		if (JoinResult == EOnJoinSessionCompleteResult::Success && Sessions->GetResolvedConnectString(Name, ConnectString))
+		return JoinLanSessionDirect(ResultIndex);
+	}
+
+	const FOnlineSessionSearchResult& ChosenResult = LastSessionSearchNative->SearchResults[ResultIndex];
+	if (ChosenResult.Session.NumOpenPublicConnections == 0
+		&& ChosenResult.Session.SessionSettings.NumPublicConnections > 0)
+	{
+		OnJoinCompleted.Broadcast(false, TEXT("Join failed: session is full"));
+		return false;
+	}
+
+	UIWorldActivateSteamNetworking(World);
+
+	IOnlineSessionPtr Sessions = UIWorldGetSessionInterface(false);
+	if (!Sessions.IsValid())
+	{
+		OnJoinCompleted.Broadcast(false, TEXT("Steam session interface missing — is Steam running?"));
+		return false;
+	}
+
+	const TSharedPtr<const FUniqueNetId> UserId = UIWorldGetLocalUserId(World, false);
+	if (!UserId.IsValid())
+	{
+		EnsureOnlineAutoLogin();
+		OnJoinCompleted.Broadcast(false, TEXT("Not logged in to Steam yet"));
+		return false;
+	}
+
+	if (JoinSessionDelegateHandle.IsValid())
+	{
+		Sessions->ClearOnJoinSessionCompleteDelegate_Handle(JoinSessionDelegateHandle);
+		JoinSessionDelegateHandle.Reset();
+	}
+
+	PendingJoinConnectSearchIndex = ResultIndex;
+	JoinConnectRetryAttempts = 0;
+
+	FOnJoinSessionCompleteDelegate JoinDelegate;
+	JoinDelegate.BindWeakLambda(this, [this, World, ResultIndex, bLan](FName Name, EOnJoinSessionCompleteResult::Type JoinResult)
+	{
+		IOnlineSessionPtr LocalSessions = UIWorldGetSessionInterface(bLan);
+		if (LocalSessions.IsValid() && JoinSessionDelegateHandle.IsValid())
 		{
-			if (APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0))
-			{
-				bApplyGameFocusOnNextMapLoad = true;
-				CloseMenuUI(false);
-				OnJoinCompleted.Broadcast(true, TEXT("Joined session"));
-				PC->ClientTravel(ConnectString, TRAVEL_Absolute);
-				return;
-			}
+			LocalSessions->ClearOnJoinSessionCompleteDelegate_Handle(JoinSessionDelegateHandle);
+			JoinSessionDelegateHandle.Reset();
 		}
-		HideSimpleTravelLoadingScreen();
-		OnJoinCompleted.Broadcast(false, TEXT("JoinSession failed"));
+
+		if (JoinResult != EOnJoinSessionCompleteResult::Success)
+		{
+			PendingJoinConnectSearchIndex = INDEX_NONE;
+			if (UWorld* TimerWorld = GetWorld())
+			{
+				TimerWorld->GetTimerManager().ClearTimer(JoinConnectRetryTimerHandle);
+			}
+			CancelOnlineTravelLoading();
+			const FString FailReason = UIWorldDescribeJoinResult(JoinResult);
+			OnJoinCompleted.Broadcast(false, FString::Printf(TEXT("Join failed: %s"), *FailReason));
+			return;
+		}
+
+		if (TryCompleteJoinTravel(World, ResultIndex))
+		{
+			return;
+		}
+
+		// Host may still be loading the map / publishing lobby P2P keys — retry briefly.
+		if (UWorld* TimerWorld = GetWorld())
+		{
+			TimerWorld->GetTimerManager().ClearTimer(JoinConnectRetryTimerHandle);
+			TimerWorld->GetTimerManager().SetTimer(
+				JoinConnectRetryTimerHandle,
+				this,
+				&UUIWorldMenuGameInstance::HandleJoinConnectRetry,
+				0.5f,
+				true);
+		}
 	});
 
-	Sessions->AddOnJoinSessionCompleteDelegate_Handle(JoinDelegate);
-	ShowSimpleTravelLoadingScreen();
+	JoinSessionDelegateHandle = Sessions->AddOnJoinSessionCompleteDelegate_Handle(JoinDelegate);
+	BeginOnlineTravelWithPhase(
+		EZonefallOnlineTravelPhase::Joining,
+		NSLOCTEXT("ZonefallUI", "OnlineJoinStart", "Joining online session..."));
+
 	const bool bStarted = Sessions->JoinSession(*UserId, NAME_GameSession, LastSessionSearchNative->SearchResults[ResultIndex]);
 	if (!bStarted)
 	{
-		HideSimpleTravelLoadingScreen();
+		if (JoinSessionDelegateHandle.IsValid())
+		{
+			Sessions->ClearOnJoinSessionCompleteDelegate_Handle(JoinSessionDelegateHandle);
+			JoinSessionDelegateHandle.Reset();
+		}
+		CancelOnlineTravelLoading();
+		OnJoinCompleted.Broadcast(false, TEXT("JoinSession did not start"));
 	}
 	return bStarted;
 }
 
+bool UUIWorldMenuGameInstance::JoinOnlineSessionByIndex(int32 ResultIndex)
+{
+	if (!LastSessionSearchNative.IsValid() || !LastSessionSearchNative->SearchResults.IsValidIndex(ResultIndex))
+	{
+		OnJoinCompleted.Broadcast(false, TEXT("Join failed: session list expired — press REFRESH"));
+		return false;
+	}
+
+	const FOnlineSessionSearchResult& TargetResult = LastSessionSearchNative->SearchResults[ResultIndex];
+	FString JoinError;
+	if (!UIWorldValidateSessionJoin(this, &TargetResult, JoinError))
+	{
+		OnJoinCompleted.Broadcast(false, JoinError);
+		return false;
+	}
+
+	const bool bLan = UIWorldIsLanJoinForIndex(LastSessionSearchNative, ResultIndex, bLastOnlineQueryWasLAN);
+	bLastOnlineQueryWasLAN = bLan;
+	IOnlineSessionPtr Sessions = UIWorldGetSessionInterface(bLan);
+	if (!Sessions.IsValid())
+	{
+		OnJoinCompleted.Broadcast(false, TEXT("SessionInterface missing"));
+		return false;
+	}
+
+	// DestroySession is async — JoinSession fails with "already exists" if we don't wait.
+	if (Sessions->GetNamedSession(NAME_GameSession) != nullptr)
+	{
+		return DestroyExistingSessionThenJoin(ResultIndex);
+	}
+
+	if (bLan)
+	{
+		return JoinLanSessionDirect(ResultIndex);
+	}
+
+	return ExecuteJoinOnlineSession(ResultIndex);
+}
+
+bool UUIWorldMenuGameInstance::JoinOnlineByAddress(const FString& Address)
+{
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		OnJoinCompleted.Broadcast(false, TEXT("World is null"));
+		return false;
+	}
+
+	FString Clean = Address.TrimStartAndEnd();
+	if (Clean.IsEmpty())
+	{
+		OnJoinCompleted.Broadcast(false, TEXT("Enter an address or ID to connect"));
+		return false;
+	}
+
+	// Bare IP/hostname (no port, not a steam URL) -> append the default LAN port.
+	const bool bIsSteamUrl = Clean.StartsWith(TEXT("steam."));
+	if (!bIsSteamUrl && !Clean.Contains(TEXT(":")))
+	{
+		Clean = FString::Printf(TEXT("%s:%d"), *Clean, FMath::Clamp(OnlineLanPort, 1, 65535));
+	}
+
+	UIWorldNormalizeConnectStringForPIE(Clean);
+
+	APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
+	if (!PC)
+	{
+		OnJoinCompleted.Broadcast(false, TEXT("Join failed: no player controller"));
+		return false;
+	}
+
+	bLastOnlineQueryWasLAN = !bIsSteamUrl;
+	PendingJoinConnectSearchIndex = INDEX_NONE;
+	JoinConnectRetryAttempts = 0;
+	if (bIsSteamUrl)
+	{
+		UIWorldActivateSteamNetworking(World);
+	}
+	else
+	{
+		UIWorldActivateLanNetworking(World);
+	}
+	BeginOnlineTravelWithPhase(
+		EZonefallOnlineTravelPhase::Joining,
+		NSLOCTEXT("ZonefallUI", "OnlineDirectStart", "Connecting to server..."));
+
+	FString TravelUrl = bIsSteamUrl
+		? FString::Printf(TEXT("%s?NetDriver=GameNetDriver"), *Clean)
+		: UIWorldAppendLanNetDriverOption(Clean);
+	UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[Online] Direct connect -> ClientTravel %s"), *TravelUrl);
+	bApplyGameFocusOnNextMapLoad = true;
+	CloseMenuUI(false);
+	OnJoinCompleted.Broadcast(true, FString::Printf(TEXT("Connecting to %s"), *Clean));
+	PC->ClientTravel(TravelUrl, TRAVEL_Absolute);
+	return true;
+}
+
+bool UUIWorldMenuGameInstance::JoinLanSessionDirect(int32 ResultIndex)
+{
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		OnJoinCompleted.Broadcast(false, TEXT("World is null"));
+		return false;
+	}
+
+	if (!LastSessionSearchNative.IsValid() || !LastSessionSearchNative->SearchResults.IsValidIndex(ResultIndex))
+	{
+		OnJoinCompleted.Broadcast(false, TEXT("Join failed: invalid result index"));
+		return false;
+	}
+
+	bLastOnlineQueryWasLAN = true;
+	const FOnlineSessionSearchResult& ChosenResult = LastSessionSearchNative->SearchResults[ResultIndex];
+	if (ChosenResult.Session.NumOpenPublicConnections == 0
+		&& ChosenResult.Session.SessionSettings.NumPublicConnections > 0)
+	{
+		OnJoinCompleted.Broadcast(false, TEXT("Join failed: session is full"));
+		return false;
+	}
+
+	IOnlineSessionPtr Sessions = UIWorldGetSessionInterface(true);
+	FString ConnectString;
+	const FOnlineSessionSearchResult* SearchResult = &LastSessionSearchNative->SearchResults[ResultIndex];
+	if (!UIWorldResolveSessionConnectString(this, Sessions, NAME_GameSession, SearchResult, true, ConnectString))
+	{
+		OnJoinCompleted.Broadcast(
+			false,
+			FString::Printf(
+				TEXT("Join failed: no LAN address (host must be in-game; default port %d)"),
+				OnlineLanPort));
+		return false;
+	}
+
+	PendingJoinConnectSearchIndex = INDEX_NONE;
+	JoinConnectRetryAttempts = 0;
+	UIWorldActivateLanNetworking(World);
+	BeginOnlineTravelWithPhase(
+		EZonefallOnlineTravelPhase::Joining,
+		NSLOCTEXT("ZonefallUI", "OnlineLanJoinStart", "Connecting to LAN host..."));
+
+	const FString TravelUrl = UIWorldAppendLanNetDriverOption(ConnectString);
+	UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[Online] LAN direct join -> ClientTravel %s"), *TravelUrl);
+	if (APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0))
+	{
+		bApplyGameFocusOnNextMapLoad = true;
+		CloseMenuUI(false);
+		OnJoinCompleted.Broadcast(true, FString::Printf(TEXT("Connecting %s"), *ConnectString));
+		PC->ClientTravel(TravelUrl, TRAVEL_Absolute);
+		return true;
+	}
+
+	CancelOnlineTravelLoading();
+	OnJoinCompleted.Broadcast(false, TEXT("Join failed: no player controller"));
+	return false;
+}
+
+void UUIWorldMenuGameInstance::PublishHostedOnlineSession(UWorld* LoadedWorld)
+{
+	if (!LoadedWorld || LoadedWorld->GetNetMode() != NM_ListenServer)
+	{
+		return;
+	}
+
+	if (bLastOnlineQueryWasLAN)
+	{
+		IOnlineSessionPtr LanSessions = UIWorldGetSessionInterface(true);
+		if (LanSessions.IsValid())
+		{
+			if (FNamedOnlineSession* Session = LanSessions->GetNamedSession(NAME_GameSession))
+			{
+				int32 AdvertisedPort = FMath::Clamp(OnlineLanPort, 1, 65535);
+				if (UNetDriver* NetDriver = LoadedWorld->GetNetDriver())
+				{
+					if (TSharedPtr<const FInternetAddr> LocalAddr = NetDriver->GetLocalAddr())
+					{
+						const int32 BoundPort = LocalAddr->GetPort();
+						if (BoundPort > 0)
+						{
+							AdvertisedPort = BoundPort;
+						}
+					}
+				}
+
+				Session->SessionSettings.Set(
+					FName(TEXT("LAN_HOST")),
+					FString(TEXT("127.0.0.1")),
+					EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+				Session->SessionSettings.Set(
+					FName(TEXT("LAN_PORT")), AdvertisedPort, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+				LanSessions->StartSession(NAME_GameSession);
+				LanSessions->UpdateSession(NAME_GameSession, Session->SessionSettings, true);
+				FString DriverName = TEXT("unknown");
+				if (UNetDriver* NetDriver = LoadedWorld->GetNetDriver())
+				{
+					DriverName = NetDriver->GetClass()->GetName();
+				}
+				if (!DriverName.Contains(TEXT("IpNet")))
+				{
+					UE_LOG(
+						LogUIWorldStartupFlow,
+						Warning,
+						TEXT("[Online] LAN host is NOT on IpNetDriver (%s) — clients will timeout"),
+						*DriverName);
+				}
+				UE_LOG(
+					LogUIWorldStartupFlow,
+					Log,
+					TEXT("[Online] LAN listen server ready — connect 127.0.0.1:%d (map %s, driver %s)"),
+					AdvertisedPort,
+					*LoadedWorld->GetMapName(),
+					*DriverName);
+				return;
+			}
+		}
+
+		UE_LOG(
+			LogUIWorldStartupFlow,
+			Log,
+			TEXT("[Online] LAN listen server on %s (no session to update)"),
+			*LoadedWorld->GetMapName());
+		return;
+	}
+
+	IOnlineSessionPtr Sessions = UIWorldGetSessionInterface(false);
+	if (!Sessions.IsValid())
+	{
+		return;
+	}
+
+	FNamedOnlineSession* Session = Sessions->GetNamedSession(NAME_GameSession);
+	if (!Session)
+	{
+		return;
+	}
+
+	Sessions->StartSession(NAME_GameSession);
+
+	if (const TSharedPtr<const FUniqueNetId> UserId = UIWorldGetLocalUserId(LoadedWorld, bLastOnlineQueryWasLAN))
+	{
+		Sessions->RegisterPlayer(NAME_GameSession, *UserId, false);
+	}
+
+	// Push P2P keys into the Steam lobby so remote clients can build a connect URL.
+	Sessions->UpdateSession(NAME_GameSession, Session->SessionSettings, true);
+	UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[Online] Published Steam lobby (listen server on %s)"), *LoadedWorld->GetMapName());
+}
+
+void UUIWorldMenuGameInstance::ScheduleHostedOnlineSessionRefresh(UWorld* LoadedWorld)
+{
+	if (!LoadedWorld || LoadedWorld->GetNetMode() != NM_ListenServer)
+	{
+		return;
+	}
+
+	HostedSessionPublishAttempts = 0;
+	PublishHostedOnlineSession(LoadedWorld);
+
+	LoadedWorld->GetTimerManager().ClearTimer(HostedSessionRefreshTimerHandle);
+	LoadedWorld->GetTimerManager().SetTimer(
+		HostedSessionRefreshTimerHandle,
+		this,
+		&UUIWorldMenuGameInstance::HandleHostedSessionRefreshTick,
+		1.0f,
+		true);
+}
+
+void UUIWorldMenuGameInstance::HandleHostedSessionRefreshTick()
+{
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+
+	if (++HostedSessionPublishAttempts > 5)
+	{
+		World->GetTimerManager().ClearTimer(HostedSessionRefreshTimerHandle);
+		return;
+	}
+
+	PublishHostedOnlineSession(World);
+}
+
+bool UUIWorldMenuGameInstance::TryCompleteJoinTravel(UWorld* World, int32 SearchIndex)
+{
+	if (!World)
+	{
+		return false;
+	}
+
+	const bool bLan = UIWorldIsLanJoinForIndex(LastSessionSearchNative, SearchIndex, bLastOnlineQueryWasLAN);
+	bLastOnlineQueryWasLAN = bLan;
+	IOnlineSessionPtr Sessions = UIWorldGetSessionInterface(bLan);
+	if (!Sessions.IsValid())
+	{
+		return false;
+	}
+
+	// Steam JoinSession path must not run for LAN — use loopback direct connect in PIE.
+	if (bLan)
+	{
+		return JoinLanSessionDirect(SearchIndex);
+	}
+
+	const FOnlineSessionSearchResult* SearchResult = nullptr;
+	if (LastSessionSearchNative.IsValid() && LastSessionSearchNative->SearchResults.IsValidIndex(SearchIndex))
+	{
+		SearchResult = &LastSessionSearchNative->SearchResults[SearchIndex];
+	}
+
+	FString ConnectString;
+	if (!UIWorldResolveSessionConnectString(this, Sessions, NAME_GameSession, SearchResult, bLan, ConnectString))
+	{
+		return false;
+	}
+
+	UIWorldNormalizeConnectStringForPIE(ConnectString);
+
+	if (UWorld* TimerWorld = GetWorld())
+	{
+		TimerWorld->GetTimerManager().ClearTimer(JoinConnectRetryTimerHandle);
+		TimerWorld->GetTimerManager().ClearTimer(OnlineAbortDeferHandle);
+	}
+
+	PendingJoinConnectSearchIndex = INDEX_NONE;
+	JoinConnectRetryAttempts = 0;
+
+	if (!bOnlineTravelInProgress)
+	{
+		BeginOnlineTravelWithPhase(
+			EZonefallOnlineTravelPhase::Joining,
+			NSLOCTEXT("ZonefallUI", "OnlineJoinStart", "Joining online session..."));
+	}
+
+	UIWorldActivateSteamNetworking(World);
+	if (!ConnectString.Contains(TEXT("NetDriver="), ESearchCase::IgnoreCase))
+	{
+		ConnectString += ConnectString.Contains(TEXT("?")) ? TEXT("&NetDriver=GameNetDriver") : TEXT("?NetDriver=GameNetDriver");
+	}
+
+	UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[Online] Steam join -> ClientTravel %s"), *ConnectString);
+	if (APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0))
+	{
+		bApplyGameFocusOnNextMapLoad = true;
+		CloseMenuUI(false);
+		OnJoinCompleted.Broadcast(true, FString::Printf(TEXT("Connecting %s"), *ConnectString));
+		PC->ClientTravel(ConnectString, TRAVEL_Absolute);
+		return true;
+	}
+
+	CancelOnlineTravelLoading();
+	OnJoinCompleted.Broadcast(false, TEXT("Join failed: no player controller"));
+	return false;
+}
+
+void UUIWorldMenuGameInstance::HandleJoinConnectRetry()
+{
+	UWorld* World = GetWorld();
+	if (!World || !bOnlineTravelInProgress)
+	{
+		if (World)
+		{
+			World->GetTimerManager().ClearTimer(JoinConnectRetryTimerHandle);
+		}
+		return;
+	}
+
+	++JoinConnectRetryAttempts;
+	const int32 SearchIndex = PendingJoinConnectSearchIndex;
+
+	if (TryCompleteJoinTravel(World, SearchIndex))
+	{
+		return;
+	}
+
+	constexpr int32 MaxAttempts = 24;
+	if (JoinConnectRetryAttempts >= MaxAttempts)
+	{
+		World->GetTimerManager().ClearTimer(JoinConnectRetryTimerHandle);
+		PendingJoinConnectSearchIndex = INDEX_NONE;
+		CancelOnlineTravelLoading();
+		const FString FailMsg = bLastOnlineQueryWasLAN
+			? FString::Printf(
+				TEXT("Join failed: no LAN address — both must use LAN, host in-game on port %d, then REFRESH + JOIN"),
+				OnlineLanPort)
+			: TEXT(
+				"Join failed: no Steam URL — on one PC enable LAN on both; for Steam use 2 accounts + host in-game first");
+		OnJoinCompleted.Broadcast(false, FailMsg);
+	}
+}
+
 bool UUIWorldMenuGameInstance::LeaveOnlineSessionAndReturnToMenu()
 {
-	IOnlineSessionPtr Sessions = UIWorldGetSessionInterface();
+	IOnlineSessionPtr Sessions = UIWorldGetSessionInterface(bLastOnlineQueryWasLAN);
 	if (!Sessions.IsValid())
 	{
 		OnLeaveCompleted.Broadcast(false, TEXT("SessionInterface missing"));
 		return false;
 	}
 
+	// No active session: nothing to destroy, just bounce back to the menu level.
+	if (Sessions->GetNamedSession(NAME_GameSession) == nullptr)
+	{
+		OnLeaveCompleted.Broadcast(true, TEXT("No active session"));
+		if (!MainMenuLevelName.IsNone())
+		{
+			LoadLevelAndFocusGame(MainMenuLevelName, true);
+		}
+		return true;
+	}
+
+	// Clear any previously bound handler so repeat Leave calls don't accumulate listeners.
+	if (DestroySessionDelegateHandle.IsValid())
+	{
+		Sessions->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionDelegateHandle);
+		DestroySessionDelegateHandle.Reset();
+	}
+
 	FOnDestroySessionCompleteDelegate DestroyDelegate;
 	DestroyDelegate.BindWeakLambda(this, [this](FName Name, bool bOk)
 	{
+		if (IOnlineSessionPtr LocalSessions = UIWorldGetSessionInterface())
+		{
+			if (DestroySessionDelegateHandle.IsValid())
+			{
+				LocalSessions->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionDelegateHandle);
+				DestroySessionDelegateHandle.Reset();
+			}
+		}
+
 		OnLeaveCompleted.Broadcast(bOk, bOk ? TEXT("Left session") : TEXT("DestroySession failed"));
+
+		// Only return to the menu once the session has actually been torn down,
+		// so we don't ClientTravel out from underneath an in-flight destroy.
+		if (!MainMenuLevelName.IsNone())
+		{
+			LoadLevelAndFocusGame(MainMenuLevelName, true);
+		}
 	});
-	Sessions->AddOnDestroySessionCompleteDelegate_Handle(DestroyDelegate);
+	DestroySessionDelegateHandle = Sessions->AddOnDestroySessionCompleteDelegate_Handle(DestroyDelegate);
 
 	const bool bStarted = Sessions->DestroySession(NAME_GameSession);
 	if (!bStarted)
 	{
+		if (DestroySessionDelegateHandle.IsValid())
+		{
+			Sessions->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionDelegateHandle);
+			DestroySessionDelegateHandle.Reset();
+		}
 		OnLeaveCompleted.Broadcast(true, TEXT("No active session"));
-	}
-
-	if (!MainMenuLevelName.IsNone())
-	{
-		LoadLevelAndFocusGame(MainMenuLevelName, true);
+		if (!MainMenuLevelName.IsNone())
+		{
+			LoadLevelAndFocusGame(MainMenuLevelName, true);
+		}
 	}
 	return true;
 }
 
-void UUIWorldMenuGameInstance::HandlePostLoadMap(UWorld* LoadedWorld)
+// ---------------------------------------------------------------------------
+// Online account / status (Steam persona, login state) — drives the menu indicator.
+// ---------------------------------------------------------------------------
+bool UUIWorldMenuGameInstance::IsOnlineAvailable() const
 {
-	StopMoviePlayerLoadingScreen();
-	HideSimpleTravelLoadingScreen();
+	return IOnlineSubsystem::Get() != nullptr;
+}
 
-	if (!bApplyGameFocusOnNextMapLoad || !LoadedWorld)
+bool UUIWorldMenuGameInstance::IsOnlineLoggedIn() const
+{
+	if (IOnlineSubsystem* OSS = IOnlineSubsystem::Get())
+	{
+		if (IOnlineIdentityPtr Identity = OSS->GetIdentityInterface())
+		{
+			return Identity->GetLoginStatus(0) == ELoginStatus::LoggedIn;
+		}
+	}
+	return false;
+}
+
+FString UUIWorldMenuGameInstance::GetOnlineServiceName() const
+{
+	if (const IOnlineSubsystem* OSS = IOnlineSubsystem::Get())
+	{
+		return OSS->GetSubsystemName().ToString();
+	}
+	return TEXT("None");
+}
+
+FString UUIWorldMenuGameInstance::GetOnlinePlayerNickname() const
+{
+	if (IOnlineSubsystem* OSS = IOnlineSubsystem::Get())
+	{
+		if (IOnlineIdentityPtr Identity = OSS->GetIdentityInterface())
+		{
+			const FString PlayerNick = Identity->GetPlayerNickname(0);
+			if (!PlayerNick.IsEmpty())
+			{
+				return PlayerNick;
+			}
+		}
+	}
+
+	// Local fallback (offline / Steam not running).
+	if (UWorld* World = GetWorld())
+	{
+		if (APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0))
+		{
+			if (PC->PlayerState && !PC->PlayerState->GetPlayerName().IsEmpty())
+			{
+				return PC->PlayerState->GetPlayerName();
+			}
+		}
+	}
+	return FString(FPlatformProcess::ComputerName());
+}
+
+int32 UUIWorldMenuGameInstance::GetCurrentSessionPlayerCount() const
+{
+	if (IOnlineSessionPtr Sessions = UIWorldGetSessionInterface(bLastOnlineQueryWasLAN))
+	{
+		if (FNamedOnlineSession* Session = Sessions->GetNamedSession(NAME_GameSession))
+		{
+			const int32 Max = FMath::Max(1, Session->SessionSettings.NumPublicConnections);
+			const int32 Open = FMath::Max(0, Session->NumOpenPublicConnections);
+			return FMath::Clamp(Max - Open, 1, Max);
+		}
+	}
+	return 0;
+}
+
+void UUIWorldMenuGameInstance::RequestOnlineLogin()
+{
+	EnsureOnlineAutoLogin();
+}
+
+// ---------------------------------------------------------------------------
+// Achievements (Steam-backed, with an offline local fallback)
+// ---------------------------------------------------------------------------
+void UUIWorldMenuGameInstance::LoadLocalAchievements()
+{
+	UnlockedAchievementIds.Reset();
+	TArray<FString> Saved;
+	GConfig->GetArray(TEXT("ZonefallAchievements"), TEXT("Unlocked"), Saved, GGameUserSettingsIni);
+	for (const FString& S : Saved)
+	{
+		if (!S.IsEmpty())
+		{
+			UnlockedAchievementIds.AddUnique(FName(*S));
+		}
+	}
+}
+
+void UUIWorldMenuGameInstance::SaveLocalAchievements() const
+{
+	TArray<FString> ToSave;
+	ToSave.Reserve(UnlockedAchievementIds.Num());
+	for (const FName& Id : UnlockedAchievementIds)
+	{
+		ToSave.Add(Id.ToString());
+	}
+	GConfig->SetArray(TEXT("ZonefallAchievements"), TEXT("Unlocked"), ToSave, GGameUserSettingsIni);
+	GConfig->Flush(false, GGameUserSettingsIni);
+}
+
+void UUIWorldMenuGameInstance::WriteAchievementToOnlineService(FName AchievementId, float PercentComplete)
+{
+	IOnlineSubsystem* OSS = IOnlineSubsystem::Get();
+	if (!OSS)
 	{
 		return;
 	}
 
-	ApplyGameFocusInput(LoadedWorld);
-	bApplyGameFocusOnNextMapLoad = false;
+	IOnlineAchievementsPtr Achievements = OSS->GetAchievementsInterface();
+	if (!Achievements.IsValid())
+	{
+		return;
+	}
+
+	const TSharedPtr<const FUniqueNetId> UserId = UIWorldGetLocalUserId(GetWorld());
+	if (!UserId.IsValid())
+	{
+		return;
+	}
+
+	FOnlineAchievementsWriteRef WriteObject = MakeShared<FOnlineAchievementsWrite, ESPMode::ThreadSafe>();
+	WriteObject->SetFloatStat(AchievementId.ToString(), FMath::Clamp(PercentComplete, 0.0f, 100.0f));
+
+	Achievements->WriteAchievements(*UserId, WriteObject,
+		FOnAchievementsWrittenDelegate::CreateWeakLambda(this, [AchievementId](const FUniqueNetId&, bool bSuccess)
+		{
+			UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[Achievements] Steam write '%s' -> %s"),
+				*AchievementId.ToString(), bSuccess ? TEXT("OK") : TEXT("failed (define it in Steamworks first)"));
+		}));
+}
+
+void UUIWorldMenuGameInstance::UnlockAchievement(FName AchievementId, float PercentComplete)
+{
+	if (AchievementId.IsNone())
+	{
+		return;
+	}
+
+	const bool bComplete = PercentComplete >= 100.0f;
+	if (bComplete && !UnlockedAchievementIds.Contains(AchievementId))
+	{
+		UnlockedAchievementIds.AddUnique(AchievementId);
+		SaveLocalAchievements();
+		ShowSaveToast(FString::Printf(TEXT("Achievement unlocked: %s"), *AchievementId.ToString()));
+		UE_LOG(LogUIWorldStartupFlow, Log, TEXT("[Achievements] Unlocked '%s'"), *AchievementId.ToString());
+	}
+
+	WriteAchievementToOnlineService(AchievementId, PercentComplete);
+}
+
+bool UUIWorldMenuGameInstance::IsAchievementUnlocked(FName AchievementId) const
+{
+	return UnlockedAchievementIds.Contains(AchievementId);
+}
+
+bool UUIWorldMenuGameInstance::IsMenuMapWorld(const UWorld* World) const
+{
+	if (!World)
+	{
+		return false;
+	}
+
+	const FString MapToken = UIWorldStripPieMapPrefix(World->GetMapName());
+	if (MapToken.IsEmpty())
+	{
+		return false;
+	}
+
+	const FString MenuShort = MainMenuLevelName.IsNone() ? TEXT("Menu") : MainMenuLevelName.ToString();
+	if (MapToken.Equals(MenuShort, ESearchCase::IgnoreCase))
+	{
+		return true;
+	}
+
+	const FName ResolvedMenu = UIWorldResolveLevelNameForOpen(const_cast<UWorld*>(World), MainMenuLevelName);
+	if (!ResolvedMenu.IsNone())
+	{
+		const FString ResolvedShort = FPackageName::GetShortName(ResolvedMenu.ToString());
+		if (MapToken.Equals(ResolvedShort, ESearchCase::IgnoreCase))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void UUIWorldMenuGameInstance::HandlePostLoadMap(UWorld* LoadedWorld)
+{
+	if (LoadedWorld)
+	{
+		if (bOnlineTravelInProgress)
+		{
+			if (ActiveOnlineTravelPhase == EZonefallOnlineTravelPhase::Hosting
+				&& !IsMenuMapWorld(LoadedWorld))
+			{
+				TryActivateListenServerAfterHostLoad(LoadedWorld);
+				if (bOnlineTravelInProgress
+					&& LoadedWorld->GetNetMode() == NM_Standalone
+					&& !LoadedWorld->GetNetDriver())
+				{
+					LoadedWorld->GetTimerManager().SetTimerForNextTick(
+						FTimerDelegate::CreateUObject(
+							this,
+							&UUIWorldMenuGameInstance::TryActivateListenServerAfterHostLoad,
+							LoadedWorld));
+				}
+			}
+
+			if (bOnlineTravelInProgress)
+			{
+				const ENetMode LoadedNetMode = LoadedWorld->GetNetMode();
+				const bool bClientReady = (LoadedNetMode == NM_Client);
+				const bool bHostReady =
+					(LoadedNetMode == NM_ListenServer || LoadedNetMode == NM_DedicatedServer
+						|| (LoadedWorld->GetNetDriver() != nullptr))
+					&& !IsMenuMapWorld(LoadedWorld);
+
+				if (bClientReady || bHostReady)
+				{
+					FinalizeOnlineTravelSuccess(LoadedWorld);
+				}
+			}
+		}
+		else
+		{
+			bOnlineJoinReachedGameMap = false;
+			StopMoviePlayerLoadingScreen();
+			HideSimpleTravelLoadingScreen();
+
+			if (bApplyGameFocusOnNextMapLoad)
+			{
+				ApplyGameFocusInput(LoadedWorld);
+				bApplyGameFocusOnNextMapLoad = false;
+			}
+		}
+	}
+	else
+	{
+		CancelOnlineTravelLoading();
+	}
+}
+
+void UUIWorldMenuGameInstance::HandleTravelFailure(UWorld* World, ETravelFailure::Type FailureType, const FString& ErrorString)
+{
+	UE_LOG(LogUIWorldStartupFlow, Warning, TEXT("[Online] TravelFailure: %s | %s"),
+		ETravelFailure::ToString(FailureType), *ErrorString);
+
+	if (bOnlineJoinReachedGameMap || (World && !IsMenuMapWorld(World)))
+	{
+		return;
+	}
+
+	if (!bOnlineTravelInProgress)
+	{
+		return;
+	}
+
+	ScheduleDeferredOnlineAbort(ErrorString.IsEmpty() ? TEXT("Travel failed") : ErrorString);
+}
+
+void UUIWorldMenuGameInstance::HandleNetworkFailure(UWorld* World, UNetDriver* /*NetDriver*/, ENetworkFailure::Type FailureType, const FString& ErrorString)
+{
+	UE_LOG(LogUIWorldStartupFlow, Warning, TEXT("[Online] NetworkFailure: %s | %s"),
+		ENetworkFailure::ToString(FailureType), *ErrorString);
+
+	if (bOnlineJoinReachedGameMap || (World && !IsMenuMapWorld(World)))
+	{
+		return;
+	}
+
+	if (!bOnlineTravelInProgress)
+	{
+		return;
+	}
+
+	// Engine already Browse "?closed" back to Menu on hard net failures — don't double-abort instantly.
+	if (FailureType == ENetworkFailure::ConnectionTimeout
+		|| FailureType == ENetworkFailure::PendingConnectionFailure
+		|| FailureType == ENetworkFailure::FailureReceived)
+	{
+		if (World && IsMenuMapWorld(World))
+		{
+			CancelOnlineTravelLoading();
+			OnJoinCompleted.Broadcast(
+				false,
+				TEXT("Connection failed — use LAN on both windows; for one PC host must finish loading first"));
+			return;
+		}
+
+		if (World)
+		{
+			const float Elapsed = World->GetTimeSeconds() - OnlineTravelStartSeconds;
+			if (Elapsed < 15.0f)
+			{
+				return;
+			}
+		}
+	}
+
+	ScheduleDeferredOnlineAbort(ErrorString.IsEmpty() ? TEXT("Connection failed") : ErrorString);
+}
+
+void UUIWorldMenuGameInstance::ScheduleDeferredOnlineAbort(const FString& Reason)
+{
+	PendingOnlineAbortReason = Reason;
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(OnlineAbortDeferHandle);
+		World->GetTimerManager().SetTimer(
+			OnlineAbortDeferHandle,
+			this,
+			&UUIWorldMenuGameInstance::ExecuteDeferredOnlineAbort,
+			FMath::Clamp(OnlineAbortGraceSeconds, 0.5f, 10.0f),
+			false);
+	}
+}
+
+void UUIWorldMenuGameInstance::ExecuteDeferredOnlineAbort()
+{
+	if (bOnlineJoinReachedGameMap)
+	{
+		return;
+	}
+
+	if (UWorld* World = GetWorld())
+	{
+		// If we hold an open connection to a server, the join genuinely succeeded — do not
+		// bounce back to the menu. This must NOT be gated on the map name: a host that
+		// happens to use the menu map would otherwise make every client self-evict.
+		const bool bClientConnected =
+			(World->GetNetMode() == NM_Client) ||
+			(World->GetNetDriver()
+				&& World->GetNetDriver()->ServerConnection
+				&& World->GetNetDriver()->ServerConnection->GetConnectionState() == USOCK_Open);
+
+		if (bClientConnected)
+		{
+			FinalizeOnlineTravelSuccess(World);
+			return;
+		}
+	}
+
+	if (!bOnlineTravelInProgress)
+	{
+		return;
+	}
+
+	AbortOnlineTravelToMenu(PendingOnlineAbortReason.IsEmpty() ? TEXT("Connection failed") : PendingOnlineAbortReason);
+}
+
+void UUIWorldMenuGameInstance::HandleOnlineJoinTimeout()
+{
+	if (!bOnlineTravelInProgress)
+	{
+		return;
+	}
+	const bool bHosting = ActiveOnlineTravelPhase == EZonefallOnlineTravelPhase::Hosting;
+	UE_LOG(
+		LogUIWorldStartupFlow,
+		Warning,
+		TEXT("[Online] %s timed out after %.1fs"),
+		bHosting ? TEXT("Host") : TEXT("Join"),
+		OnlineJoinTimeoutSeconds);
+	AbortOnlineTravelToMenu(
+		bHosting
+			? TEXT("Host timed out — listen server did not start (PIE: use 2 players, Play As Listen Server)")
+			: TEXT("Join timed out — host unreachable"));
+}
+
+void UUIWorldMenuGameInstance::AbortOnlineTravelToMenu(const FString& Reason)
+{
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(OnlineJoinTimeoutHandle);
+		World->GetTimerManager().ClearTimer(JoinConnectRetryTimerHandle);
+		World->GetTimerManager().ClearTimer(OnlineAbortDeferHandle);
+	}
+
+	const bool bWasTravelling = bOnlineTravelInProgress;
+	PendingJoinConnectSearchIndex = INDEX_NONE;
+	JoinConnectRetryAttempts = 0;
+
+	CancelOnlineTravelLoading();
+	bOnlineJoinReachedGameMap = false;
+
+	// Tear down any half-formed session so the next attempt is clean.
+	if (IOnlineSessionPtr Sessions = UIWorldGetSessionInterface(bLastOnlineQueryWasLAN))
+	{
+		if (Sessions->GetNamedSession(NAME_GameSession) != nullptr)
+		{
+			Sessions->DestroySession(NAME_GameSession);
+		}
+	}
+
+	OnJoinCompleted.Broadcast(false, FString::Printf(TEXT("Join failed: %s"), *Reason));
+
+	// Bounce back to the main menu so the player isn't stranded on a dead loading screen.
+	if (bWasTravelling && !MainMenuLevelName.IsNone())
+	{
+		UWorld* World = GetWorld();
+		if (!World || !IsMenuMapWorld(World))
+		{
+			UE_LOG(LogUIWorldStartupFlow, Warning, TEXT("[Online] Abort -> main menu (%s)"), *Reason);
+			LoadMainMenuLevel(true);
+		}
+		else
+		{
+			ShowMenuFromList(EUIWorldMenuScreen::MainMenu, false);
+		}
+	}
 }
 
 void UUIWorldMenuGameInstance::ApplyGameFocusInput(UWorld* World) const

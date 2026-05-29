@@ -17,14 +17,14 @@
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 
 // ********** Begin Delegate FOnZonefallStartupIntroFinished ***************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h_17_DELEGATE \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h_17_DELEGATE \
 UIWORLD_API void FOnZonefallStartupIntroFinished_DelegateWrapper(const FMulticastScriptDelegate& OnZonefallStartupIntroFinished);
 
 
 // ********** End Delegate FOnZonefallStartupIntroFinished *****************************************
 
 // ********** Begin Class UZonefallStartupIntroWidget **********************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h_22_RPC_WRAPPERS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h_22_RPC_WRAPPERS_NO_PURE_DECLS \
 	DECLARE_FUNCTION(execHandleMediaEndReached); \
 	DECLARE_FUNCTION(execHandlePlaybackRetryTick); \
 	DECLARE_FUNCTION(execHandleMediaOpenFailed); \
@@ -36,7 +36,7 @@ UIWORLD_API void FOnZonefallStartupIntroFinished_DelegateWrapper(const FMulticas
 struct Z_Construct_UClass_UZonefallStartupIntroWidget_Statics;
 UIWORLD_API UClass* Z_Construct_UClass_UZonefallStartupIntroWidget_NoRegister();
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h_22_INCLASS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h_22_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesUZonefallStartupIntroWidget(); \
 	friend struct ::Z_Construct_UClass_UZonefallStartupIntroWidget_Statics; \
@@ -47,7 +47,7 @@ public: \
 	DECLARE_SERIALIZER(UZonefallStartupIntroWidget)
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h_22_ENHANCED_CONSTRUCTORS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h_22_ENHANCED_CONSTRUCTORS \
 	/** Deleted move- and copy-constructors, should never be used */ \
 	UZonefallStartupIntroWidget(UZonefallStartupIntroWidget&&) = delete; \
 	UZonefallStartupIntroWidget(const UZonefallStartupIntroWidget&) = delete; \
@@ -57,13 +57,13 @@ public: \
 	NO_API virtual ~UZonefallStartupIntroWidget();
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h_19_PROLOG
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h_22_GENERATED_BODY \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h_19_PROLOG
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h_22_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h_22_RPC_WRAPPERS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h_22_INCLASS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h_22_ENHANCED_CONSTRUCTORS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h_22_RPC_WRAPPERS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h_22_INCLASS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h_22_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
@@ -73,6 +73,6 @@ class UZonefallStartupIntroWidget;
 // ********** End Class UZonefallStartupIntroWidget ************************************************
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h
+#define CURRENT_FILE_ID FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallStartupIntroWidget_h
 
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

@@ -19,10 +19,11 @@ class UObject;
 enum class EZonefallGraphicsPreset : uint8;
 
 // ********** Begin Class UZonefallSettingsDataObject **********************************************
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h_18_RPC_WRAPPERS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h_20_RPC_WRAPPERS_NO_PURE_DECLS \
 	DECLARE_FUNCTION(execApplyUpscalerSettingsOnly); \
 	DECLARE_FUNCTION(execSaveUpscalerSettingsToConfig); \
 	DECLARE_FUNCTION(execLoadUpscalerSettingsFromConfig); \
+	DECLARE_FUNCTION(execDetectRecommendedPreset); \
 	DECLARE_FUNCTION(execApplyGraphicsPreset); \
 	DECLARE_FUNCTION(execSanitizeSettings); \
 	DECLARE_FUNCTION(execSetScreenResolutionFromString); \
@@ -37,7 +38,7 @@ enum class EZonefallGraphicsPreset : uint8;
 struct Z_Construct_UClass_UZonefallSettingsDataObject_Statics;
 UIWORLD_API UClass* Z_Construct_UClass_UZonefallSettingsDataObject_NoRegister();
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h_18_INCLASS_NO_PURE_DECLS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h_20_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesUZonefallSettingsDataObject(); \
 	friend struct ::Z_Construct_UClass_UZonefallSettingsDataObject_Statics; \
@@ -48,7 +49,7 @@ public: \
 	DECLARE_SERIALIZER(UZonefallSettingsDataObject)
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h_18_ENHANCED_CONSTRUCTORS \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h_20_ENHANCED_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API UZonefallSettingsDataObject(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get()); \
 	/** Deleted move- and copy-constructors, should never be used */ \
@@ -60,13 +61,13 @@ public: \
 	NO_API virtual ~UZonefallSettingsDataObject();
 
 
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h_15_PROLOG
-#define FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h_18_GENERATED_BODY \
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h_17_PROLOG
+#define FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h_20_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h_18_RPC_WRAPPERS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h_18_INCLASS_NO_PURE_DECLS \
-	FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h_18_ENHANCED_CONSTRUCTORS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h_20_RPC_WRAPPERS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h_20_INCLASS_NO_PURE_DECLS \
+	FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h_20_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
@@ -76,13 +77,15 @@ class UZonefallSettingsDataObject;
 // ********** End Class UZonefallSettingsDataObject ************************************************
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID FID_Zonefall_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h
+#define CURRENT_FILE_ID FID_Zonefallprotocol_Plugins_UIWorld_Source_UIWorld_Public_UI_ZonefallSettingsDataObject_h
 
 // ********** Begin Enum EZonefallGraphicsPreset ***************************************************
 #define FOREACH_ENUM_EZONEFALLGRAPHICSPRESET(op) \
 	op(EZonefallGraphicsPreset::Competitive) \
 	op(EZonefallGraphicsPreset::Balanced) \
-	op(EZonefallGraphicsPreset::Quality) 
+	op(EZonefallGraphicsPreset::Quality) \
+	op(EZonefallGraphicsPreset::Ultra) \
+	op(EZonefallGraphicsPreset::AutoDetect) 
 
 enum class EZonefallGraphicsPreset : uint8;
 template<> struct TIsUEnumClass<EZonefallGraphicsPreset> { enum { Value = true }; };
